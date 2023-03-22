@@ -89,7 +89,7 @@ export const RegisterForm: React.FC = () => {
 
   const register = useAuthStore((state) => state.register);
 
-  const setUserType = (value: "individual" | "organization") => {
+  const setUserType = (value: "individual" | "organization") => () => {
     form.setFieldValue("userType", value);
     if (value === "organization") {
       const organizationDefault = {
@@ -138,13 +138,13 @@ export const RegisterForm: React.FC = () => {
                 <SimpleGrid cols={2}>
                   <CardButton
                     label="individual"
-                    onClick={() => setUserType("individual")}
+                    onClick={setUserType("individual")}
                     selected={form.values.userType == "individual"}
                     icon={<FaUser />}
                   />
                   <CardButton
                     label="organisasi"
-                    onClick={() => setUserType("organization")}
+                    onClick={setUserType("organization")}
                     selected={form.values.userType == "organization"}
                     icon={<FaUsers />}
                   />
