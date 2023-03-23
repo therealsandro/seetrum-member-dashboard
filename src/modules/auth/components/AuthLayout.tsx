@@ -31,19 +31,17 @@ export const AuthLayout: React.FC<Props> = ({ children }) => {
       justify={isSmallScreen ? "center" : "initial"}
     >
       {!isSmallScreen && (
-        <Grid.Col span={4} p={0}>
+        <Grid.Col
+          span={4}
+          p={0}
+          sx={{
+            position: "relative",
+          }}
+        >
           <LoginSideIlustration />
         </Grid.Col>
       )}
-      <Grid.Col
-        span={8}
-        p={0}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <Grid.Col span={8} p={0}>
         {children}
       </Grid.Col>
     </Grid>
@@ -54,16 +52,14 @@ const LoginSideIlustration: React.FC = () => {
   return (
     <Paper
       h={"100%"}
+      w={"100%"}
       radius={0}
       sx={{
-        // background: `linear-gradient(to right top, rgba(45,183,195,1) 0%, rgba(49,24,108,1) 100%)`,
+        position: "absolute",
+        top: 0,
+        left: 0,
         background: `radial-gradient(circle at bottom left, rgba(45,183,195,1), rgba(49,24,108,1))`,
-        backgroundSize: "cover",
-        transition: "all 0.2s ease-in-out",
-        ":hover": {
-          backgroundPosition: "right",
-        },
       }}
-    ></Paper>
+    />
   );
 };

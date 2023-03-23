@@ -6,11 +6,11 @@ import {
   MantineTheme,
   Paper,
   PasswordInput,
-  SimpleGrid,
+  Select,
   Stack,
-  Stepper,
   Text,
   TextInput,
+  Timeline,
 } from "@mantine/core";
 import {
   isEmail,
@@ -20,7 +20,6 @@ import {
   useForm,
 } from "@mantine/form";
 import React from "react";
-import { FaUser, FaUsers } from "react-icons/fa";
 import { useAuthStore } from "../stores/authStore";
 
 type RegisterFormData = UserRegistrationData & { confirmPassword: string };
@@ -123,105 +122,131 @@ export const RegisterForm: React.FC = () => {
   });
 
   return (
-    <Paper p="lg">
-      <Text mb={"md"} size={"xl"} weight={"bold"}>
-        Create an account
-      </Text>
+    <Paper
+      p="xs"
+      maw={720}
+      sx={{
+        marginInline: "auto",
+      }}
+    >
+      <Stack spacing={16} mt={120} mb={40}>
+        <Text size={"xl"}>Register</Text>
+        <Text>
+          Join our community of diverse voices, innovative individuals, and big
+          ideas to make a difference in energy efficiency
+        </Text>
+      </Stack>
       <form onSubmit={handleSubmit}>
-        <Stepper active={active} breakpoint="sm">
-          <Stepper.Step label="Informasi Akun">
-            <Stack spacing="sm">
-              <Box>
-                <Text size="sm" weight="bold" mb="sm">
-                  Daftar sebagai:
-                </Text>
-                <SimpleGrid cols={2}>
-                  <CardButton
-                    label="individual"
-                    onClick={setUserType("individual")}
-                    selected={form.values.userType === "individual"}
-                    icon={<FaUser />}
-                  />
-                  <CardButton
-                    label="organisasi"
-                    onClick={setUserType("organization")}
-                    selected={form.values.userType === "organization"}
-                    icon={<FaUsers />}
-                  />
-                </SimpleGrid>
-              </Box>
-              <TextInput
-                label={"Email " + userTypeCopy[form.values.userType]}
-                type="email"
-                placeholder="Email"
-                {...form.getInputProps("email")}
-              />
-              <PasswordInput
-                label="Password"
-                placeholder="Password"
-                {...form.getInputProps("password")}
-              />
-              <PasswordInput
-                label="Konfirmasi Password"
-                placeholder="Confirm Password"
-                {...form.getInputProps("confirmPassword")}
-              />
-            </Stack>
-          </Stepper.Step>
-          <Stepper.Step label="Informasi Tambahan">
-            <Stack spacing="sm">
-              <TextInput
-                label={"Nama " + userTypeCopy[form.values.userType]}
-                type="text"
-                placeholder="Nama"
-                {...form.getInputProps("name")}
-              />
-              {form.values.userType === "organization" && (
-                <>
-                  <TextInput
-                    label="Bidang Organisasi"
-                    type="text"
-                    placeholder="Bidang Organisasi"
-                    {...form.getInputProps("organization.industry")}
-                  />
-                </>
-              )}
-              <TextInput
-                label={"Alamat " + userTypeCopy[form.values.userType]}
-                type="text"
-                placeholder="Alamat"
-                {...form.getInputProps("address")}
-              />
-              <TextInput
-                label="Nomor Telepon"
-                type="text"
-                placeholder="Nomor Telp"
-                {...form.getInputProps("phoneNumber")}
-              />
-              <TextInput
-                label="Darimana anda tahu tentang Seetrum"
-                type="text"
-                placeholder="Dari mana tahu tentang seetrum"
-                {...form.getInputProps("informationChannel")}
-              />
-              <TextInput
-                label="Motivasi bergabung"
-                type="text"
-                placeholder="Motivasi bergabung"
-                {...form.getInputProps("motivationToJoin")}
-              />
-            </Stack>
-          </Stepper.Step>
-        </Stepper>
-        <Group mt="xl" position="right">
-          {active !== 0 && <Button onClick={prevStep}>Back</Button>}
-          <Button onClick={nextStep}>Next</Button>
-          {active === 2 && (
-            <Button variant="outline" type="submit">
-              Sign up
-            </Button>
-          )}
-        </Group>
+        <Timeline active={active}>
+          <Timeline.Item
+            title="Input your email and password"
+            bullet={<Text>1</Text>}
+            bulletSize={32}
+          >
+            {active === 0 ? (
+              <Stack spacing={16}>
+                <TextInput
+                  label={"Email"}
+                  type="email"
+                  withAsterisk
+                  placeholder="Enter your email"
+                  {...form.getInputProps("email")}
+                />
+                <PasswordInput
+                  label="Password"
+                  placeholder="Enter your password"
+                  withAsterisk
+                  {...form.getInputProps("password")}
+                />
+                <PasswordInput
+                  label="Password Confirmation"
+                  placeholder="Confirm your password"
+                  withAsterisk
+                  {...form.getInputProps("confirmPassword")}
+                />
+                <Group mt="xl" position="right">
+                  {active !== 0 && <Button onClick={prevStep}>Back</Button>}
+                  <Button onClick={nextStep}>Next</Button>
+                </Group>
+              </Stack>
+            ) : (
+              active > 0 && (
+                <Box p="sm">
+                  <Text c="dimmed" size="sm" weight={"bold"}>
+                    Email
+                  </Text>
+                  <Text size="sm">{form.values.email}</Text>
+                </Box>
+              )
+            )}
+          </Timeline.Item>
+          <Timeline.Item
+            bullet={<Text>2</Text>}
+            bulletSize={32}
+            title="Input your account detail"
+          >
+            {active === 1 && (
+              <Stack spacing={16}>
+                <TextInput
+                  label={"Nama " + userTypeCopy[form.values.userType]}
+                  type="text"
+                  placeholder="Nama"
+                  withAsterisk
+                  {...form.getInputProps("name")}
+                />
+                {form.values.userType === "organization" && (
+                  <>
+                    <TextInput
+                      label="Bidang Organisasi"
+                      type="text"
+                      placeholder="Bidang Organisasi"
+                      {...form.getInputProps("organization.industry")}
+                    />
+                  </>
+                )}
+                <TextInput
+                  label={"Alamat " + userTypeCopy[form.values.userType]}
+                  type="text"
+                  placeholder="Alamat"
+                  withAsterisk
+                  {...form.getInputProps("address")}
+                />
+                <TextInput
+                  label="Nomor Telepon"
+                  type="text"
+                  placeholder="Nomor Telp"
+                  withAsterisk
+                  {...form.getInputProps("phoneNumber")}
+                />
+                <Select
+                  data={[
+                    "Social Media",
+                    "Seetrum website",
+                    "Friends or colleague",
+                    "Adverstisement",
+                    "Event",
+                    "Other",
+                  ]}
+                  label="Darimana anda tahu tentang Seetrum"
+                  type="text"
+                  placeholder="Dari mana tahu tentang seetrum"
+                  {...form.getInputProps("informationChannel")}
+                />
+                <TextInput
+                  label="Motivasi bergabung"
+                  type="text"
+                  placeholder="Motivasi bergabung"
+                  {...form.getInputProps("motivationToJoin")}
+                />
+                <Group mt="xl" position="right">
+                  <Button onClick={prevStep}>Back</Button>
+                  {/* <Button onClick={nextStep}>Next</Button> */}
+                  <Button type="submit">Sign up</Button>
+                </Group>
+              </Stack>
+            )}
+          </Timeline.Item>
+        </Timeline>
       </form>
       {/* <Stack>
         <Button type="submit">Sign up</Button>
@@ -230,51 +255,22 @@ export const RegisterForm: React.FC = () => {
   );
 };
 
-interface Props {
-  icon: React.ReactNode;
-  selected?: boolean;
-  label: string;
-  onClick?: React.MouseEventHandler;
+interface RegisterItemProps {
+  step: number;
+  active: number;
+  title: string;
+  children: React.ReactNode;
 }
 
-const CardButton: React.FC<Props> = ({
-  icon,
-  label,
-  selected = false,
-  onClick,
+const RegisterItem: React.FC<RegisterItemProps> = ({
+  step,
+  active,
+  title,
+  children,
 }) => {
-  const accentColor = "rgba(231, 245, 255, 0.35)";
-
-  const colorVariant = (theme: MantineTheme) => ({
-    active: theme.colors.blue[6],
-    inactive: theme.colors.gray[5],
-  });
-  const state = selected ? "active" : "inactive";
   return (
-    <Button
-      onClick={onClick}
-      variant="outline"
-      p="lg"
-      sx={(theme) => ({
-        height: "auto",
-        borderColor: colorVariant(theme)[state],
-        backgroundColor: selected ? accentColor : "transparent",
-        color: colorVariant(theme)[state],
-        transition: "all 0.15s ease-in-out",
-        ":not([data-disabled]):hover": {
-          backgroundColor: selected ? accentColor : theme.colors.gray[0],
-          borderColor: selected
-            ? colorVariant(theme)[state]
-            : theme.colors.gray[4],
-          transform: "translateY(-2px)",
-          boxShadow: theme.shadows.sm,
-        },
-      })}
-    >
-      <Stack align="center">
-        {icon}
-        <Text>{label}</Text>
-      </Stack>
-    </Button>
+    <Timeline.Item bullet={<Text>2</Text>} bulletSize={32} title={title}>
+      {active === step - 1 && children}
+    </Timeline.Item>
   );
 };

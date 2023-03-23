@@ -1,6 +1,7 @@
 import {
   Anchor,
   Button,
+  Flex,
   Paper,
   PasswordInput,
   Stack,
@@ -35,40 +36,42 @@ export const LoginForm: React.FC = () => {
   });
 
   return (
-    <Paper w={400} mx="xs">
-      <form onSubmit={handleSubmit}>
-        <Stack spacing={20}>
-          <Text size={"xl"} weight={"bold"}>
-            Sign In
-          </Text>
-          <Text size="sm" c="dimmed">
-            Welcome back! Sign in to your Seetrum account and stay up-to-date on
-            the latest in energy efficiency.
-          </Text>
-          <TextInput
-            radius="md"
-            type="email"
-            label="Email"
-            placeholder="Enter your email"
-            {...form.getInputProps("email")}
-          />
-          <PasswordInput
-            radius="md"
-            label="Password"
-            placeholder="Enter your password"
-            {...form.getInputProps("password")}
-          />
-          <Button radius="md" size="md" type="submit">
-            Log In
-          </Button>
-          <Text size="sm" c="dimmed">
-            Don&apos;t have an account yet?{" "}
-            <Link to={routePaths.REGISTER_OPTION}>
-              <Anchor component="button">register</Anchor>
-            </Link>
-          </Text>
-        </Stack>
-      </form>
-    </Paper>
+    <Flex h="100%" justify="center" align="center">
+      <Paper w={400} mx="xs">
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={20}>
+            <Text size={"xl"} weight={"bold"}>
+              Sign In
+            </Text>
+            <Text size="sm" c="dimmed">
+              Welcome back! Sign in to your Seetrum account and stay up-to-date
+              on the latest in energy efficiency.
+            </Text>
+            <TextInput
+              radius="md"
+              type="email"
+              label="Email"
+              placeholder="Enter your email"
+              {...form.getInputProps("email")}
+            />
+            <PasswordInput
+              radius="md"
+              label="Password"
+              placeholder="Enter your password"
+              {...form.getInputProps("password")}
+            />
+            <Button radius="md" size="md" type="submit">
+              Log In
+            </Button>
+            <Text size="sm" c="dimmed">
+              Don&apos;t have an account yet?{" "}
+              <Link to={routePaths.REGISTER_OPTION}>
+                <Anchor component="button">register</Anchor>
+              </Link>
+            </Text>
+          </Stack>
+        </form>
+      </Paper>
+    </Flex>
   );
 };
