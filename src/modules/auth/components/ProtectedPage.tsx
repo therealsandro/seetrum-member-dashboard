@@ -1,7 +1,7 @@
-import { ROUTE_LOGIN } from "@/routes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import { routePaths } from "@/routes";
 
 export const withAuth = <P extends object>(
   OriginalComponent: React.ComponentType<P>
@@ -13,9 +13,9 @@ export const withAuth = <P extends object>(
 
     React.useEffect(() => {
       if (!user && !loading) {
-        navigate(ROUTE_LOGIN.path);
+        navigate(routePaths.LOGIN);
       }
-    }, [user, loading]);
+    }, [user, loading, navigate]);
     return <OriginalComponent {...props} />;
   };
 
@@ -33,9 +33,9 @@ export const ProtectedPage: React.FC<Props> = ({ children }) => {
 
   React.useEffect(() => {
     if (!user && !loading) {
-      navigate(ROUTE_LOGIN.path);
+      navigate(routePaths.LOGIN);
     }
-  }, [user, loading]);
+  }, [user, loading, navigate]);
 
   return <>{children}</>;
 };

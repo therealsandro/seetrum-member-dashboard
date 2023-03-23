@@ -24,7 +24,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <MantineProvider>
+    <MantineProvider withNormalizeCSS>
       <RouterProvider router={router} />
     </MantineProvider>
   );

@@ -139,13 +139,13 @@ export const RegisterForm: React.FC = () => {
                   <CardButton
                     label="individual"
                     onClick={setUserType("individual")}
-                    selected={form.values.userType == "individual"}
+                    selected={form.values.userType === "individual"}
                     icon={<FaUser />}
                   />
                   <CardButton
                     label="organisasi"
                     onClick={setUserType("organization")}
-                    selected={form.values.userType == "organization"}
+                    selected={form.values.userType === "organization"}
                     icon={<FaUsers />}
                   />
                 </SimpleGrid>
@@ -216,7 +216,7 @@ export const RegisterForm: React.FC = () => {
         <Group mt="xl" position="right">
           {active !== 0 && <Button onClick={prevStep}>Back</Button>}
           <Button onClick={nextStep}>Next</Button>
-          {active == 2 && (
+          {active === 2 && (
             <Button variant="outline" type="submit">
               Sign up
             </Button>

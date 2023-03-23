@@ -10,7 +10,7 @@ import {
 import { hasLength, isEmail, useForm } from "@mantine/form";
 import { useAuthStore } from "../stores/authStore";
 import { Link } from "react-router-dom";
-import { ROUTE_REGISTER } from "@/routes";
+import { routePaths } from "@/routes";
 
 export const LoginForm: React.FC = () => {
   const form = useForm({
@@ -62,7 +62,7 @@ export const LoginForm: React.FC = () => {
           </Button>
           <Text mt={"xl"} align="center" size="sm" c="dimmed">
             Don&apos;t have an account?{" "}
-            <Link to={ROUTE_REGISTER.path}>
+            <Link to={routePaths.REGISTER}>
               <Anchor component="button">register</Anchor>
             </Link>
           </Text>

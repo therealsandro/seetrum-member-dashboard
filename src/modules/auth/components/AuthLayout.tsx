@@ -1,15 +1,15 @@
+import { routePaths } from "@/routes";
+import { Grid, Paper, Text } from "@mantine/core";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
+
 interface Props {
   children: React.ReactNode;
 }
 
-import { Grid, Paper, Text } from "@mantine/core";
-import React from "react";
-import { useAuthStore } from "../stores/authStore";
-import { redirect, useNavigate } from "react-router-dom";
-import { ROUTE_PROFILE } from "@/routes";
-
-const IMAGE_URL =
-  "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1772&q=80";
+// const IMAGE_URL =
+//   "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1772&q=80";
 
 export const AuthLayout: React.FC<Props> = ({ children }) => {
   const user = useAuthStore((state) => state.user);
@@ -17,9 +17,9 @@ export const AuthLayout: React.FC<Props> = ({ children }) => {
 
   React.useEffect(() => {
     if (user) {
-      navigate(ROUTE_PROFILE.path);
+      navigate(routePaths.PROFILE);
     }
-  }, [user]);
+  }, [user, navigate]);
 
   return (
     <Grid h="100svh">
