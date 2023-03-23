@@ -1,5 +1,6 @@
 import { routePaths } from "@/routes";
-import { Grid, Paper, Text } from "@mantine/core";
+import { Grid, Paper, useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
@@ -14,6 +15,8 @@ interface Props {
 export const AuthLayout: React.FC<Props> = ({ children }) => {
   const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
+  const theme = useMantineTheme();
+  const isSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.xs})`);
 
   React.useEffect(() => {
     if (user) {
@@ -22,12 +25,19 @@ export const AuthLayout: React.FC<Props> = ({ children }) => {
   }, [user, navigate]);
 
   return (
-    <Grid h="100svh">
-      <Grid.Col span={4} p={0}>
-        <LoginSideIlustration />
-      </Grid.Col>
+    <Grid
+      h={"100svh"}
+      w={"100%"}
+      justify={isSmallScreen ? "center" : "initial"}
+    >
+      {!isSmallScreen && (
+        <Grid.Col span={4} p={0}>
+          <LoginSideIlustration />
+        </Grid.Col>
+      )}
       <Grid.Col
         span={8}
+        p={0}
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -54,11 +64,6 @@ const LoginSideIlustration: React.FC = () => {
           backgroundPosition: "right",
         },
       }}
-      p="xl"
-    >
-      <Text color="white" weight={"bold"} size="xl">
-        SEETRUM
-      </Text>
-    </Paper>
+    ></Paper>
   );
 };

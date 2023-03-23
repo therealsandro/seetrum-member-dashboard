@@ -1,4 +1,4 @@
-import { Container, Header as MantineHeader, Text, Box } from "@mantine/core";
+import { Container, Header as MantineHeader, Text } from "@mantine/core";
 
 export const Header: React.FC = () => {
   return (

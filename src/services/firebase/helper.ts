@@ -8,8 +8,6 @@ import {
   getDocs,
   query,
   setDoc,
-  updateDoc,
-  serverTimestamp,
 } from "firebase/firestore";
 import { FirebaseDB } from "./config";
 

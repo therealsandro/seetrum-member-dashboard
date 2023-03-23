@@ -4,26 +4,32 @@ import { RegisterPage } from "./modules/auth/pages/RegisterPage";
 import { ProfilePage } from "./modules/user/pages/ProfilePage";
 import { RegisterOptionPage } from "./modules/auth/pages/RegisterOptionPage";
 
-export const routePaths = {
-  LOGIN: "/",
-  REGISTER_OPTION: "/register-option",
-  REGISTER: "/register",
-  PROFILE: "/profile",
+const ROUTES = {
+  LOGIN: {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  REGISTER_OPTION: {
+    path: "/register-option",
+    element: <RegisterOptionPage />,
+  },
+  REGISTER: {
+    path: "/register",
+    element: <RegisterPage />,
+  },
+  PROFILE: {
+    path: "/",
+    element: <ProfilePage />,
+  },
 } as const;
 
-type PathKey = keyof typeof routePaths;
-type RouteElement = React.ReactElement;
+type RouteKey = keyof typeof ROUTES;
+type RoutePath = typeof ROUTES[RouteKey]["path"];
 
-const routeElements: Record<PathKey, RouteElement> = {
-  LOGIN: <LoginPage />,
-  REGISTER_OPTION: <RegisterOptionPage />,
-  REGISTER: <RegisterPage />,
-  PROFILE: <ProfilePage />,
-};
+export const routePaths: Record<RouteKey, RoutePath> = Object.keys(
+  ROUTES
+).reduce((acc, key) => {
+  return { ...acc, [key]: ROUTES[key as RouteKey].path };
+}, {}) as Record<RouteKey, RoutePath>;
 
-export const routes: RouteObject[] = Object.entries(routePaths).map(
-  ([key, path]) => ({
-    path,
-    element: routeElements[key as PathKey],
-  })
-);
+export const routes = Object.values(ROUTES) as RouteObject[];
