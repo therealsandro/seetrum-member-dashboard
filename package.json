@@ -5,8 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev:production": "vite --mode production",
+    "build:staging": "tsc && vite build --mode staging",
+    "build:production": "tsc && vite build --mode production",
+    "preview": "vite preview",
+    "deploy:staging": "yarn && yarn build:staging && firebase deploy --project seetrum-staging",
+    "deploy:production": "yarn && yarn build:production && firebase deploy --project seetrum-production"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
