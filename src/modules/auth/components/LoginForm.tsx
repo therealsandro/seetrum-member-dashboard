@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Anchor,
   Button,
@@ -14,6 +15,7 @@ import { Link } from "react-router-dom";
 import { routePaths } from "@/routes";
 
 export const LoginForm: React.FC = () => {
+  const [loading, setLoading] = React.useState(false);
   const form = useForm({
     initialValues: {
       email: "",
@@ -30,9 +32,13 @@ export const LoginForm: React.FC = () => {
 
   const logIn = useAuthStore((state) => state.logIn);
 
-  const handleSubmit = form.onSubmit((values) => {
+  const handleSubmit = form.onSubmit(async (values) => {
     const { email, password } = values;
-    logIn(email, password);
+    setLoading(true);
+    try {
+      await logIn(email, password);
+    } catch (error) {}
+    setLoading(false);
   });
 
   return (
@@ -60,7 +66,7 @@ export const LoginForm: React.FC = () => {
               placeholder="Enter your password"
               {...form.getInputProps("password")}
             />
-            <Button radius="md" size="md" type="submit">
+            <Button loading={loading} radius="md" size="md" type="submit">
               Log In
             </Button>
             <Text size="sm" c="dimmed">

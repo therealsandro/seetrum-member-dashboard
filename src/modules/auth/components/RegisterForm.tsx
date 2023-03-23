@@ -43,6 +43,7 @@ const userTypeCopy = {
 
 export const RegisterForm: React.FC = () => {
   const [active, setActive] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
 
   const form = useForm({
     initialValues: registerInitialValue,
@@ -118,7 +119,11 @@ export const RegisterForm: React.FC = () => {
   };
 
   const handleSubmit = form.onSubmit(async (values) => {
-    await register(values);
+    setLoading(true);
+    try {
+      await register(values);
+    } catch (error) {}
+    setLoading(true);
   });
 
   return (
@@ -241,7 +246,9 @@ export const RegisterForm: React.FC = () => {
                 <Group mt="xl" position="right">
                   <Button onClick={prevStep}>Back</Button>
                   {/* <Button onClick={nextStep}>Next</Button> */}
-                  <Button type="submit">Sign up</Button>
+                  <Button loading={loading} type="submit">
+                    Sign up
+                  </Button>
                 </Group>
               </Stack>
             )}
