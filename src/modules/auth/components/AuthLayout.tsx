@@ -22,8 +22,8 @@ export const AuthLayout: React.FC<Props> = ({ children }) => {
   }, [user]);
 
   return (
-    <Grid h="100svh" px={"sm"}>
-      <Grid.Col span={4}>
+    <Grid h="100svh">
+      <Grid.Col span={4} p={0}>
         <LoginSideIlustration />
       </Grid.Col>
       <Grid.Col
@@ -44,17 +44,16 @@ const LoginSideIlustration: React.FC = () => {
   return (
     <Paper
       h={"100%"}
-      sx={(theme) => ({
-        background: `url(${IMAGE_URL})`,
-        backgroundPosition: "center",
+      radius={0}
+      sx={{
+        // background: `linear-gradient(to right top, rgba(45,183,195,1) 0%, rgba(49,24,108,1) 100%)`,
+        background: `radial-gradient(circle at bottom left, rgba(45,183,195,1), rgba(49,24,108,1))`,
         backgroundSize: "cover",
-        borderRadius: theme.radius.lg,
         transition: "all 0.2s ease-in-out",
         ":hover": {
           backgroundPosition: "right",
-          borderRadius: theme.radius.sm,
         },
-      })}
+      }}
       p="xl"
     >
       <Text color="white" weight={"bold"} size="xl">
