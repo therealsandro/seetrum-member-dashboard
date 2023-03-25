@@ -4,6 +4,8 @@ import { useMediaQuery } from "@mantine/hooks";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import { authBgUrl } from "@/lib/assets";
+import { Typography } from "@/components/Typography";
 
 interface Props {
   children: React.ReactNode;
@@ -51,15 +53,23 @@ export const AuthLayout: React.FC<Props> = ({ children }) => {
 const LoginSideIlustration: React.FC = () => {
   return (
     <Paper
-      h={"100%"}
+      h={"100svh"}
       w={"100%"}
+      px={32}
+      pt={330}
       radius={0}
       sx={{
-        position: "absolute",
+        position: "sticky",
         top: 0,
         left: 0,
-        background: `radial-gradient(circle at bottom left, rgba(45,183,195,1), rgba(49,24,108,1))`,
+        background: `url(${authBgUrl})`,
+        backgroundSize: "cover",
+        // background: `radial-gradient(circle at bottom left, rgba(45,183,195,1), rgba(49,24,108,1))`,
       }}
-    />
+    >
+      <Typography variants="display-sm" c="white">
+        Building trust towards energy efficiency technology
+      </Typography>
+    </Paper>
   );
 };

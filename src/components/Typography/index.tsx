@@ -2,6 +2,7 @@ import { Text, TextProps, Title } from "@mantine/core";
 
 type variantsType =
   | "headline-lg"
+  | "display-sm"
   | "body-lg"
   | "body-md"
   | "body-sm"
@@ -22,6 +23,11 @@ export const Typography: React.FC<TypographyProps & TextProps> = ({
   const typoVariants: Record<variantsType, React.ReactNode> = {
     "headline-lg": (
       <Title order={1} size="h4" fw={400}>
+        {children}
+      </Title>
+    ),
+    "display-sm": (
+      <Title {...textProps} order={1} size="h3" fw={400}>
         {children}
       </Title>
     ),

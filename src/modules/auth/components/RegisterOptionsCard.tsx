@@ -49,14 +49,14 @@ const RegisterCard: React.FC<Props> = ({ userType }) => {
       title: "Join as individual",
       description:
         "Join our community of diverse voices, innovative individuals, and big ideas to make a difference in energy efficiency",
-      linkTo: routePaths.REGISTER,
+      linkTo: `${routePaths.REGISTER}?userType=individual`,
     },
     organization: {
       logo: <IoPeopleOutline />,
       title: "Join as organization",
       description:
         "Collaborate with us to promote sustainability and drive the energy efficiency ecosystem forward in Indonesia as an organization",
-      linkTo: routePaths.REGISTER,
+      linkTo: `${routePaths.REGISTER}?userType=organization`,
     },
   };
 

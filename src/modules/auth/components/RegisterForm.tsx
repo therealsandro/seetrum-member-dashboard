@@ -1,15 +1,17 @@
-import { UserRegistrationData } from "@/types";
+import { Typography } from "@/components/Typography";
+import { routePaths } from "@/routes";
+import { UserRegistrationData, UserType } from "@/types";
 import {
   Box,
   Button,
   Group,
-  MantineTheme,
   Paper,
   PasswordInput,
   Select,
   Stack,
   Text,
   TextInput,
+  Textarea,
   Timeline,
 } from "@mantine/core";
 import {
@@ -20,31 +22,55 @@ import {
   useForm,
 } from "@mantine/form";
 import React from "react";
+import { HiArrowLeft } from "react-icons/hi";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 
 type RegisterFormData = UserRegistrationData & { confirmPassword: string };
 
-const registerInitialValue: RegisterFormData = {
-  name: "",
-  email: "",
-  address: "",
-  informationChannel: "",
-  password: "",
-  confirmPassword: "",
-  phoneNumber: "",
-  userType: "individual",
-  motivationToJoin: "",
-};
-
 const userTypeCopy = {
-  individual: "Individu",
-  organization: "Organisasi",
+  individual: {
+    email: "Individual email",
+    name: "Full name",
+    account: "account",
+  },
+  organization: {
+    email: "Organization email",
+    name: "Organization name",
+    account: "organization",
+  },
 };
 
 export const RegisterForm: React.FC = () => {
   const [active, setActive] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
 
+  const [searchParams] = useSearchParams();
+  const userType: UserType =
+    searchParams.get("userType") === "organization"
+      ? "organization"
+      : "individual";
+
+  const registerInitialValue: RegisterFormData = {
+    name: "",
+    email: "",
+    address: "",
+    informationChannel: "",
+    password: "",
+    confirmPassword: "",
+    phoneNumber: "",
+    userType: "organization",
+    motivationToJoin: "",
+  };
+  if (userType === "organization") {
+    registerInitialValue.organization = {
+      industry: "",
+      picName: "",
+      picEmail: "",
+      picPhoneNumber: "",
+    };
+  }
+  console.log({ ...registerInitialValue });
   const form = useForm({
     initialValues: registerInitialValue,
     validate: (values) => {
@@ -60,26 +86,26 @@ export const RegisterForm: React.FC = () => {
       if (active === 0) {
         return {
           userType: isNotEmpty("Jenis anggota harus diisi")(userType),
-          email: isEmail("Masukkan email yang valid")(email),
+          email: isEmail("Provide valid email address")(email),
           password:
             password.length < 6
-              ? "Password harus memiliki minimal 6 karakter"
+              ? "Password needs a minimum of 6 character"
               : null,
           confirmPassword: matchesField(
             "password",
-            "Konfrimasi password berbeda dengan password"
+            "Password confirmation is different"
           )(confirmPassword, values),
         };
       }
 
       if (active === 1) {
         return {
-          name: isNotEmpty("Nama harus diisi")(name),
+          name: isNotEmpty("Name can't be empty")(name),
           phoneNumber: matches(
             /^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/,
-            "Masukan nomor telepon yang valid"
+            "provide valid phone number"
           )(phoneNumber),
-          address: isNotEmpty("Alamat harus diisi")(address),
+          address: isNotEmpty("Address can't be empty")(address),
         };
       }
 
@@ -88,22 +114,6 @@ export const RegisterForm: React.FC = () => {
   });
 
   const register = useAuthStore((state) => state.register);
-
-  const setUserType = (value: "individual" | "organization") => () => {
-    form.setFieldValue("userType", value);
-    if (value === "organization") {
-      const organizationDefault = {
-        industry: "",
-        picName: "",
-        picEmail: "",
-        picPhoneNumber: "",
-      };
-
-      form.setFieldValue("organization", organizationDefault);
-    } else {
-      form.setFieldValue("organization", undefined);
-    }
-  };
 
   const nextStep = () => {
     setActive((current) => {
@@ -128,18 +138,32 @@ export const RegisterForm: React.FC = () => {
 
   return (
     <Paper
-      p="xs"
-      maw={720}
-      sx={{
+      maw={456}
+      mih={"100svh"}
+      style={{
         marginInline: "auto",
       }}
+      mb={"xl"}
     >
-      <Stack spacing={16} mt={120} mb={40}>
-        <Text size={"xl"}>Register</Text>
-        <Text>
+      <Stack spacing={24} mt={120} mb={24}>
+        <Link to={routePaths.REGISTER_OPTION}>
+          <Button
+            c="black"
+            size="md"
+            p={0}
+            variant="subtle"
+            leftIcon={<HiArrowLeft />}
+          >
+            Back
+          </Button>
+        </Link>
+        <Typography variants="headline-lg">
+          Create a new {userType} account
+        </Typography>
+        <Typography variants="body-lg">
           Join our community of diverse voices, innovative individuals, and big
           ideas to make a difference in energy efficiency
-        </Text>
+        </Typography>
       </Stack>
       <form onSubmit={handleSubmit}>
         <Timeline active={active}>
@@ -151,7 +175,7 @@ export const RegisterForm: React.FC = () => {
             {active === 0 ? (
               <Stack spacing={16}>
                 <TextInput
-                  label={"Email"}
+                  label={userTypeCopy[userType].email}
                   type="email"
                   withAsterisk
                   placeholder="Enter your email"
@@ -169,7 +193,7 @@ export const RegisterForm: React.FC = () => {
                   withAsterisk
                   {...form.getInputProps("confirmPassword")}
                 />
-                <Group mt="xl" position="right">
+                <Group position="left">
                   {active !== 0 && <Button onClick={prevStep}>Back</Button>}
                   <Button onClick={nextStep}>Next</Button>
                 </Group>
@@ -177,10 +201,12 @@ export const RegisterForm: React.FC = () => {
             ) : (
               active > 0 && (
                 <Box p="sm">
-                  <Text c="dimmed" size="sm" weight={"bold"}>
-                    Email
+                  <Text size="sm" weight={"bold"}>
+                    {userTypeCopy[userType].email}
                   </Text>
-                  <Text size="sm">{form.values.email}</Text>
+                  <Text c="dimmed" size="sm">
+                    {form.values.email}
+                  </Text>
                 </Box>
               )
             )}
@@ -188,12 +214,12 @@ export const RegisterForm: React.FC = () => {
           <Timeline.Item
             bullet={<Text>2</Text>}
             bulletSize={32}
-            title="Input your account detail"
+            title={`Input your ${userTypeCopy[userType].account} detail`}
           >
-            {active === 1 && (
+            {active === 1 ? (
               <Stack spacing={16}>
                 <TextInput
-                  label={"Nama " + userTypeCopy[form.values.userType]}
+                  label={userTypeCopy[userType].name}
                   type="text"
                   placeholder="Nama"
                   withAsterisk
@@ -202,17 +228,16 @@ export const RegisterForm: React.FC = () => {
                 {form.values.userType === "organization" && (
                   <>
                     <TextInput
-                      label="Bidang Organisasi"
+                      label="Organization industry"
                       type="text"
-                      placeholder="Bidang Organisasi"
+                      placeholder="Enter organization industry"
                       {...form.getInputProps("organization.industry")}
                     />
                   </>
                 )}
-                <TextInput
-                  label={"Alamat " + userTypeCopy[form.values.userType]}
-                  type="text"
-                  placeholder="Alamat"
+                <Textarea
+                  label={"Address"}
+                  placeholder="Enter address"
                   withAsterisk
                   {...form.getInputProps("address")}
                 />
@@ -220,6 +245,7 @@ export const RegisterForm: React.FC = () => {
                   label="Nomor Telepon"
                   type="text"
                   placeholder="Nomor Telp"
+                  inputMode="numeric"
                   withAsterisk
                   {...form.getInputProps("phoneNumber")}
                 />
@@ -232,22 +258,90 @@ export const RegisterForm: React.FC = () => {
                     "Event",
                     "Other",
                   ]}
-                  label="Darimana anda tahu tentang Seetrum"
+                  label="How did you hear about us?"
                   type="text"
-                  placeholder="Dari mana tahu tentang seetrum"
+                  placeholder="Pick one"
                   {...form.getInputProps("informationChannel")}
                 />
                 <TextInput
-                  label="Motivasi bergabung"
+                  label="Why do you want to join?"
                   type="text"
-                  placeholder="Motivasi bergabung"
+                  placeholder="Enter you motivation in joining"
                   {...form.getInputProps("motivationToJoin")}
                 />
-                <Group mt="xl" position="right">
-                  <Button onClick={prevStep}>Back</Button>
-                  {/* <Button onClick={nextStep}>Next</Button> */}
+                <Group position="left">
+                  <Button variant="outline" onClick={prevStep}>
+                    Back
+                  </Button>
+                  {userType === "individual" ? (
+                    <Button loading={loading} type="submit">
+                      Create my account
+                    </Button>
+                  ) : (
+                    <Button onClick={nextStep}>Next</Button>
+                  )}
+                </Group>
+              </Stack>
+            ) : (
+              active > 1 &&
+              userType === "organization" && (
+                <Stack py="sm" spacing={12}>
+                  <InfoSummary
+                    label={userTypeCopy[userType].email}
+                    value={form.values.email}
+                  />
+                  <InfoSummary label={"Address"} value={form.values.address} />
+                  <InfoSummary
+                    label={"Industry"}
+                    value={form.values.organization?.industry}
+                  />
+                  <InfoSummary
+                    label={"How did you hear about us?"}
+                    value={form.values.informationChannel}
+                  />
+                  <InfoSummary
+                    label={"Why do you want to join?"}
+                    value={form.values.motivationToJoin}
+                  />
+                </Stack>
+              )
+            )}
+          </Timeline.Item>
+          <Timeline.Item
+            bullet={<Text>3</Text>}
+            bulletSize={32}
+            title="Input your organization pic details"
+          >
+            {active === 2 && (
+              <Stack spacing={16}>
+                <TextInput
+                  label={"PIC's full name"}
+                  type="text"
+                  placeholder="Enter your full name"
+                  withAsterisk
+                  {...form.getInputProps("organization.picName")}
+                />
+                <TextInput
+                  label={"PIC's email"}
+                  type="text"
+                  placeholder="Enter your full email"
+                  withAsterisk
+                  {...form.getInputProps("organization.picEmail")}
+                />
+                <TextInput
+                  label={"PIC's phone number"}
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Enter your full phone number"
+                  withAsterisk
+                  {...form.getInputProps("organization.picPhoneNumber")}
+                />
+                <Group position="left">
+                  <Button variant="outline" onClick={prevStep}>
+                    Back
+                  </Button>
                   <Button loading={loading} type="submit">
-                    Sign up
+                    Create my account
                   </Button>
                 </Group>
               </Stack>
@@ -255,29 +349,24 @@ export const RegisterForm: React.FC = () => {
           </Timeline.Item>
         </Timeline>
       </form>
-      {/* <Stack>
-        <Button type="submit">Sign up</Button>
-      </Stack> */}
     </Paper>
   );
 };
 
-interface RegisterItemProps {
-  step: number;
-  active: number;
-  title: string;
-  children: React.ReactNode;
+interface InfoSummaryProps {
+  label: string;
+  value?: string;
 }
 
-const RegisterItem: React.FC<RegisterItemProps> = ({
-  step,
-  active,
-  title,
-  children,
-}) => {
+const InfoSummary: React.FC<InfoSummaryProps> = ({ label, value = "-" }) => {
   return (
-    <Timeline.Item bullet={<Text>2</Text>} bulletSize={32} title={title}>
-      {active === step - 1 && children}
-    </Timeline.Item>
+    <Box px="sm">
+      <Text size="sm" weight={"bold"}>
+        {label}
+      </Text>
+      <Text c="dimmed" size="sm">
+        {value || "empty"}
+      </Text>
+    </Box>
   );
 };
