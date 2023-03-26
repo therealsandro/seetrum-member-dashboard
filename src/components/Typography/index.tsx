@@ -27,37 +27,37 @@ export const Typography: React.FC<TypographyProps & TextProps> = ({
       </Title>
     ),
     "display-sm": (
-      <Title {...textProps} order={1} size="h3" fw={400}>
+      <Title order={1} size="h3" fw={400} {...textProps}>
         {children}
       </Title>
     ),
     "title-lg": (
-      <Text {...textProps} size={"xl"}>
+      <Text size={"xl"} {...textProps}>
         {children}
       </Text>
     ),
     "title-md": (
-      <Text {...textProps} fw={500} size={"lg"}>
+      <Text fw={500} size={"lg"} {...textProps}>
         {children}
       </Text>
     ),
     "title-sm": (
-      <Text {...textProps} fw={500} size={"md"}>
+      <Text fw={500} size={"md"} {...textProps}>
         {children}
       </Text>
     ),
     "body-lg": (
-      <Text {...textProps} size={"lg"}>
+      <Text size={"lg"} {...textProps}>
         {children}
       </Text>
     ),
     "body-md": (
-      <Text {...textProps} size={"md"}>
+      <Text size={"md"} {...textProps}>
         {children}
       </Text>
     ),
     "body-sm": (
-      <Text {...textProps} size={"sm"}>
+      <Text size={"sm"} {...textProps}>
         {children}
       </Text>
     ),

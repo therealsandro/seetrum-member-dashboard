@@ -1,18 +1,9 @@
 import { Typography } from "@/components/Typography";
 import { routePaths } from "@/routes";
-import {
-  Box,
-  Button,
-  Group,
-  Paper,
-  SimpleGrid,
-  Stack,
-  Text,
-  useMantineTheme,
-} from "@mantine/core";
+import { Paper, SimpleGrid, Stack, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IoPeopleOutline, IoPersonOutline } from "react-icons/io5";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterOptionsCard: React.FC = () => {
   const theme = useMantineTheme();

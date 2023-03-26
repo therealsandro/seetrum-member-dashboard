@@ -1,4 +1,5 @@
-import React from "react";
+import { Typography } from "@/components/Typography";
+import { routePaths } from "@/routes";
 import {
   Anchor,
   Button,
@@ -6,13 +7,13 @@ import {
   Paper,
   PasswordInput,
   Stack,
-  Text,
   TextInput,
 } from "@mantine/core";
 import { hasLength, isEmail, useForm } from "@mantine/form";
-import { useAuthStore } from "../stores/authStore";
+import React from "react";
 import { Link } from "react-router-dom";
-import { routePaths } from "@/routes";
+import { useAuthStore } from "../stores/authStore";
+import { BackButton } from "@/components/Button";
 
 export const LoginForm: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
@@ -22,10 +23,10 @@ export const LoginForm: React.FC = () => {
       password: "",
     },
     validate: {
-      email: isEmail("Masukkan email yang valid"),
+      email: isEmail("Provide a valid email address"),
       password: hasLength(
         { min: 6 },
-        "Masukkan password yang valid (minimum 6 karakter)"
+        "Provide a valid password (minimum of 6 character)"
       ),
     },
   });
@@ -45,14 +46,13 @@ export const LoginForm: React.FC = () => {
     <Flex h="100%" justify="center" align="center">
       <Paper w={400} mx="xs">
         <form onSubmit={handleSubmit}>
-          <Stack spacing={20}>
-            <Text size={"xl"} weight={"bold"}>
-              Sign In
-            </Text>
-            <Text size="sm" c="dimmed">
+          <Stack spacing={24}>
+            <BackButton to={"https://seetrum.id"} />
+            <Typography variants="headline-lg">Sign In</Typography>
+            <Typography variants="body-lg">
               Welcome back! Sign in to your Seetrum account and stay up-to-date
               on the latest in energy efficiency.
-            </Text>
+            </Typography>
             <TextInput
               radius="md"
               type="email"
@@ -67,14 +67,14 @@ export const LoginForm: React.FC = () => {
               {...form.getInputProps("password")}
             />
             <Button loading={loading} radius="md" size="md" type="submit">
-              Log In
+              Sign In
             </Button>
-            <Text size="sm" c="dimmed">
+            <Typography variants="body-md">
               Don&apos;t have an account yet?{" "}
               <Link to={routePaths.REGISTER_OPTION}>
-                <Anchor component="button">register</Anchor>
+                <Anchor component="button">Register Now</Anchor>
               </Link>
-            </Text>
+            </Typography>
           </Stack>
         </form>
       </Paper>

@@ -31,6 +31,7 @@ export const AuthLayout: React.FC<Props> = ({ children }) => {
       h={"100svh"}
       w={"100%"}
       justify={isSmallScreen ? "center" : "initial"}
+      m={0}
     >
       {!isSmallScreen && (
         <Grid.Col
@@ -62,9 +63,9 @@ const LoginSideIlustration: React.FC = () => {
         position: "sticky",
         top: 0,
         left: 0,
+        bottom: 0,
         background: `url(${authBgUrl})`,
         backgroundSize: "cover",
-        // background: `radial-gradient(circle at bottom left, rgba(45,183,195,1), rgba(49,24,108,1))`,
       }}
     >
       <Typography variants="display-sm" c="white">

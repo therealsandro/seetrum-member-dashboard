@@ -1,3 +1,4 @@
+import { BackButton } from "@/components/Button";
 import { Typography } from "@/components/Typography";
 import { routePaths } from "@/routes";
 import { UserRegistrationData, UserType } from "@/types";
@@ -22,8 +23,7 @@ import {
   useForm,
 } from "@mantine/form";
 import React from "react";
-import { HiArrowLeft } from "react-icons/hi";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 
 type RegisterFormData = UserRegistrationData & { confirmPassword: string };
@@ -146,17 +146,7 @@ export const RegisterForm: React.FC = () => {
       mb={"xl"}
     >
       <Stack spacing={24} mt={120} mb={24}>
-        <Link to={routePaths.REGISTER_OPTION}>
-          <Button
-            c="black"
-            size="md"
-            p={0}
-            variant="subtle"
-            leftIcon={<HiArrowLeft />}
-          >
-            Back
-          </Button>
-        </Link>
+        <BackButton to={routePaths.REGISTER_OPTION} />
         <Typography variants="headline-lg">
           Create a new {userType} account
         </Typography>
@@ -310,7 +300,7 @@ export const RegisterForm: React.FC = () => {
           <Timeline.Item
             bullet={<Text>3</Text>}
             bulletSize={32}
-            title="Input your organization pic details"
+            title="Input your organization PIC details"
           >
             {active === 2 && (
               <Stack spacing={16}>
