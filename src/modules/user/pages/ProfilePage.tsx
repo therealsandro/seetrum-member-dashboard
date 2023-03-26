@@ -6,7 +6,15 @@ import {
   getAllDocuments,
   getDocumentsByQuery,
 } from "@/services/firebase/helper";
-import { Button, List, SimpleGrid, Stack, Text } from "@mantine/core";
+import {
+  Box,
+  Button,
+  List,
+  Paper,
+  SimpleGrid,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { where } from "firebase/firestore";
 import React from "react";
 
@@ -56,8 +64,19 @@ export const ProfilePage: React.FC = () => {
         <Stack>
           <Text>
             <pre>Login as {user && user.email}</pre>
-            <pre>{user && JSON.stringify(user, null, 2)}</pre>
           </Text>
+          <Paper
+            withBorder
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+            }}
+          >
+            {user &&
+              Object.entries(user).map(([key, value]) => (
+                <InfoSummary key={key} label={key} value={value} />
+              ))}
+          </Paper>
           <Text align="center" size="xl" weight={"bolder"}>
             COMING SOON
           </Text>
@@ -80,5 +99,23 @@ export const ProfilePage: React.FC = () => {
         </Stack>
       </MainLayout>
     </ProtectedPage>
+  );
+};
+
+interface InfoSummaryProps {
+  label: string;
+  value?: any;
+}
+
+const InfoSummary: React.FC<InfoSummaryProps> = ({ label, value = "-" }) => {
+  return (
+    <Box px="sm">
+      <Text size="md" weight={"bold"}>
+        {label}
+      </Text>
+      <Text c="dimmed" size="md">
+        {value || "empty"}
+      </Text>
+    </Box>
   );
 };
