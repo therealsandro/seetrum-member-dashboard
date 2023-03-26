@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/Layout";
+import { MainLayout } from "@/ui/Layout";
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import {

@@ -1,5 +1,5 @@
-import { BackButton } from "@/components/Button";
-import { Typography } from "@/components/Typography";
+import { BackButton } from "@/ui/Button";
+import { Typography } from "@/ui/Typography";
 import { routePaths } from "@/routes";
 import { UserRegistrationData, UserType } from "@/types";
 import {

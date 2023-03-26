@@ -5,7 +5,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { authBgUrl } from "@/lib/assets";
-import { Typography } from "@/components/Typography";
+import { Typography } from "@/ui/Typography";
 
 interface Props {
   children: React.ReactNode;

@@ -1,4 +1,4 @@
-import { Typography } from "@/components/Typography";
+import { Typography } from "@/ui/Typography";
 import { routePaths } from "@/routes";
 import { Paper, SimpleGrid, Stack, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";

@@ -1,4 +1,4 @@
-import { Typography } from "@/components/Typography";
+import { Typography } from "@/ui/Typography";
 import { routePaths } from "@/routes";
 import {
   Anchor,
@@ -13,7 +13,7 @@ import { hasLength, isEmail, useForm } from "@mantine/form";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
-import { BackButton } from "@/components/Button";
+import { BackButton } from "@/ui/Button";
 
 export const LoginForm: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
