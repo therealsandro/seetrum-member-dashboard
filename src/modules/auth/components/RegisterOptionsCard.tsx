@@ -11,10 +11,10 @@ export const RegisterOptionsCard: React.FC = () => {
   return (
     <Paper maw={630} p={40}>
       <Stack spacing={8}>
-        <Typography variants="headline-lg">
+        <Typography textVariant="headline-lg">
           Ready to build sustainable future for Indonesia?
         </Typography>
-        <Typography variants="body-lg" c="dimmed">
+        <Typography textVariant="body-lg" c="dimmed">
           Register now and become part of the Seetrum community, where you can
           connect with like-minded individuals and help build a more sustainable
           future through energy efficiency
@@ -69,8 +69,8 @@ const RegisterCard: React.FC<Props> = ({ userType }) => {
       })}
     >
       <Stack spacing={16}>
-        <Typography variants="title-lg">{title}</Typography>
-        <Typography variants="body-md">{description}</Typography>
+        <Typography textVariant="title-lg">{title}</Typography>
+        <Typography textVariant="body-md">{description}</Typography>
       </Stack>
     </Paper>
   );

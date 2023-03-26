@@ -48,8 +48,8 @@ export const LoginForm: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <Stack spacing={24}>
             <BackButton to={"https://seetrum.id"} />
-            <Typography variants="headline-lg">Sign In</Typography>
-            <Typography variants="body-lg">
+            <Typography textVariant="headline-lg">Sign In</Typography>
+            <Typography textVariant="body-lg">
               Welcome back! Sign in to your Seetrum account and stay up-to-date
               on the latest in energy efficiency.
             </Typography>
@@ -69,7 +69,7 @@ export const LoginForm: React.FC = () => {
             <Button loading={loading} radius="md" size="md" type="submit">
               Sign In
             </Button>
-            <Typography variants="body-md">
+            <Typography textVariant="body-md">
               Don&apos;t have an account yet?{" "}
               <Link to={routePaths.REGISTER_OPTION}>
                 <Anchor component="button">Register Now</Anchor>

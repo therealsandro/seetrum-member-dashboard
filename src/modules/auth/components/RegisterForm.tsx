@@ -147,10 +147,10 @@ export const RegisterForm: React.FC = () => {
     >
       <Stack spacing={24} mt={120} mb={24}>
         <BackButton to={routePaths.REGISTER_OPTION} />
-        <Typography variants="headline-lg">
+        <Typography textVariant="headline-lg">
           Create a new {userType} account
         </Typography>
-        <Typography variants="body-lg">
+        <Typography textVariant="body-lg">
           Join our community of diverse voices, innovative individuals, and big
           ideas to make a difference in energy efficiency
         </Typography>

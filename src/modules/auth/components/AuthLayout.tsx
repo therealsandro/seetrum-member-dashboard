@@ -68,7 +68,7 @@ const LoginSideIlustration: React.FC = () => {
         backgroundSize: "cover",
       }}
     >
-      <Typography variants="display-sm" c="white">
+      <Typography textVariant="display-sm" c="white">
         Building trust towards energy efficiency technology
       </Typography>
     </Paper>

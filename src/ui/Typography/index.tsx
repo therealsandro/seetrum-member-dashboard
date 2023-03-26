@@ -1,6 +1,6 @@
 import { Text, TextProps, Title } from "@mantine/core";
 
-type variantsType =
+type TextVariantType =
   | "headline-lg"
   | "display-sm"
   | "body-lg"
@@ -11,16 +11,16 @@ type variantsType =
   | "title-sm";
 
 interface TypographyProps {
-  variants: variantsType;
+  textVariant: TextVariantType;
   children: React.ReactNode;
 }
 
 export const Typography: React.FC<TypographyProps & TextProps> = ({
-  variants,
+  textVariant,
   children,
   ...textProps
 }) => {
-  const typoVariants: Record<variantsType, React.ReactNode> = {
+  const typoVariants: Record<TextVariantType, React.ReactNode> = {
     "headline-lg": (
       <Title order={1} size="h4" fw={400}>
         {children}
@@ -63,7 +63,7 @@ export const Typography: React.FC<TypographyProps & TextProps> = ({
     ),
   };
 
-  return <>{typoVariants[variants]}</> || <Text>{children}</Text>;
+  return <>{typoVariants[textVariant]}</> || <Text>{children}</Text>;
 };
 
 /* 
