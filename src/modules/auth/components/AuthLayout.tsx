@@ -57,7 +57,6 @@ const LoginSideIlustration: React.FC = () => {
       h={"100svh"}
       w={"100%"}
       px={32}
-      pt={330}
       radius={0}
       sx={{
         position: "sticky",
@@ -66,9 +65,11 @@ const LoginSideIlustration: React.FC = () => {
         bottom: 0,
         background: `url(${authBgUrl})`,
         backgroundSize: "cover",
+        display: "flex",
+        alignItems: "center",
       }}
     >
-      <Typography textVariant="display-sm" c="white">
+      <Typography textVariant="display-sm" c="white" pb={48}>
         Building trust towards energy efficiency technology
       </Typography>
     </Paper>

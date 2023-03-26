@@ -37,7 +37,7 @@ const verifyEmail = async () => {
     }
 
     await sendEmailVerification(currentUser);
-    console.log("email sent");
+    console.log("Verification email sent");
   } catch (e) {
     console.error(e);
   }

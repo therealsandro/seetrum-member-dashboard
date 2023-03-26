@@ -26,7 +26,15 @@ import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 
-type RegisterFormData = UserRegistrationData & { confirmPassword: string };
+type OrganizationFlat = {
+  org_industry: string;
+  org_pic_name: string;
+  org_pic_phone_number: string;
+  org_pic_email: string;
+};
+
+type RegisterFormData = UserRegistrationData &
+  OrganizationFlat & { confirmPassword: string };
 
 const userTypeCopy = {
   individual: {
@@ -62,15 +70,11 @@ export const RegisterForm: React.FC = () => {
     phoneNumber: "",
     userType: "organization",
     motivationToJoin: "",
+    org_industry: "",
+    org_pic_name: "",
+    org_pic_email: "",
+    org_pic_phone_number: "",
   };
-  if (isOrganization) {
-    registerInitialValue.organization = {
-      industry: "",
-      picName: "",
-      picEmail: "",
-      picPhoneNumber: "",
-    };
-  }
 
   const form = useForm({
     initialValues: registerInitialValue,
@@ -83,6 +87,10 @@ export const RegisterForm: React.FC = () => {
         password,
         confirmPassword,
         address,
+        org_industry,
+        org_pic_email,
+        org_pic_name,
+        org_pic_phone_number,
       } = values;
       if (active === 0) {
         return {
@@ -107,6 +115,20 @@ export const RegisterForm: React.FC = () => {
             "provide valid phone number"
           )(phoneNumber),
           address: isNotEmpty("Address can't be empty")(address),
+          org_industry:
+            isOrganization &&
+            isNotEmpty("Industry can't be empty")(org_industry),
+        };
+      }
+
+      if (active === 2) {
+        return {
+          org_pic_email: isEmail("Provide valid email address")(org_pic_email),
+          org_pic_name: isNotEmpty("Name can't be empty")(org_pic_name),
+          org_pic_phone_number: matches(
+            /^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/,
+            "provide valid phone number"
+          )(org_pic_phone_number),
         };
       }
 
@@ -132,7 +154,24 @@ export const RegisterForm: React.FC = () => {
   const handleSubmit = form.onSubmit(async (values) => {
     setLoading(true);
     try {
-      await register(values);
+      const {
+        org_industry,
+        org_pic_email,
+        org_pic_name,
+        org_pic_phone_number,
+        ...newUser
+      } = values;
+
+      if (isOrganization) {
+        newUser.organization = {
+          industry: org_industry,
+          picName: org_pic_name,
+          picEmail: org_pic_email,
+          picPhoneNumber: org_pic_phone_number,
+        };
+      }
+
+      await register(newUser as UserRegistrationData);
     } catch (error) {}
     setLoading(true);
   });
@@ -144,8 +183,10 @@ export const RegisterForm: React.FC = () => {
       mt={120}
       style={{
         marginInline: "auto",
+        boxSizing: "content-box",
       }}
-      mb={"xl"}
+      px={"xs"}
+      pb={160}
     >
       <Stack spacing={24} mb={24}>
         <BackButton to={routePaths.REGISTER_OPTION} />
@@ -165,9 +206,10 @@ export const RegisterForm: React.FC = () => {
             bulletSize={32}
           >
             {active === 0 ? (
-              <Stack spacing={16}>
+              <Stack spacing={16} pb={24}>
                 <TextInput
                   label={userTypeCopy[userType].email}
+                  autoFocus
                   type="email"
                   withAsterisk
                   placeholder="Enter your email"
@@ -180,8 +222,8 @@ export const RegisterForm: React.FC = () => {
                   {...form.getInputProps("password")}
                 />
                 <PasswordInput
-                  label="Password Confirmation"
-                  placeholder="Confirm your password"
+                  label="Confirmation your password"
+                  placeholder="Enter your password"
                   withAsterisk
                   {...form.getInputProps("confirmPassword")}
                 />
@@ -209,13 +251,20 @@ export const RegisterForm: React.FC = () => {
             title={`Input your ${userTypeCopy[userType].account} detail`}
           >
             {active === 1 ? (
-              <Stack spacing={16}>
+              <Stack spacing={16} pb={24}>
                 <TextInput
                   label={userTypeCopy[userType].name}
+                  autoFocus
                   type="text"
                   placeholder="Nama"
                   withAsterisk
                   {...form.getInputProps("name")}
+                />
+                <Textarea
+                  label={"Address"}
+                  placeholder="Enter address"
+                  withAsterisk
+                  {...form.getInputProps("address")}
                 />
                 {isOrganization && (
                   <>
@@ -223,18 +272,12 @@ export const RegisterForm: React.FC = () => {
                       label="Organization industry"
                       type="text"
                       placeholder="Enter organization industry"
-                      {...form.getInputProps("organization.industry")}
+                      {...form.getInputProps("org_industry")}
                     />
                   </>
                 )}
-                <Textarea
-                  label={"Address"}
-                  placeholder="Enter address"
-                  withAsterisk
-                  {...form.getInputProps("address")}
-                />
                 <TextInput
-                  label="Nomor Telepon"
+                  label="Phone number"
                   type="text"
                   placeholder="Nomor Telp"
                   inputMode="numeric"
@@ -255,9 +298,8 @@ export const RegisterForm: React.FC = () => {
                   placeholder="Pick one"
                   {...form.getInputProps("informationChannel")}
                 />
-                <TextInput
+                <Textarea
                   label="Why do you want to join?"
-                  type="text"
                   placeholder="Enter you motivation in joining"
                   {...form.getInputProps("motivationToJoin")}
                 />
@@ -306,20 +348,21 @@ export const RegisterForm: React.FC = () => {
               title="Input your organization PIC details"
             >
               {active === 2 && (
-                <Stack spacing={16}>
+                <Stack spacing={16} pb={24}>
                   <TextInput
+                    autoFocus
                     label={"PIC's full name"}
                     type="text"
                     placeholder="Enter your full name"
                     withAsterisk
-                    {...form.getInputProps("organization.picName")}
+                    {...form.getInputProps("org_pic_name")}
                   />
                   <TextInput
                     label={"PIC's email"}
                     type="text"
                     placeholder="Enter your full email"
                     withAsterisk
-                    {...form.getInputProps("organization.picEmail")}
+                    {...form.getInputProps("org_pic_email")}
                   />
                   <TextInput
                     label={"PIC's phone number"}
@@ -327,7 +370,7 @@ export const RegisterForm: React.FC = () => {
                     inputMode="numeric"
                     placeholder="Enter your full phone number"
                     withAsterisk
-                    {...form.getInputProps("organization.picPhoneNumber")}
+                    {...form.getInputProps("org_pic_phone_number")}
                   />
                   <Group position="left">
                     <Button variant="outline" onClick={prevStep}>

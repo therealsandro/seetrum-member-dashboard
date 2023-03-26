@@ -1,14 +1,21 @@
 import { Text, TextProps, Title } from "@mantine/core";
 
 type TextVariantType =
-  | "headline-lg"
+  | "display-lg"
+  | "display-md"
   | "display-sm"
+  | "headline-lg"
+  | "headline-md"
+  | "headline-sm"
   | "body-lg"
   | "body-md"
   | "body-sm"
   | "title-lg"
   | "title-md"
-  | "title-sm";
+  | "title-sm"
+  | "label-lg"
+  | "label-md"
+  | "label-sm";
 
 interface TypographyProps {
   textVariant: TextVariantType;
@@ -21,13 +28,33 @@ export const Typography: React.FC<TypographyProps & TextProps> = ({
   ...textProps
 }) => {
   const typoVariants: Record<TextVariantType, React.ReactNode> = {
-    "headline-lg": (
-      <Title order={1} size="h4" fw={400}>
+    "display-lg": (
+      <Title order={1} size="h1" fw={400} {...textProps}>
+        {children}
+      </Title>
+    ),
+    "display-md": (
+      <Title order={1} size="h2" fw={400} {...textProps}>
         {children}
       </Title>
     ),
     "display-sm": (
       <Title order={1} size="h3" fw={400} {...textProps}>
+        {children}
+      </Title>
+    ),
+    "headline-lg": (
+      <Title order={1} size="h4" fw={400}>
+        {children}
+      </Title>
+    ),
+    "headline-md": (
+      <Title order={1} size="h5" fw={400}>
+        {children}
+      </Title>
+    ),
+    "headline-sm": (
+      <Title order={1} size="h6" fw={400}>
         {children}
       </Title>
     ),
@@ -57,6 +84,21 @@ export const Typography: React.FC<TypographyProps & TextProps> = ({
       </Text>
     ),
     "body-sm": (
+      <Text size={"sm"} {...textProps}>
+        {children}
+      </Text>
+    ),
+    "label-lg": (
+      <Text fw={500} size={"md"} {...textProps}>
+        {children}
+      </Text>
+    ),
+    "label-md": (
+      <Text fw={500} size={"sm"} {...textProps}>
+        {children}
+      </Text>
+    ),
+    "label-sm": (
       <Text size={"sm"} {...textProps}>
         {children}
       </Text>

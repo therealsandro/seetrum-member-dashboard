@@ -57,6 +57,7 @@ export const LoginForm: React.FC = () => {
               radius="md"
               type="email"
               label="Email"
+              autoFocus
               placeholder="Enter your email"
               {...form.getInputProps("email")}
             />

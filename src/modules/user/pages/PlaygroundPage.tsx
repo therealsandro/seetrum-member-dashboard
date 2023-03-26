@@ -24,7 +24,7 @@ const EXAMPLE_SCIENTIST = {
   born: 1910,
 };
 
-export const ProfilePage: React.FC = () => {
+export const PlaygroundPage: React.FC = () => {
   const [science, setScience] = React.useState<any[]>([]);
   const user = useAuthStore((state) => state.user);
   const logOut = useAuthStore((state) => state.logOut);

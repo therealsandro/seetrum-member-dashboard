@@ -21,6 +21,7 @@ export const RegisterOptionsCard: React.FC = () => {
       maw={640}
       mt={120}
       px={"xs"}
+      pb={"xl"}
       mx={"auto"}
       sx={{ boxSizing: "content-box" }}
     >
