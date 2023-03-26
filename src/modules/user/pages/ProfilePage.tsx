@@ -15,7 +15,7 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { where } from "firebase/firestore";
+import { Timestamp, where } from "firebase/firestore";
 import React from "react";
 
 const EXAMPLE_SCIENTIST = {
@@ -73,9 +73,20 @@ export const ProfilePage: React.FC = () => {
             }}
           >
             {user &&
-              Object.entries(user).map(([key, value]) => (
-                <InfoSummary key={key} label={key} value={value} />
-              ))}
+              Object.entries(user).map(([key, value]) =>
+                key === "createdAt" || key === "updatedAt" ? (
+                  <InfoSummary
+                    key={key}
+                    label={key}
+                    value={(value as Timestamp).toDate().toDateString()}
+                  />
+                ) : (
+                  <InfoSummary key={key} label={key} value={value} />
+                )
+              )}
+            {/* {user && user.createdAt && (
+              <InfoSummary label="createdAt" value={"date"} />
+            )} */}
           </Paper>
           <Text align="center" size="xl" weight={"bolder"}>
             COMING SOON

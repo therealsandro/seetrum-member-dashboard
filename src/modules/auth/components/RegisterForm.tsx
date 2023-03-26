@@ -51,6 +51,7 @@ export const RegisterForm: React.FC = () => {
       ? "organization"
       : "individual";
 
+  const isOrganization = userType === "organization";
   const registerInitialValue: RegisterFormData = {
     name: "",
     email: "",
@@ -62,7 +63,7 @@ export const RegisterForm: React.FC = () => {
     userType: "organization",
     motivationToJoin: "",
   };
-  if (userType === "organization") {
+  if (isOrganization) {
     registerInitialValue.organization = {
       industry: "",
       picName: "",
@@ -70,7 +71,7 @@ export const RegisterForm: React.FC = () => {
       picPhoneNumber: "",
     };
   }
-  console.log({ ...registerInitialValue });
+
   const form = useForm({
     initialValues: registerInitialValue,
     validate: (values) => {
@@ -216,7 +217,7 @@ export const RegisterForm: React.FC = () => {
                   withAsterisk
                   {...form.getInputProps("name")}
                 />
-                {form.values.userType === "organization" && (
+                {isOrganization && (
                   <>
                     <TextInput
                       label="Organization industry"
@@ -264,7 +265,7 @@ export const RegisterForm: React.FC = () => {
                   <Button variant="outline" onClick={prevStep}>
                     Back
                   </Button>
-                  {userType === "individual" ? (
+                  {!isOrganization ? (
                     <Button loading={loading} type="submit">
                       Create my account
                     </Button>
@@ -275,7 +276,7 @@ export const RegisterForm: React.FC = () => {
               </Stack>
             ) : (
               active > 1 &&
-              userType === "organization" && (
+              isOrganization && (
                 <Stack py="sm" spacing={12}>
                   <InfoSummary
                     label={userTypeCopy[userType].email}
@@ -298,46 +299,48 @@ export const RegisterForm: React.FC = () => {
               )
             )}
           </Timeline.Item>
-          <Timeline.Item
-            bullet={<Text>3</Text>}
-            bulletSize={32}
-            title="Input your organization PIC details"
-          >
-            {active === 2 && (
-              <Stack spacing={16}>
-                <TextInput
-                  label={"PIC's full name"}
-                  type="text"
-                  placeholder="Enter your full name"
-                  withAsterisk
-                  {...form.getInputProps("organization.picName")}
-                />
-                <TextInput
-                  label={"PIC's email"}
-                  type="text"
-                  placeholder="Enter your full email"
-                  withAsterisk
-                  {...form.getInputProps("organization.picEmail")}
-                />
-                <TextInput
-                  label={"PIC's phone number"}
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="Enter your full phone number"
-                  withAsterisk
-                  {...form.getInputProps("organization.picPhoneNumber")}
-                />
-                <Group position="left">
-                  <Button variant="outline" onClick={prevStep}>
-                    Back
-                  </Button>
-                  <Button loading={loading} type="submit">
-                    Create my account
-                  </Button>
-                </Group>
-              </Stack>
-            )}
-          </Timeline.Item>
+          {isOrganization && (
+            <Timeline.Item
+              bullet={<Text>3</Text>}
+              bulletSize={32}
+              title="Input your organization PIC details"
+            >
+              {active === 2 && (
+                <Stack spacing={16}>
+                  <TextInput
+                    label={"PIC's full name"}
+                    type="text"
+                    placeholder="Enter your full name"
+                    withAsterisk
+                    {...form.getInputProps("organization.picName")}
+                  />
+                  <TextInput
+                    label={"PIC's email"}
+                    type="text"
+                    placeholder="Enter your full email"
+                    withAsterisk
+                    {...form.getInputProps("organization.picEmail")}
+                  />
+                  <TextInput
+                    label={"PIC's phone number"}
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="Enter your full phone number"
+                    withAsterisk
+                    {...form.getInputProps("organization.picPhoneNumber")}
+                  />
+                  <Group position="left">
+                    <Button variant="outline" onClick={prevStep}>
+                      Back
+                    </Button>
+                    <Button loading={loading} type="submit">
+                      Create my account
+                    </Button>
+                  </Group>
+                </Stack>
+              )}
+            </Timeline.Item>
+          )}
         </Timeline>
       </form>
     </Paper>

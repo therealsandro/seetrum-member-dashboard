@@ -7,7 +7,9 @@ import {
   getDoc,
   getDocs,
   query,
+  serverTimestamp,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { FirebaseDB } from "./config";
 
@@ -58,8 +60,14 @@ export const addNewDocument = async <T extends DocumentData>(
   collectionName: string,
   documentData: T
 ): Promise<string> => {
+  const timestamp = serverTimestamp();
+  const documentWithTimestamps = {
+    ...documentData,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
   const collectionRef = collection(FirebaseDB, collectionName);
-  const docRef = await addDoc(collectionRef, documentData);
+  const docRef = await addDoc(collectionRef, documentWithTimestamps);
   return docRef.id;
 };
 
@@ -71,5 +79,25 @@ export const updateDocument = async <T extends DocumentData>(
 ): Promise<void> => {
   const { id, ...documentWithoutId } = documentData;
   const documentRef = doc(collection(FirebaseDB, collectionName), documentId);
-  await setDoc(documentRef, documentWithoutId);
+  await updateDoc(documentRef, {
+    ...documentWithoutId,
+    updatedAt: serverTimestamp(),
+  });
+};
+
+// Function to create or update an existing document in a collection
+export const addNewDocumentWithCustomId = async <T extends DocumentData>(
+  collectionName: string,
+  documentId: string,
+  documentData: T
+): Promise<void> => {
+  const { id, ...documentWithoutId } = documentData;
+  const timestamp = serverTimestamp();
+  const documentWithTimestamps = {
+    ...documentWithoutId,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+  const documentRef = doc(collection(FirebaseDB, collectionName), documentId);
+  await setDoc(documentRef, documentWithTimestamps);
 };

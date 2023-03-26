@@ -1,3 +1,10 @@
+import { COLLECTION_USERS } from "@/lib/constants";
+import { FirebaseAuth } from "@/services/firebase/config";
+import {
+  addNewDocumentWithCustomId,
+  getDocumentById,
+} from "@/services/firebase/helper";
+import { User, UserRegistrationData } from "@/types";
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
@@ -6,10 +13,6 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import { FirebaseAuth } from "@/services/firebase/config";
-import { User, UserRegistrationData } from "@/types";
-import { COLLECTION_USERS } from "@/lib/constants";
-import { getDocumentById, updateDocument } from "@/services/firebase/helper";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -79,7 +82,7 @@ export const register = async (registerData: UserRegistrationData) => {
       email,
       ...userData,
     };
-    await updateDocument(COLLECTION_USERS, newUser.id, newUser);
+    await addNewDocumentWithCustomId(COLLECTION_USERS, newUser.id, newUser);
 
     verifyEmail();
     return newUser;
