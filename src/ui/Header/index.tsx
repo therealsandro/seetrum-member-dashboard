@@ -19,7 +19,7 @@ export const Header: React.FC = () => {
         >
           <img src={logoHorizontalUrl} alt={"seetrum logo"} />
         </Box>
-        <Button onClick={() => logout}>Log out</Button>
+        <Button onClick={() => logout()}>Log out</Button>
       </Flex>
     </MantineHeader>
   );

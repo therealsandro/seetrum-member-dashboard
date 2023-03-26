@@ -9,16 +9,13 @@ import React from "react";
 export const ProfilePage: React.FC = () => {
   const user = useAuthStore((state) => state.user);
 
-  if (!user) {
-    return <Loader />;
-  }
-
-  const { name } = user;
   return (
     <ProtectedPage>
       <MainLayout>
         <Box>
-          <Typography textVariant="display-sm">Hello, {name}!</Typography>
+          <Typography textVariant="display-sm">
+            Hello, {user && user.name}!
+          </Typography>
           <Stack
             maw={720}
             mt={120}
