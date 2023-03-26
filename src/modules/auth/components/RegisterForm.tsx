@@ -269,6 +269,7 @@ export const RegisterForm: React.FC = () => {
                 {isOrganization && (
                   <>
                     <TextInput
+                      withAsterisk
                       label="Organization industry"
                       type="text"
                       placeholder="Enter organization industry"
