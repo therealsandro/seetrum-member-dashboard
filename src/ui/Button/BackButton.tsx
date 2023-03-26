@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from "@mantine/core";
-import { HiArrowLeft } from "react-icons/hi";
 import { Link, To } from "react-router-dom";
+import { IconArrowLeft } from "../Icons";
 
 interface BackButtonProps {
   to: To;
@@ -17,7 +17,7 @@ export const BackButton: React.FC<BackButtonProps & ButtonProps> = ({
         size="md"
         p={0}
         variant="subtle"
-        leftIcon={<HiArrowLeft />}
+        leftIcon={<IconArrowLeft />}
         {...buttonProps}
       >
         Back

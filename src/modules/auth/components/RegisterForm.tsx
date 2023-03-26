@@ -140,12 +140,13 @@ export const RegisterForm: React.FC = () => {
     <Paper
       maw={456}
       mih={"100svh"}
+      mt={120}
       style={{
         marginInline: "auto",
       }}
       mb={"xl"}
     >
-      <Stack spacing={24} mt={120} mb={24}>
+      <Stack spacing={24} mb={24}>
         <BackButton to={routePaths.REGISTER_OPTION} />
         <Typography textVariant="headline-lg">
           Create a new {userType} account

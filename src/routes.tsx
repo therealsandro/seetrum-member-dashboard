@@ -1,5 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import { LoginPage } from "./modules/auth/pages/LoginPage";
+import { RegisterOptionAltPage } from "./modules/auth/pages/RegisterOptionAltPage";
 import { RegisterPage } from "./modules/auth/pages/RegisterPage";
 import { ProfilePage } from "./modules/user/pages/ProfilePage";
 import { RegisterOptionPage } from "./modules/auth/pages/RegisterOptionPage";
@@ -12,6 +13,10 @@ const ROUTES = {
   REGISTER_OPTION: {
     path: "/register-option",
     element: <RegisterOptionPage />,
+  },
+  REGISTER_OPTION_ALT: {
+    path: "/register-option-alt",
+    element: <RegisterOptionAltPage />,
   },
   REGISTER: {
     path: "/register",
