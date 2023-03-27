@@ -1,4 +1,5 @@
 import { routePaths } from "@/routes";
+import { fetchDataIndonesia } from "@/services/api/dataIndonesia";
 import { UserRegistrationData, UserType } from "@/types";
 import { BackButton } from "@/ui/Button";
 import { Typography } from "@/ui/Typography";
@@ -25,10 +26,6 @@ import {
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
-import {
-  DataIndonesia,
-  fetchDataIndonesia,
-} from "@/services/api/dataIndonesia";
 
 type OrganizationFlat = {
   org_industry: string;
@@ -107,6 +104,7 @@ export const RegisterForm: React.FC = () => {
         confirmPassword,
         address,
         org_industry,
+        informationChannel,
         org_pic_email,
         org_pic_name,
         org_pic_phone_number,
@@ -134,6 +132,9 @@ export const RegisterForm: React.FC = () => {
             "provide valid phone number"
           )(phoneNumber),
           address: isNotEmpty("Address can't be empty")(address),
+          informationChannel: isNotEmpty(
+            "Please tell us where do you hear about us"
+          )(informationChannel),
           org_industry:
             isOrganization &&
             isNotEmpty("Industry can't be empty")(org_industry),
@@ -326,6 +327,7 @@ export const RegisterForm: React.FC = () => {
                   ]}
                   label="How did you hear about us?"
                   type="text"
+                  withAsterisk
                   placeholder="Pick one"
                   {...form.getInputProps("informationChannel")}
                 />
