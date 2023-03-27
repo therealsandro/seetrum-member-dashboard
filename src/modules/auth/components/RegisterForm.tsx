@@ -1,7 +1,7 @@
-import { BackButton } from "@/ui/Button";
-import { Typography } from "@/ui/Typography";
 import { routePaths } from "@/routes";
 import { UserRegistrationData, UserType } from "@/types";
+import { BackButton } from "@/ui/Button";
+import { Typography } from "@/ui/Typography";
 import {
   Box,
   Button,
@@ -25,6 +25,10 @@ import {
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import {
+  DataIndonesia,
+  fetchDataIndonesia,
+} from "@/services/api/dataIndonesia";
 
 type OrganizationFlat = {
   org_industry: string;
@@ -49,9 +53,24 @@ const userTypeCopy = {
   },
 };
 
+let runOnce = true;
+
 export const RegisterForm: React.FC = () => {
   const [active, setActive] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
+  const [provinsi, setProvinsi] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    if (runOnce) {
+      runOnce = false;
+      fetchDataIndonesia()
+        .then((data) => {
+          const newProvinsi = data.map((v) => v.nama);
+          setProvinsi(newProvinsi);
+        })
+        .catch(console.error);
+    }
+  }, []);
 
   const [searchParams] = useSearchParams();
   const userType: UserType =
@@ -260,12 +279,23 @@ export const RegisterForm: React.FC = () => {
                   withAsterisk
                   {...form.getInputProps("name")}
                 />
-                <Textarea
-                  label={"Address"}
-                  placeholder="Enter address"
-                  withAsterisk
-                  {...form.getInputProps("address")}
-                />
+                {isOrganization ? (
+                  <Textarea
+                    label={"Address"}
+                    placeholder="Enter address"
+                    withAsterisk
+                    {...form.getInputProps("address")}
+                  />
+                ) : (
+                  <Select
+                    label={"Address"}
+                    data={provinsi}
+                    placeholder="Enter address"
+                    searchable
+                    withAsterisk
+                    {...form.getInputProps("address")}
+                  />
+                )}
                 {isOrganization && (
                   <>
                     <TextInput
