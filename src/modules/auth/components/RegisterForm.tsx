@@ -84,7 +84,7 @@ export const RegisterForm: React.FC = () => {
     password: "",
     confirmPassword: "",
     phoneNumber: "",
-    userType: "organization",
+    userType,
     motivationToJoin: "",
     org_industry: "",
     org_pic_name: "",
@@ -128,7 +128,7 @@ export const RegisterForm: React.FC = () => {
         return {
           name: isNotEmpty("Name can't be empty")(name),
           phoneNumber: matches(
-            /^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/,
+            /^(+62|62|0)\d{8,15}$/,
             "provide valid phone number"
           )(phoneNumber),
           address: isNotEmpty("Address can't be empty")(address),
@@ -142,11 +142,12 @@ export const RegisterForm: React.FC = () => {
       }
 
       if (active === 2) {
+        // /^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/,
         return {
           org_pic_email: isEmail("Provide valid email address")(org_pic_email),
           org_pic_name: isNotEmpty("Name can't be empty")(org_pic_name),
           org_pic_phone_number: matches(
-            /^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/,
+            /^(+62|62|0)\d{8,15}$/,
             "provide valid phone number"
           )(org_pic_phone_number),
         };

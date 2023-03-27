@@ -3,6 +3,7 @@ import { BackButton } from "@/ui/Button";
 import { IconArrowRight, IconPeople, IconPerson } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import {
+  Anchor,
   Flex,
   Group,
   Paper,
@@ -11,7 +12,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const RegisterOptionsCard: React.FC = () => {
   const theme = useMantineTheme();
@@ -41,6 +42,12 @@ export const RegisterOptionsCard: React.FC = () => {
           <RegisterCard userType="individual" />
           <RegisterCard userType="organization" />
         </SimpleGrid>
+        <Typography textVariant="body-md">
+          Already have an account?{" "}
+          <Link to={routePaths.REGISTER_OPTION}>
+            <Anchor component="button">Sign in now</Anchor>
+          </Link>
+        </Typography>
       </Stack>
     </Paper>
   );

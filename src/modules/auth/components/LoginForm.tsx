@@ -73,7 +73,7 @@ export const LoginForm: React.FC = () => {
             <Typography textVariant="body-md">
               Don&apos;t have an account yet?{" "}
               <Link to={routePaths.REGISTER_OPTION}>
-                <Anchor component="button">Register Now</Anchor>
+                <Anchor component="button">Register now</Anchor>
               </Link>
             </Typography>
           </Stack>
