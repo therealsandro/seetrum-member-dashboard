@@ -6,7 +6,7 @@ import { RegisterPage } from "./modules/auth/pages/RegisterPage";
 import { ProfilePage } from "./modules/user/pages/ProfilePage";
 
 const ROUTES = {
-  LOGIN: {
+  SIGNIN: {
     path: "/signin",
     element: <LoginPage />,
   },

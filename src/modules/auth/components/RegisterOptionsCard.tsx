@@ -44,7 +44,7 @@ export const RegisterOptionsCard: React.FC = () => {
         </SimpleGrid>
         <Typography textVariant="body-md">
           Already have an account?{" "}
-          <Link to={routePaths.REGISTER_OPTION}>
+          <Link to={routePaths.SIGNIN}>
             <Anchor component="button">Sign in now</Anchor>
           </Link>
         </Typography>
