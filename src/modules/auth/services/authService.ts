@@ -53,7 +53,7 @@ export const logIn = async (email: string, password: string) => {
     );
     return result.user.uid;
   } catch (e) {
-    console.error(e);
+    throw e;
   }
 };
 
@@ -64,6 +64,7 @@ export const logInWithGoogle = async () => {
     return result.user.uid;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -87,7 +88,7 @@ export const register = async (registerData: UserRegistrationData) => {
     verifyEmail();
     return newUser;
   } catch (e) {
-    console.error(e);
+    throw e;
   }
 };
 

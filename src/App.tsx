@@ -1,9 +1,10 @@
-import React from "react";
 import { Loader, MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { routes } from "./routes";
 import { onAuthStateHasChanged } from "./modules/auth/services/authService";
 import { useAuthStore } from "./modules/auth/stores/authStore";
+import { routes } from "./routes";
 import { seetrumTheme } from "./theme/seetrumTheme";
 
 const router = createBrowserRouter(routes);
@@ -26,6 +27,7 @@ const App: React.FC = () => {
 
   return (
     <MantineProvider theme={seetrumTheme} withNormalizeCSS>
+      <Notifications />
       <RouterProvider router={router} />
     </MantineProvider>
   );

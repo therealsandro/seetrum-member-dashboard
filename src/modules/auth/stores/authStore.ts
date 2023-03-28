@@ -1,4 +1,5 @@
 import { User, UserRegistrationData } from "@/types";
+import { showErrorNotif } from "@/ui/notifications";
 import { create } from "zustand";
 import {
   logIn,
@@ -10,7 +11,6 @@ import {
 interface AuthState {
   user: User | null;
   loading: boolean;
-  error: string;
   setUser: (user: any) => void;
   register: (userRegisterData: UserRegistrationData) => void;
   logIn: (email: string, password: string) => void;
@@ -18,12 +18,9 @@ interface AuthState {
   logOut: () => void;
 }
 
-const ErrorMessage = "Terjadi kesalah saat menghubungi server";
-
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
-  error: "",
   setUser: (newUser) => {
     set({ user: newUser, loading: false });
   },
@@ -33,7 +30,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const newUser = await register(userRegisterData);
       set({ user: newUser, loading: false });
     } catch (e) {
-      set({ loading: false, user: null, error: ErrorMessage });
+      showErrorNotif({ title: "Registration error" });
+      set({ loading: false, user: null });
     }
   },
   logIn: async (email, password) => {
@@ -41,7 +39,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ loading: true });
       await logIn(email, password);
     } catch (e) {
-      set({ loading: false, user: null, error: ErrorMessage });
+      showErrorNotif({
+        title: "Login error",
+        message: "Incorrect email or password",
+      });
+      set({ loading: false, user: null });
     }
   },
   logInWithGoogle: async () => {
@@ -49,7 +51,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ loading: true });
       await logInWithGoogle();
     } catch (e) {
-      set({ loading: false, user: null, error: ErrorMessage });
+      showErrorNotif();
+      set({ loading: false, user: null });
     }
   },
   logOut: async () => {
@@ -57,7 +60,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ loading: true });
       await logout();
     } catch (e) {
-      set({ loading: false, error: ErrorMessage });
+      showErrorNotif();
+      set({ loading: false });
     }
   },
 }));

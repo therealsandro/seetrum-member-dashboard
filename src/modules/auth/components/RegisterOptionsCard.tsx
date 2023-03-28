@@ -16,12 +16,15 @@ import { Link, useNavigate } from "react-router-dom";
 
 export const RegisterOptionsCard: React.FC = () => {
   const theme = useMantineTheme();
-  const isSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.xs})`);
+  const isSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const isExtraSmallScreen = useMediaQuery(
+    `(max-width: ${theme.breakpoints.xs})`
+  );
   return (
     <Paper
       maw={640}
       mt={120}
-      px={"xs"}
+      px={16}
       pb={"xl"}
       mx={"auto"}
       sx={{ boxSizing: "content-box" }}
@@ -38,11 +41,14 @@ export const RegisterOptionsCard: React.FC = () => {
             sustainable future through energy efficiency
           </Typography>
         </Stack>
-        <SimpleGrid cols={isSmallScreen ? 1 : 2} spacing={24}>
+        <SimpleGrid cols={isExtraSmallScreen ? 1 : 2} spacing={24}>
           <RegisterCard userType="individual" />
           <RegisterCard userType="organization" />
         </SimpleGrid>
-        <Typography textVariant="body-md">
+        <Typography
+          textVariant="body-md"
+          align={isSmallScreen && !isExtraSmallScreen ? "center" : "left"}
+        >
           Already have an account?{" "}
           <Link to={routePaths.SIGNIN}>
             <Anchor component="button">Sign in now</Anchor>

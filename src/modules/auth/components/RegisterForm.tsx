@@ -15,6 +15,7 @@ import {
   TextInput,
   Textarea,
   Timeline,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   isEmail,
@@ -26,6 +27,7 @@ import {
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import { useMediaQuery } from "@mantine/hooks";
 
 type OrganizationFlat = {
   org_industry: string;
@@ -53,6 +55,11 @@ const userTypeCopy = {
 let runOnce = true;
 
 export const RegisterForm: React.FC = () => {
+  const theme = useMantineTheme();
+  const isExtraSmallScreen = useMediaQuery(
+    `(max-width: ${theme.breakpoints.xs})`
+  );
+
   const [active, setActive] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const [provinsi, setProvinsi] = React.useState<string[]>([]);
@@ -200,12 +207,12 @@ export const RegisterForm: React.FC = () => {
     <Paper
       maw={456}
       mih={"100svh"}
-      mt={120}
+      mt={isExtraSmallScreen ? 64 : 120}
       style={{
         marginInline: "auto",
         boxSizing: "content-box",
       }}
-      px={"xs"}
+      px={16}
       pb={160}
     >
       <Stack spacing={24} mb={24}>

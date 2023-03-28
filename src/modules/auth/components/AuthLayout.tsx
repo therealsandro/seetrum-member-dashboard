@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { authBgUrl } from "@/lib/assets";
 import { Typography } from "@/ui/Typography";
+import { SeetrumLogoAuth } from "./SeetrumLogoAuth";
 
 interface Props {
   children: React.ReactNode;
@@ -18,7 +19,7 @@ export const AuthLayout: React.FC<Props> = ({ children }) => {
   const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
   const theme = useMantineTheme();
-  const isSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.xs})`);
+  const isSmallScreen = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   React.useEffect(() => {
     if (user) {
@@ -44,7 +45,8 @@ export const AuthLayout: React.FC<Props> = ({ children }) => {
           <LoginSideIlustration />
         </Grid.Col>
       )}
-      <Grid.Col span={8} p={0}>
+      <Grid.Col span={isSmallScreen ? 12 : 8} p={0} pos="relative">
+        <SeetrumLogoAuth />
         {children}
       </Grid.Col>
     </Grid>

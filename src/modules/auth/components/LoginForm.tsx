@@ -1,5 +1,5 @@
-import { Typography } from "@/ui/Typography";
 import { routePaths } from "@/routes";
+import { Typography } from "@/ui/Typography";
 import {
   Anchor,
   Button,
@@ -8,14 +8,20 @@ import {
   PasswordInput,
   Stack,
   TextInput,
+  useMantineTheme,
 } from "@mantine/core";
 import { hasLength, isEmail, useForm } from "@mantine/form";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
-import { BackButton } from "@/ui/Button";
+import { useMediaQuery } from "@mantine/hooks";
 
 export const LoginForm: React.FC = () => {
+  const theme = useMantineTheme();
+  const isExtraSmallScreen = useMediaQuery(
+    `(max-width: ${theme.breakpoints.xs})`
+  );
+
   const [loading, setLoading] = React.useState(false);
   const form = useForm({
     initialValues: {
@@ -36,18 +42,21 @@ export const LoginForm: React.FC = () => {
   const handleSubmit = form.onSubmit(async (values) => {
     const { email, password } = values;
     setLoading(true);
-    try {
-      await logIn(email, password);
-    } catch (error) {}
+    await logIn(email, password);
     setLoading(false);
   });
 
   return (
-    <Flex h="100%" justify="center" align="center">
-      <Paper w={400} mx="xs">
+    <Flex
+      h="100%"
+      justify="center"
+      align={isExtraSmallScreen ? "flex-start" : "center"}
+      pt={isExtraSmallScreen ? 64 : 0}
+    >
+      <Paper w={400} mx={16}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={24}>
-            <BackButton to={"https://seetrum.id"} />
+            {/* <BackButton to={"https://seetrum.id"} /> */}
             <Typography textVariant="headline-lg">Sign In</Typography>
             <Typography textVariant="body-lg">
               Welcome back! Sign in to your Seetrum account and stay up-to-date
