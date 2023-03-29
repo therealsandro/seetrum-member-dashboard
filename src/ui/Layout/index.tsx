@@ -26,12 +26,14 @@ export const MainLayout: React.FC<Props> = ({
   title = DEFAULT_TITLE,
   children,
 }) => {
+  const [opened, setOpened] = React.useState(false);
+
   return (
     <AppShell
       padding="md"
       fixed={false}
       navbar={
-        <Navbar width={{ base: 300 }} p="xs">
+        <Navbar hidden={!opened} width={{ sm: 200, lg: 300 }} p="xs">
           <Navbar.Section grow mt="xs">
             <MainLinks />
           </Navbar.Section>
@@ -40,7 +42,7 @@ export const MainLayout: React.FC<Props> = ({
           </Navbar.Section>
         </Navbar>
       }
-      header={<Header />}
+      header={<Header opened={opened} setOpened={setOpened} />}
     >
       {children}
     </AppShell>

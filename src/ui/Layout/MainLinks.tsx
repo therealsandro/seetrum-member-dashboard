@@ -2,7 +2,15 @@ import { ThemeIcon } from "@mantine/core";
 
 import { Group, Text, UnstyledButton } from "@mantine/core";
 import React from "react";
-import { IconArrowLeft } from "../Icons";
+import {
+  IconArrowLeft,
+  IconAward,
+  IconBriefcase,
+  IconCalendar,
+  IconHome,
+  IconLightBulb,
+} from "../Icons";
+import { notifications } from "@mantine/notifications";
 
 interface MainLinkProps {
   icon: React.ReactNode;
@@ -11,8 +19,15 @@ interface MainLinkProps {
 }
 
 const MainLink: React.FC<MainLinkProps> = ({ icon, color, label }) => {
+  const handleClick = () => {
+    notifications.show({
+      title: "Coming Soon",
+      message: "Stay tuned for the next updates",
+    });
+  };
   return (
     <UnstyledButton
+      onClick={handleClick}
       sx={(theme) => ({
         display: "block",
         width: "100%",
@@ -30,9 +45,7 @@ const MainLink: React.FC<MainLinkProps> = ({ icon, color, label }) => {
       })}
     >
       <Group>
-        <ThemeIcon color={color} variant="light">
-          {icon}
-        </ThemeIcon>
+        <ThemeIcon variant="light">{icon}</ThemeIcon>
 
         <Text size="sm">{label}</Text>
       </Group>
@@ -42,17 +55,18 @@ const MainLink: React.FC<MainLinkProps> = ({ icon, color, label }) => {
 
 const data = [
   {
-    icon: <IconArrowLeft size="1rem" />,
+    icon: <IconHome size="1rem" />,
     color: "blue",
     label: "Home",
   },
-  { icon: <IconArrowLeft size="1rem" />, color: "teal", label: "Events" },
+  { icon: <IconCalendar size="1rem" />, color: "teal", label: "Events" },
   {
-    icon: <IconArrowLeft size="1rem" />,
+    icon: <IconLightBulb size="1rem" />,
     color: "violet",
     label: "Knowledge",
   },
-  { icon: <IconArrowLeft size="1rem" />, color: "grape", label: "Opportunity" },
+  { icon: <IconBriefcase size="1rem" />, color: "grape", label: "Opportunity" },
+  { icon: <IconAward size="1rem" />, color: "grape", label: "Certification" },
 ];
 
 export const MainLinks: React.FC = () => {
