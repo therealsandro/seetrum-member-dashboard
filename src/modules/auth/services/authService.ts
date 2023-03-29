@@ -12,6 +12,7 @@ import {
   sendEmailVerification,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updateProfile,
 } from "firebase/auth";
 
 const googleProvider = new GoogleAuthProvider();
@@ -29,13 +30,15 @@ export const getUserById = async (userId: string) => {
   }
 };
 
-const verifyEmail = async () => {
+const verifyEmail = async ({ name }: User) => {
   const { currentUser } = FirebaseAuth;
   try {
     if (!currentUser) {
       throw Error("No user");
     }
-
+    await updateProfile(currentUser, {
+      displayName: name,
+    });
     await sendEmailVerification(currentUser);
     console.log("Verification email sent");
   } catch (e) {
@@ -85,7 +88,7 @@ export const register = async (registerData: UserRegistrationData) => {
     };
     await addNewDocumentWithCustomId(COLLECTION_USERS, newUser.id, newUser);
 
-    verifyEmail();
+    verifyEmail(newUser);
     return newUser;
   } catch (e) {
     throw e;
