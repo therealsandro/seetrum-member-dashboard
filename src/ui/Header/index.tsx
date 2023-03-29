@@ -1,5 +1,4 @@
 import { logoHorizontalUrl } from "@/lib/assets";
-import { logout } from "@/modules/auth/services/authService";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import { Box, Button, Flex, Header as MantineHeader } from "@mantine/core";
 
@@ -17,9 +16,11 @@ export const Header: React.FC = () => {
             },
           }}
         >
-          <img src={logoHorizontalUrl} alt={"seetrum logo"} />
+          <a href="https://seetrum.id">
+            <img src={logoHorizontalUrl} alt={"seetrum logo"} />
+          </a>
         </Box>
-        <Button onClick={() => logout()}>Log out</Button>
+        <Button onClick={() => logOut()}>Log out</Button>
       </Flex>
     </MantineHeader>
   );

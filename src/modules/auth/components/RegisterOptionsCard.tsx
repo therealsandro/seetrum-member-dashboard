@@ -30,7 +30,6 @@ export const RegisterOptionsCard: React.FC = () => {
       sx={{ boxSizing: "content-box" }}
     >
       <Stack spacing={40}>
-        <BackButton to={"https://seetrum.id"} />
         <Stack spacing={12}>
           <Typography textVariant="headline-lg">
             Ready to build sustainable future for Indonesia?
