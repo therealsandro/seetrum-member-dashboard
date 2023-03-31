@@ -367,7 +367,7 @@ export const RegisterForm: React.FC = () => {
                   <InfoSummary label={"Address"} value={form.values.address} />
                   <InfoSummary
                     label={"Industry"}
-                    value={form.values.organization?.industry}
+                    value={form.values.org_industry}
                   />
                   <InfoSummary
                     label={"How did you hear about us?"}
