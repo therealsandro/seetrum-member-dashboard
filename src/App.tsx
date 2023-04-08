@@ -1,34 +1,36 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { Loader, MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import React from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { onAuthStateHasChanged } from "./modules/auth/services/authService";
+import { useAuthStore } from "./modules/auth/stores/authStore";
+import { routes } from "./routes";
+import { seetrumTheme } from "./theme/seetrumTheme";
 
-function App() {
-  const [count, setCount] = useState(0);
+const router = createBrowserRouter(routes);
+
+const App: React.FC = () => {
+  const setUser = useAuthStore((state) => state.setUser);
+  const loading = useAuthStore((state) => state.loading);
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateHasChanged(setUser);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [setUser]);
+
+  if (loading) {
+    <Loader />;
+  }
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <MantineProvider theme={seetrumTheme} withNormalizeCSS>
+      <Notifications />
+      <RouterProvider router={router} />
+    </MantineProvider>
   );
-}
+};
 
 export default App;
