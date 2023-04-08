@@ -1,0 +1,34 @@
+{
+  "plugins": [
+    "import"
+  ],
+  "extends": [
+    "react-app",
+    "prettier"
+  ],
+  "rules": {
+    "linebreak-style": "off",
+    "no-underscore-dangle": "off",
+    "no-console": "off",
+    "import/no-cycle": [
+      "error",
+      {
+        "maxDepth": 1
+      }
+    ],
+    "object-curly-newline": [
+      "error",
+      {
+        "consistent": true
+      }
+    ],
+    "no-param-reassign": [
+      "error",
+      {
+        "props": false
+      }
+    ],
+    "eol-last": "off",
+    "camelcase": "off"
+  }
+}
