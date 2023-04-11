@@ -186,6 +186,7 @@ export const RegisterForm: React.FC = () => {
         org_pic_email,
         org_pic_name,
         org_pic_phone_number,
+        confirmPassword,
         ...newUser
       } = values;
 
