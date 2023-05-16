@@ -9,6 +9,7 @@ import {
 import {
   Box,
   Button,
+  CloseButton,
   Group,
   Image,
   List,
@@ -21,6 +22,7 @@ import { Timestamp, where } from "firebase/firestore";
 import React, { useState } from "react";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import { Typography } from "@/ui/Typography";
+import { uploadFile } from "@/services/firebase/storage";
 
 const EXAMPLE_SCIENTIST = {
   firts: "ETH",
@@ -130,13 +132,35 @@ const FileManager: React.FC = () => {
     );
   });
 
+  const removeFiles = () => {
+    setFiles([]);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const promises = files.map((f) => uploadFile(f));
+      await Promise.all(promises);
+      console.log("uploaded all file");
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
-    <Dropzone onDrop={setFiles}>
-      <Group position="center" spacing={"xl"}>
-        <Typography textVariant="body-md">Drag your file here</Typography>
-      </Group>
-      <SimpleGrid>{previews}</SimpleGrid>
-    </Dropzone>
+    <>
+      <Dropzone onDrop={setFiles}>
+        <Group position="center" spacing={"xl"}>
+          <Typography textVariant="body-md">Drag your file here</Typography>
+        </Group>
+      </Dropzone>
+      {previews && previews.length > 0 && (
+        <>
+          <CloseButton onClick={removeFiles} />
+          <SimpleGrid>{previews}</SimpleGrid>
+          <Button onClick={handleSubmit}>Submit</Button>
+        </>
+      )}
+    </>
   );
 };
 
