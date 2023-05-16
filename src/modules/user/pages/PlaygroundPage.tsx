@@ -9,6 +9,8 @@ import {
 import {
   Box,
   Button,
+  Group,
+  Image,
   List,
   Paper,
   SimpleGrid,
@@ -16,7 +18,9 @@ import {
   Text,
 } from "@mantine/core";
 import { Timestamp, where } from "firebase/firestore";
-import React from "react";
+import React, { useState } from "react";
+import { Dropzone, FileWithPath } from "@mantine/dropzone";
+import { Typography } from "@/ui/Typography";
 
 const EXAMPLE_SCIENTIST = {
   firts: "ETH",
@@ -90,9 +94,7 @@ export const PlaygroundPage: React.FC = () => {
               <InfoSummary label="createdAt" value={"date"} />
             )} */}
           </Paper>
-          <Text align="center" size="xl" weight={"bolder"}>
-            COMING SOON
-          </Text>
+          <FileManager />
           <Stack>
             <Text>Sample Actions:</Text>
             <SimpleGrid cols={3}>
@@ -112,6 +114,29 @@ export const PlaygroundPage: React.FC = () => {
         </Stack>
       </MainLayout>
     </ProtectedPage>
+  );
+};
+
+const FileManager: React.FC = () => {
+  const [files, setFiles] = useState<FileWithPath[]>([]);
+  const previews = files.map((file, index) => {
+    const imageUrl = URL.createObjectURL(file);
+    return (
+      <Image
+        key={index}
+        src={imageUrl}
+        imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+      />
+    );
+  });
+
+  return (
+    <Dropzone onDrop={setFiles}>
+      <Group position="center" spacing={"xl"}>
+        <Typography textVariant="body-md">Drag your file here</Typography>
+      </Group>
+      <SimpleGrid>{previews}</SimpleGrid>
+    </Dropzone>
   );
 };
 
