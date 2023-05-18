@@ -23,7 +23,7 @@ export const AuthLayout: React.FC<Props> = ({ children }) => {
 
   React.useEffect(() => {
     if (user) {
-      navigate(routePaths.PROFILE);
+      navigate(routePaths.DASHBOARD);
     }
   }, [user, navigate]);
 

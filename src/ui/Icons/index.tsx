@@ -1,14 +1,15 @@
 import {
   BsArrowLeft,
   BsArrowRight,
-  BsPerson,
-  BsPeople,
-  BsX,
-  BsHouse,
-  BsCalendarWeek,
-  BsLightbulb,
-  BsBriefcase,
   BsAward,
+  BsBriefcase,
+  BsCalendarWeek,
+  BsHouse,
+  BsLightbulb,
+  BsPeople,
+  BsPerson,
+  BsSearch,
+  BsX,
 } from "react-icons/bs";
 
 export const IconArrowLeft = BsArrowLeft;
@@ -23,3 +24,5 @@ export const IconCalendar = BsCalendarWeek;
 export const IconLightBulb = BsLightbulb;
 export const IconBriefcase = BsBriefcase;
 export const IconAward = BsAward;
+
+export const IconSearch = BsSearch;

@@ -18,21 +18,14 @@ import React from "react";
 import { IconArrowRight } from "../Icons";
 import { Typography } from "../Typography";
 import { MainLinks } from "./MainLinks";
+import { Outlet } from "react-router-dom";
 
-interface Props {
-  title?: string;
-  children: React.ReactNode;
-}
-
-export const MainLayout: React.FC<Props> = ({
-  title = DEFAULT_TITLE,
-  children,
-}) => {
+export const MainLayout = ({ title = DEFAULT_TITLE }) => {
   const [opened, setOpened] = React.useState(false);
 
   return (
     <AppShell
-      padding="md"
+      padding="lg"
       navbarOffsetBreakpoint={"md"}
       navbar={
         <Navbar
@@ -51,7 +44,7 @@ export const MainLayout: React.FC<Props> = ({
       }
       header={<Header opened={opened} setOpened={setOpened} />}
     >
-      {children}
+      <Outlet />
     </AppShell>
   );
 };

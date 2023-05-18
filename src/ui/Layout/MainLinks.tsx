@@ -3,6 +3,7 @@ import { NavLink, ThemeIcon } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import React from "react";
 import { IconAward, IconBriefcase, IconCalendar, IconHome } from "../Icons";
+import { useNavigate } from "react-router-dom";
 
 type NavLinkDataProps = {
   label: string;
@@ -15,6 +16,8 @@ type MainLinkProps = {
 } & NavLinkDataProps;
 
 const MainLink: React.FC<MainLinkProps> = ({ label, icon, link, links }) => {
+  const navigate = useNavigate();
+
   const handleNavigate = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     link?: string
@@ -22,12 +25,13 @@ const MainLink: React.FC<MainLinkProps> = ({ label, icon, link, links }) => {
     e.preventDefault();
     e.stopPropagation();
     if (link) {
+      navigate(link);
+    } else {
       notifications.show({
         title: "Coming Soon",
         message: "Stay tuned for the next updates",
       });
     }
-    // TODO: handle navigate to the `${link}`
   };
   // const isActive = // TODO: calculate active state from current url path
   const hasLinks = links && Array.isArray(links);
@@ -41,7 +45,7 @@ const MainLink: React.FC<MainLinkProps> = ({ label, icon, link, links }) => {
           {icon}
         </ThemeIcon>
       }
-      onClick={(e) => handleNavigate(e, link)}
+      onClick={(e) => !links && handleNavigate(e, link)}
     >
       {hasLinks &&
         links.map((submenu, idx) => {
@@ -73,8 +77,8 @@ const data: MainLinkProps[] = [
     icon: <IconCalendar size="1rem" />,
     label: "Events",
     links: [
-      { label: "All Events", link: "/events" },
-      { label: "My Events", link: "/myevents" },
+      { label: "All Events" /* link: "/events" */ },
+      { label: "My Events" /* link: "/myevents" */ },
     ],
   },
   {
@@ -82,13 +86,13 @@ const data: MainLinkProps[] = [
     label: "Trainings",
     links: [
       { label: "All trainings", link: "/trainings" },
-      { label: "My trainings", link: "/mytrainings" },
+      { label: "My trainings" /* link: "/mytrainings" */ },
     ],
   },
   {
     icon: <IconBriefcase size="1rem" />,
     label: "Opportunity",
-    link: "/opportunity",
+    // link: "/opportunity",
   },
 ];
 
