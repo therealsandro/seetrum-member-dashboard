@@ -1,13 +1,15 @@
 import { DEFAULT_TITLE } from "@/lib/constants";
-import { AppShell, Loader, Navbar } from "@mantine/core";
 import { Header } from "../Header";
 
 import { extractInitials } from "@/lib/utils";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import {
+  AppShell,
   Avatar,
   Box,
   Group,
+  Loader,
+  Navbar,
   UnstyledButton,
   rem,
   useMantineTheme,
@@ -31,9 +33,14 @@ export const MainLayout: React.FC<Props> = ({
   return (
     <AppShell
       padding="md"
-      fixed={false}
+      navbarOffsetBreakpoint={"md"}
       navbar={
-        <Navbar hidden={!opened} width={{ sm: 200, lg: 300 }} p="xs">
+        <Navbar
+          hiddenBreakpoint={"md"}
+          hidden={!opened}
+          width={{ sm: 256, lg: 300 }}
+          p="xs"
+        >
           <Navbar.Section grow mt="xs">
             <MainLinks />
           </Navbar.Section>
