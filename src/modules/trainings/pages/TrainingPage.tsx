@@ -5,6 +5,14 @@ import { Flex } from "@mantine/core";
 import { useDocumentTitle } from "@mantine/hooks";
 import React from "react";
 import { TrainingToolbar } from "../components/TrainingToolbar";
+import { TrainingCard } from "../components/TrainingCard";
+
+const trainingDummyData = {
+  id: "trainingDummy",
+  thumbnail: "testing.png",
+  title: "Auditor Energi Termal dan Kelistrikan",
+  vendorName: "LSP HAKE",
+};
 
 export const TrainingsPage: React.FC = () => {
   useDocumentTitle(`${DEFAULT_TITLE} | Trainings`);
@@ -19,6 +27,17 @@ export const TrainingsPage: React.FC = () => {
           onSearchChanged={(val) => console.log("[searchChanged]", val)}
           onSortChanged={(val) => console.log("[sortChanged]", val)}
         />
+        {Array(5)
+          .fill("-")
+          .map((i, idx) => {
+            return (
+              <TrainingCard
+                key={idx}
+                variant="horizontal"
+                {...trainingDummyData}
+              />
+            );
+          })}
       </Flex>
     </ProtectedPage>
   );
