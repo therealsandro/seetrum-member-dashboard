@@ -4,8 +4,9 @@ import { Typography } from "@/ui/Typography";
 import { Flex } from "@mantine/core";
 import { useDocumentTitle } from "@mantine/hooks";
 import React from "react";
-import { TrainingToolbar } from "../components/TrainingToolbar";
+import { MyTrainingFilter } from "../components/MyTrainingFilter";
 import { TrainingCard } from "../components/TrainingCard";
+import { TrainingToolbar } from "../components/TrainingToolbar";
 
 const trainingDummyData = {
   id: "trainingDummy",
@@ -14,30 +15,42 @@ const trainingDummyData = {
   vendorName: "LSP HAKE",
 };
 
-export const TrainingsPage: React.FC = () => {
-  useDocumentTitle(`${DEFAULT_TITLE} | Trainings`);
+export const TrainingsPage: React.FC<{ myTrainings?: boolean }> = ({
+  myTrainings = false,
+}) => {
+  useDocumentTitle(`${DEFAULT_TITLE} | ${myTrainings ? "My" : ""} Trainings`);
 
   return (
     <ProtectedPage>
-      <Flex gap={24} direction="column">
-        <Typography textVariant="headline-lg">All Trainings</Typography>
+      <Flex direction="column">
+        <Typography textVariant="headline-lg">
+          {(myTrainings ? "My" : "All") + " Trainings"}
+        </Typography>
         {/* Toolbar */}
         <TrainingToolbar
+          myTrainings={myTrainings}
           // TODO: Update this function handle
           onSearchChanged={(val) => console.log("[searchChanged]", val)}
           onSortChanged={(val) => console.log("[sortChanged]", val)}
-        />
-        {Array(5)
-          .fill("-")
-          .map((i, idx) => {
-            return (
-              <TrainingCard
-                key={idx}
-                variant="horizontal"
-                {...trainingDummyData}
-              />
-            );
-          })}
+        >
+          {myTrainings && (
+            <MyTrainingFilter value="0" onChange={(val) => console.log(val)} />
+          )}
+        </TrainingToolbar>
+        <Flex gap={24} direction="column">
+          {Array(5)
+            .fill("-")
+            .map((i, idx) => {
+              return (
+                <TrainingCard
+                  key={idx}
+                  variant="horizontal"
+                  {...trainingDummyData}
+                  withApplicationStatus={myTrainings}
+                />
+              );
+            })}
+        </Flex>
       </Flex>
     </ProtectedPage>
   );

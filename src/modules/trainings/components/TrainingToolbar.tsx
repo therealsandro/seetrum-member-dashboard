@@ -5,6 +5,7 @@ import {
   Group,
   Input,
   MediaQuery,
+  ScrollArea,
   Select,
   ThemeIcon,
 } from "@mantine/core";
@@ -12,13 +13,17 @@ import { useDebouncedState } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 
 interface TrainingToolbarProps {
+  myTrainings?: boolean;
   onSearchChanged: (val: string) => void;
   onSortChanged: (val: string) => void;
+  children?: React.ReactNode;
 }
 
 export const TrainingToolbar: React.FC<TrainingToolbarProps> = ({
+  myTrainings = false,
   onSearchChanged,
   onSortChanged,
+  children,
 }) => {
   const sotrOptions = {
     "createdAt desc": { label: "Newest" },
@@ -36,66 +41,75 @@ export const TrainingToolbar: React.FC<TrainingToolbarProps> = ({
 
   return (
     <Flex
-      justify={"space-between"}
-      gap={16}
-      sx={(theme) => ({
-        [theme.fn.smallerThan("xs")]: {
-          flexDirection: "column",
-        },
-      })}
+      py={24}
+      direction="column"
+      rowGap={24}
     >
-      <Input
-        placeholder="Search events name"
-        radius="lg"
+      <Flex
+        justify={"space-between"}
+        gap={16}
         sx={(theme) => ({
-          width: 480,
-          [theme.fn.smallerThan("lg")]: {
-            width: 256,
-          },
           [theme.fn.smallerThan("xs")]: {
-            flex: 1,
-            width: "unset",
+            flexDirection: "column",
           },
-          ".mantine-Input-rightSection": { paddingInline: "4px" },
         })}
-        rightSection={
-          <ThemeIcon variant="default" size="sm" sx={{ border: "none" }}>
-            <IconSearch />
-          </ThemeIcon>
-        }
-        onChange={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          setSearchValue(event.target.value);
-        }}
-      />
-      <Group>
-        <MediaQuery styles={{ display: "none" }} smallerThan={"xs"}>
-          <Typography textVariant="title-md">Sort by</Typography>
-        </MediaQuery>
-        <Select
+      >
+        <Input
+          placeholder="Search events name"
+          radius="lg"
           sx={(theme) => ({
-            flexShrink: 0,
-            input: {
-              borderRadius: "8px !important",
+            width: 480,
+            [theme.fn.smallerThan("lg")]: {
+              width: 256,
             },
             [theme.fn.smallerThan("xs")]: {
               flex: 1,
-              width: "100%",
+              width: "unset",
             },
+            ".mantine-Input-rightSection": { paddingInline: "4px" },
           })}
-          value={sortBy}
-          data={Object.entries(sotrOptions).map((sortOption) =>
-            Object.assign(sortOption[1], { value: sortOption[0] })
-          )}
-          onChange={(val) => {
-            if (val) {
-              setSortBy(val as keyof typeof sotrOptions);
-              onSortChanged(val);
-            }
+          rightSection={
+            <ThemeIcon variant="default" size="sm" sx={{ border: "none" }}>
+              <IconSearch />
+            </ThemeIcon>
+          }
+          onChange={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            setSearchValue(event.target.value);
           }}
         />
-      </Group>
+        {!myTrainings && (
+          <Group>
+            <MediaQuery styles={{ display: "none" }} smallerThan={"xs"}>
+              <Typography textVariant="title-md">Sort by</Typography>
+            </MediaQuery>
+            <Select
+              sx={(theme) => ({
+                flexShrink: 0,
+                input: {
+                  borderRadius: "8px !important",
+                },
+                [theme.fn.smallerThan("xs")]: {
+                  flex: 1,
+                  width: "100%",
+                },
+              })}
+              value={sortBy}
+              data={Object.entries(sotrOptions).map((sortOption) =>
+                Object.assign(sortOption[1], { value: sortOption[0] })
+              )}
+              onChange={(val) => {
+                if (val) {
+                  setSortBy(val as keyof typeof sotrOptions);
+                  onSortChanged(val);
+                }
+              }}
+            />
+          </Group>
+        )}
+      </Flex>
+      {Boolean(children) && <ScrollArea>{children}</ScrollArea>}
     </Flex>
   );
 };

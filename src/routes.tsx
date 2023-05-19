@@ -37,6 +37,10 @@ const ROUTES = {
         path: "trainings",
         element: <TrainingsPage />,
       },
+      {
+        path: "mytrainings",
+        element: <TrainingsPage myTrainings />,
+      },
     ],
   },
   PLAYGROUND: {
