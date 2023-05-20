@@ -1,19 +1,20 @@
 import { getFileURL, uploadFile } from "@/services/firebase/storage";
+import { FileInfo } from "@/types/models/fileInfo";
 import { Typography } from "@/ui/Typography";
 import {
-  Image,
   Button,
   CloseButton,
+  FileButton,
   Flex,
-  Group,
+  Image,
   SimpleGrid,
   Stack,
-  FileButton,
 } from "@mantine/core";
 import { useState } from "react";
 
 export const FileManagerPlayground: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const [fileInfo, setFileInfo] = useState<FileInfo>();
   const [loading, setLoading] = useState(false);
 
   const previews = files.map((file, index) => {
@@ -26,8 +27,15 @@ export const FileManagerPlayground: React.FC = () => {
         ? `${(sizeInKb / 1024).toFixed(2)} MB`
         : `${sizeInKb.toFixed(2)} KB`;
 
+    const fileInfo: FileInfo = {
+      filename: file.name,
+      size: file.size,
+      tag: "CV",
+      contentType: file.type,
+    };
+
     return (
-      <Flex>
+      <Flex key={file.name}>
         <Image
           key={index}
           src={imageUrl}
@@ -35,8 +43,7 @@ export const FileManagerPlayground: React.FC = () => {
           imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
         />
         <Stack>
-          <Typography textVariant="body-lg">{file.name}</Typography>
-          <Typography textVariant="body-lg">{file.type}</Typography>
+          <pre>{JSON.stringify(fileInfo, null, 2)}</pre>
           <Typography textVariant="body-lg">{formattedSize}</Typography>
         </Stack>
       </Flex>
@@ -51,7 +58,8 @@ export const FileManagerPlayground: React.FC = () => {
     try {
       setLoading(true);
       const promises = files.map((f) => uploadFile(f));
-      await Promise.all(promises);
+      const [newFileInfo] = await Promise.all(promises);
+      setFileInfo(newFileInfo);
       console.log("uploaded all file");
     } catch (e) {
       console.error(e);
@@ -77,6 +85,10 @@ export const FileManagerPlayground: React.FC = () => {
           <Button loading={loading} onClick={handleSubmit}>
             Submit
           </Button>
+          <Typography textVariant="body-md">
+            From Server:
+            <pre>{JSON.stringify(fileInfo, null, 2)}</pre>
+          </Typography>
         </>
       )}
       <Button onClick={handleGetURL}>GET URL</Button>

@@ -18,6 +18,7 @@ import {
 import { where } from "firebase/firestore";
 import React from "react";
 import { FileManagerPlayground } from "./FileManagerPlayground";
+import { trainingModelDummy } from "@/types/models/training";
 
 const EXAMPLE_SCIENTIST = {
   firts: "ETH",
@@ -92,6 +93,7 @@ export const PlaygroundPage: React.FC = () => {
             )} */}
           </Paper>
           <FileManagerPlayground />
+          <pre>{JSON.stringify(trainingModelDummy, null, 2)}</pre>
           <Stack>
             <Text>Sample Actions:</Text>
             <SimpleGrid cols={3}>

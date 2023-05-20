@@ -1,14 +1,23 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { FirebaseStorage } from "./config";
+import { FileInfo } from "@/types/models/fileInfo";
 
 const folder = "temp";
 
-export const uploadFile = async (file: File) => {
+export const uploadFile = async (file: File, tag: string = "others") => {
   const timestamp = new Date().getTime();
   const filename = `${timestamp}-${file.name}`;
   const fileRef = ref(FirebaseStorage, `${folder}/${filename}`);
   try {
-    await uploadBytes(fileRef, file);
+    const res = await uploadBytes(fileRef, file);
+    const fileInfo: FileInfo = {
+      filename: res.metadata.name,
+      contentType: res.metadata.contentType ?? "",
+      size: res.metadata.size,
+      tag,
+    };
+
+    return fileInfo;
   } catch (error) {
     throw error;
   }
