@@ -8,12 +8,12 @@ import {
   Group,
   SimpleGrid,
   Stack,
+  FileButton,
 } from "@mantine/core";
-import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import { useState } from "react";
 
 export const FileManagerPlayground: React.FC = () => {
-  const [files, setFiles] = useState<FileWithPath[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
 
   const previews = files.map((file, index) => {
@@ -67,11 +67,9 @@ export const FileManagerPlayground: React.FC = () => {
 
   return (
     <>
-      <Dropzone onDrop={setFiles}>
-        <Group position="center" spacing={"xl"}>
-          <Typography textVariant="body-md">Drag your file here</Typography>
-        </Group>
-      </Dropzone>
+      <FileButton multiple onChange={setFiles}>
+        {(props) => <Button {...props}>Upload File</Button>}
+      </FileButton>
       {previews && previews.length > 0 && (
         <>
           <CloseButton onClick={removeFiles} />

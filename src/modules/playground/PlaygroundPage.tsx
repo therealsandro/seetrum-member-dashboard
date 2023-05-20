@@ -5,10 +5,10 @@ import {
   getAllDocuments,
   getDocumentsByQuery,
 } from "@/services/firebase/helper";
-import { MainLayout } from "@/ui/Layout";
 import {
   Box,
   Button,
+  Container,
   List,
   Paper,
   SimpleGrid,
@@ -61,7 +61,7 @@ export const PlaygroundPage: React.FC = () => {
 
   return (
     <ProtectedPage>
-      <MainLayout>
+      <Container>
         <Stack>
           <Text>
             <pre>Login as {user && user.email}</pre>
@@ -109,7 +109,7 @@ export const PlaygroundPage: React.FC = () => {
             ))}
           </List>
         </Stack>
-      </MainLayout>
+      </Container>
     </ProtectedPage>
   );
 };

@@ -6,10 +6,9 @@ const folder = "temp";
 export const uploadFile = async (file: File) => {
   const timestamp = new Date().getTime();
   const filename = `${timestamp}-${file.name}`;
-  const tempRef = ref(FirebaseStorage, `${folder}/${filename}`);
+  const fileRef = ref(FirebaseStorage, `${folder}/${filename}`);
   try {
-    const res = await uploadBytes(tempRef, file);
-    console.log(res);
+    await uploadBytes(fileRef, file);
   } catch (error) {
     throw error;
   }
