@@ -49,7 +49,9 @@ export const MainLayout = ({ title = DEFAULT_TITLE }) => {
       header={<Header opened={opened} setOpened={setOpened} />}
     >
       <ProtectedPage>
-        <Outlet />
+        <Box sx={{ position: "relative" }}>
+          <Outlet />
+        </Box>
       </ProtectedPage>
     </AppShell>
   );

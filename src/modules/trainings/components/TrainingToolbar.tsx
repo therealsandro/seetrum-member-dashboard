@@ -41,9 +41,19 @@ export const TrainingToolbar: React.FC<TrainingToolbarProps> = ({
 
   return (
     <Flex
-      py={24}
+      py={16}
+      mt={8}
+      mx={-20}
+      px={20}
       direction="column"
       rowGap={24}
+      sx={{
+        position: "sticky",
+        top: 59,
+        zIndex: 1,
+        backgroundColor: "rgba(255, 255, 255, 0.85)",
+        backdropFilter: "blur(16px)",
+      }}
     >
       <Flex
         justify={"space-between"}

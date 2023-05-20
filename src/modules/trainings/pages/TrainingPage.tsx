@@ -37,7 +37,7 @@ export const TrainingsPage: React.FC<{ myTrainings?: boolean }> = ({
             <MyTrainingFilter value="0" onChange={(val) => console.log(val)} />
           )}
         </TrainingToolbar>
-        <Flex gap={24} direction="column">
+        <Flex gap={24} direction="column" pt={16} pb={80}>
           {Array(5)
             .fill("-")
             .map((i, idx) => {
