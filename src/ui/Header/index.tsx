@@ -31,7 +31,7 @@ export const Header: React.FC<Props> = ({ opened, setOpened }) => {
             },
           }}
         >
-          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+          <MediaQuery largerThan="md" styles={{ display: "none" }}>
             <Burger
               opened={opened}
               onClick={() => setOpened((o) => !o)}

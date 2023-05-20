@@ -1,13 +1,15 @@
 import { DEFAULT_TITLE } from "@/lib/constants";
-import { AppShell, Loader, Navbar } from "@mantine/core";
 import { Header } from "../Header";
 
 import { extractInitials } from "@/lib/utils";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import {
+  AppShell,
   Avatar,
   Box,
   Group,
+  Loader,
+  Navbar,
   UnstyledButton,
   rem,
   useMantineTheme,
@@ -16,24 +18,22 @@ import React from "react";
 import { IconArrowRight } from "../Icons";
 import { Typography } from "../Typography";
 import { MainLinks } from "./MainLinks";
+import { Outlet } from "react-router-dom";
 
-interface Props {
-  title?: string;
-  children: React.ReactNode;
-}
-
-export const MainLayout: React.FC<Props> = ({
-  title = DEFAULT_TITLE,
-  children,
-}) => {
+export const MainLayout = ({ title = DEFAULT_TITLE }) => {
   const [opened, setOpened] = React.useState(false);
 
   return (
     <AppShell
-      padding="md"
-      fixed={false}
+      padding="lg"
+      navbarOffsetBreakpoint={"md"}
       navbar={
-        <Navbar hidden={!opened} width={{ sm: 200, lg: 300 }} p="xs">
+        <Navbar
+          hiddenBreakpoint={"md"}
+          hidden={!opened}
+          width={{ sm: 256, lg: 300 }}
+          p="xs"
+        >
           <Navbar.Section grow mt="xs">
             <MainLinks />
           </Navbar.Section>
@@ -44,7 +44,7 @@ export const MainLayout: React.FC<Props> = ({
       }
       header={<Header opened={opened} setOpened={setOpened} />}
     >
-      {children}
+      <Outlet />
     </AppShell>
   );
 };

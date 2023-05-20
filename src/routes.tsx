@@ -4,6 +4,8 @@ import { RegisterOptionAltPage } from "./modules/auth/pages/RegisterOptionAltPag
 import { RegisterOptionPage } from "./modules/auth/pages/RegisterOptionPage";
 import { RegisterPage } from "./modules/auth/pages/RegisterPage";
 import { ProfilePage } from "./modules/user/pages/ProfilePage";
+import { MainLayout } from "./ui/Layout";
+import { TrainingsPage } from "./modules/trainings/pages/TrainingPage";
 
 const ROUTES = {
   SIGNIN: {
@@ -22,14 +24,24 @@ const ROUTES = {
     path: "/register",
     element: <RegisterPage />,
   },
-  PROFILE: {
+  DASHBOARD: {
     path: "/",
-    element: <ProfilePage />,
+    element: <MainLayout />,
+    children: [
+      {
+        index: true,
+        element: <ProfilePage />,
+      },
+      {
+        path: "trainings",
+        element: <TrainingsPage />,
+      },
+    ],
   },
 } as const;
 
 type RouteKey = keyof typeof ROUTES;
-type RoutePath = typeof ROUTES[RouteKey]["path"];
+type RoutePath = (typeof ROUTES)[RouteKey]["path"];
 
 export const routePaths: Record<RouteKey, RoutePath> = Object.keys(
   ROUTES
