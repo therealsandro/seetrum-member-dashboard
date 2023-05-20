@@ -1,4 +1,3 @@
-import { MainLayout } from "@/ui/Layout";
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import {
@@ -6,23 +5,19 @@ import {
   getAllDocuments,
   getDocumentsByQuery,
 } from "@/services/firebase/helper";
+import { MainLayout } from "@/ui/Layout";
 import {
   Box,
   Button,
-  CloseButton,
-  Group,
-  Image,
   List,
   Paper,
   SimpleGrid,
   Stack,
   Text,
 } from "@mantine/core";
-import { Timestamp, where } from "firebase/firestore";
-import React, { useState } from "react";
-import { Dropzone, FileWithPath } from "@mantine/dropzone";
-import { Typography } from "@/ui/Typography";
-import { uploadFile } from "@/services/firebase/storage";
+import { where } from "firebase/firestore";
+import React from "react";
+import { FileManagerPlayground } from "./FileManagerPlayground";
 
 const EXAMPLE_SCIENTIST = {
   firts: "ETH",
@@ -96,7 +91,7 @@ export const PlaygroundPage: React.FC = () => {
               <InfoSummary label="createdAt" value={"date"} />
             )} */}
           </Paper>
-          <FileManager />
+          <FileManagerPlayground />
           <Stack>
             <Text>Sample Actions:</Text>
             <SimpleGrid cols={3}>
@@ -116,51 +111,6 @@ export const PlaygroundPage: React.FC = () => {
         </Stack>
       </MainLayout>
     </ProtectedPage>
-  );
-};
-
-const FileManager: React.FC = () => {
-  const [files, setFiles] = useState<FileWithPath[]>([]);
-  const previews = files.map((file, index) => {
-    const imageUrl = URL.createObjectURL(file);
-    return (
-      <Image
-        key={index}
-        src={imageUrl}
-        imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
-      />
-    );
-  });
-
-  const removeFiles = () => {
-    setFiles([]);
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const promises = files.map((f) => uploadFile(f));
-      await Promise.all(promises);
-      console.log("uploaded all file");
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  return (
-    <>
-      <Dropzone onDrop={setFiles}>
-        <Group position="center" spacing={"xl"}>
-          <Typography textVariant="body-md">Drag your file here</Typography>
-        </Group>
-      </Dropzone>
-      {previews && previews.length > 0 && (
-        <>
-          <CloseButton onClick={removeFiles} />
-          <SimpleGrid>{previews}</SimpleGrid>
-          <Button onClick={handleSubmit}>Submit</Button>
-        </>
-      )}
-    </>
   );
 };
 

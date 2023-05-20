@@ -6,7 +6,7 @@ import { RegisterPage } from "./modules/auth/pages/RegisterPage";
 import { ProfilePage } from "./modules/user/pages/ProfilePage";
 import { MainLayout } from "./ui/Layout";
 import { TrainingsPage } from "./modules/trainings/pages/TrainingPage";
-import { PlaygroundPage } from "./modules/user/pages/PlaygroundPage";
+import { PlaygroundPage } from "./modules/playground/PlaygroundPage";
 
 const ROUTES = {
   SIGNIN: {
