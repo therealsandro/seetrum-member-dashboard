@@ -1,6 +1,8 @@
+import { BaseModel } from "@/types/models";
 import {
   DocumentData,
   QueryConstraint,
+  Timestamp,
   addDoc,
   collection,
   doc,
@@ -59,7 +61,7 @@ export const getAllDocuments = async <T extends DocumentData>(
 export const addNewDocument = async <T extends DocumentData>(
   collectionName: string,
   documentData: T
-): Promise<string> => {
+): Promise<T & BaseModel> => {
   const timestamp = serverTimestamp();
   const documentWithTimestamps = {
     ...documentData,
@@ -68,7 +70,12 @@ export const addNewDocument = async <T extends DocumentData>(
   };
   const collectionRef = collection(FirebaseDB, collectionName);
   const docRef = await addDoc(collectionRef, documentWithTimestamps);
-  return docRef.id;
+  return {
+    id: docRef.id,
+    ...documentData,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  } as unknown as T & BaseModel;
 };
 
 // Function to update an existing document in a collection
@@ -76,13 +83,18 @@ export const updateDocument = async <T extends DocumentData>(
   collectionName: string,
   documentId: string,
   documentData: T
-): Promise<void> => {
+): Promise<T & BaseModel> => {
   const { id, ...documentWithoutId } = documentData;
   const documentRef = doc(collection(FirebaseDB, collectionName), documentId);
   await updateDoc(documentRef, {
     ...documentWithoutId,
     updatedAt: serverTimestamp(),
   });
+
+  return {
+    documentData,
+    updatedAt: Timestamp.now(),
+  } as unknown as T & BaseModel;
 };
 
 // Function to create or update an existing document in a collection
@@ -90,7 +102,7 @@ export const addNewDocumentWithCustomId = async <T extends DocumentData>(
   collectionName: string,
   documentId: string,
   documentData: T
-): Promise<void> => {
+): Promise<T & BaseModel> => {
   const { id, ...documentWithoutId } = documentData;
   const timestamp = serverTimestamp();
   const documentWithTimestamps = {
@@ -100,4 +112,9 @@ export const addNewDocumentWithCustomId = async <T extends DocumentData>(
   };
   const documentRef = doc(collection(FirebaseDB, collectionName), documentId);
   await setDoc(documentRef, documentWithTimestamps);
+  return {
+    ...documentData,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  } as unknown as T & BaseModel;
 };

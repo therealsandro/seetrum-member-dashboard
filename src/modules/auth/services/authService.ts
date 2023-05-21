@@ -81,15 +81,20 @@ export const register = async (registerData: UserRegistrationData) => {
       password
     );
 
-    const newUser: User = {
+    const newUser = {
       id: result.user.uid,
       email,
       ...userData,
     };
-    await addNewDocumentWithCustomId(COLLECTION_USERS, newUser.id, newUser);
 
-    verifyEmail(newUser);
-    return newUser;
+    const createdUser = await addNewDocumentWithCustomId(
+      COLLECTION_USERS,
+      newUser.id,
+      newUser
+    );
+
+    verifyEmail(createdUser);
+    return createdUser;
   } catch (e) {
     throw e;
   }

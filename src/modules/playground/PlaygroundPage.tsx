@@ -1,4 +1,3 @@
-import { MainLayout } from "@/ui/Layout";
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import {
@@ -9,14 +8,17 @@ import {
 import {
   Box,
   Button,
+  Container,
   List,
   Paper,
   SimpleGrid,
   Stack,
   Text,
 } from "@mantine/core";
-import { Timestamp, where } from "firebase/firestore";
+import { where } from "firebase/firestore";
 import React from "react";
+import { FileManagerPlayground } from "./FileManagerPlayground";
+import { trainingModelDummy } from "@/types/models/training";
 
 const EXAMPLE_SCIENTIST = {
   firts: "ETH",
@@ -60,7 +62,7 @@ export const PlaygroundPage: React.FC = () => {
 
   return (
     <ProtectedPage>
-      <MainLayout>
+      <Container>
         <Stack>
           <Text>
             <pre>Login as {user && user.email}</pre>
@@ -90,9 +92,8 @@ export const PlaygroundPage: React.FC = () => {
               <InfoSummary label="createdAt" value={"date"} />
             )} */}
           </Paper>
-          <Text align="center" size="xl" weight={"bolder"}>
-            COMING SOON
-          </Text>
+          <FileManagerPlayground />
+          <pre>{JSON.stringify(trainingModelDummy, null, 2)}</pre>
           <Stack>
             <Text>Sample Actions:</Text>
             <SimpleGrid cols={3}>
@@ -110,7 +111,7 @@ export const PlaygroundPage: React.FC = () => {
             ))}
           </List>
         </Stack>
-      </MainLayout>
+      </Container>
     </ProtectedPage>
   );
 };

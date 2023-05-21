@@ -1,9 +1,6 @@
 import { BaseModel } from ".";
 
-export type User = {
-  id: string;
-} & BaseModel &
-  Omit<UserRegistrationData, "password">;
+export type User = BaseModel & Omit<UserRegistrationData, "password">;
 
 export type UserType = "individual" | "organization";
 
