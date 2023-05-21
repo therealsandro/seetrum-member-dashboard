@@ -4,6 +4,7 @@ import { FileInfo, fileInfoDummy } from "./fileInfo";
 export type Training = BaseModel & TrainingModel;
 
 export type TrainingModel = {
+  title: string;
   trainerName: string;
   thumbnailFileName: string;
   description: string;
@@ -25,6 +26,7 @@ export const fileRequirementDummy = {
 };
 
 export const trainingModelDummy: TrainingModel = {
+  title: "Electrical Energy System Auditor",
   trainerName: "Enertec",
   thumbnailFileName: "1684417943368-file.png",
   description: `
