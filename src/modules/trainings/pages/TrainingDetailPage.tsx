@@ -10,6 +10,7 @@ import {
 } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import { Button, Flex, Image } from "@mantine/core";
+import { ApplicationTrackingCard } from "../components/ApplicationTrackingCard";
 
 export const TrainingDetailPage: React.FC<Training> = (trainignData) => {
   return (
@@ -28,13 +29,14 @@ export const TrainingDetailPage: React.FC<Training> = (trainignData) => {
           <Description {...trainignData} />
           <Attachments attachments={trainignData.attachments} />
         </Flex>
-        <Flex sx={{ width: 315, flexShrink: 0 }}>
+        <Flex sx={{ width: 315, flexShrink: 0 }} gap={16} direction="column">
           <Image
             withPlaceholder
             height={210}
-            radius={"md"}
+            radius={"lg"}
             src={trainignData.thumbnailFileName}
           />
+          <ApplicationTrackingCard />
         </Flex>
       </Flex>
     </Flex>
