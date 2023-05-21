@@ -43,6 +43,18 @@ export const seetrumTheme: MantineThemeOverride = {
       "#1a5c6a",
       "#144651",
     ],
+    platinum: [
+      "#fdfdfd",
+      "#f9f8f8",
+      "#f6f5f5",
+      "#f2f0f0",
+      "#efeded",
+      "#ebe9e9",
+      "#d6d4d4",
+      "#a7a5a5",
+      "#818080",
+      "#636262",
+    ],
   },
   primaryColor: "biceblue",
 };

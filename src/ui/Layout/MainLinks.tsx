@@ -2,8 +2,8 @@ import { NavLink, ThemeIcon } from "@mantine/core";
 
 import { notifications } from "@mantine/notifications";
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { IconAward, IconBriefcase, IconCalendar, IconHome } from "../Icons";
-import { useNavigate } from "react-router-dom";
 
 type NavLinkDataProps = {
   label: string;
@@ -33,13 +33,22 @@ const MainLink: React.FC<MainLinkProps> = ({ label, icon, link, links }) => {
       });
     }
   };
-  // const isActive = // TODO: calculate active state from current url path
+  const location = useLocation();
+  const isActive = Boolean(link && location.pathname === link);
+  const isChildActive = Boolean(
+    links &&
+      links
+        .map((l) => Boolean(l.link && location.pathname.includes(l.link)))
+        .filter((i) => i).length > 0
+  );
   const hasLinks = links && Array.isArray(links);
 
   return (
     <NavLink
       key={label}
       label={label}
+      defaultOpened={isChildActive && hasLinks}
+      active={isActive}
       icon={
         <ThemeIcon color="biceblue.5" variant="outline" sx={{ border: "none" }}>
           {icon}
@@ -49,10 +58,14 @@ const MainLink: React.FC<MainLinkProps> = ({ label, icon, link, links }) => {
     >
       {hasLinks &&
         links.map((submenu, idx) => {
+          const active = Boolean(
+            submenu.link && location.pathname === submenu.link
+          );
           return (
             <NavLink
               key={idx}
               {...submenu}
+              active={active}
               onClick={(e) => handleNavigate(e, submenu.link)}
               sx={(theme) => ({
                 borderLeft: "1px solid",
