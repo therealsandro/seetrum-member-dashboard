@@ -21,6 +21,7 @@ import { IconChevronRight, IconWhatsapp } from "../Icons";
 import { Typography } from "../Typography";
 import { MainLinks } from "./MainLinks";
 import { Outlet } from "react-router-dom";
+import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 
 export const MainLayout = ({ title = DEFAULT_TITLE }) => {
   const [opened, setOpened] = React.useState(false);
@@ -47,7 +48,9 @@ export const MainLayout = ({ title = DEFAULT_TITLE }) => {
       }
       header={<Header opened={opened} setOpened={setOpened} />}
     >
-      <Outlet />
+      <ProtectedPage>
+        <Outlet />
+      </ProtectedPage>
     </AppShell>
   );
 };
