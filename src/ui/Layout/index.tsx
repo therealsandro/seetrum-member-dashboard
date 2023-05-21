@@ -57,7 +57,19 @@ export const User: React.FC<any> = (props) => {
   const user = useAuthStore((state) => state.user);
 
   if (!user) {
-    return <Loader />;
+    return (
+      <Flex
+        sx={{
+          height: 60,
+          paddingTop: theme.spacing.sm,
+          borderTop: `${rem(1)} solid ${theme.colors.gray[2]}`,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Loader />
+      </Flex>
+    );
   }
 
   const { name, email } = user;
