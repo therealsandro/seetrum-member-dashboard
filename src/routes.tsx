@@ -6,7 +6,10 @@ import { RegisterPage } from "./modules/auth/pages/RegisterPage";
 import { ProfilePage } from "./modules/user/pages/ProfilePage";
 import { MainLayout } from "./ui/Layout";
 import { TrainingsPage } from "./modules/trainings/pages/TrainingPage";
+import { TrainingDetailPage } from "./modules/trainings/pages/TrainingDetailPage";
 import { PlaygroundPage } from "./modules/playground/PlaygroundPage";
+import { trainingModelDummy } from "./types/models/training";
+import { Timestamp } from "firebase/firestore";
 
 const ROUTES = {
   SIGNIN: {
@@ -40,6 +43,17 @@ const ROUTES = {
       {
         path: "mytrainings",
         element: <TrainingsPage myTrainings />,
+      },
+      {
+        path: "trainings/:id",
+        element: (
+          <TrainingDetailPage
+            {...trainingModelDummy}
+            id="test"
+            createdAt={Timestamp.now()}
+            updatedAt={Timestamp.now()}
+          />
+        ),
       },
     ],
   },

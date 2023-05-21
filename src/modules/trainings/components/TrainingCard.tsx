@@ -1,5 +1,6 @@
 import { Typography } from "@/ui/Typography";
 import { Badge, Flex, Image } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 
 interface TrainingCardBaseProps {
   id: string;
@@ -34,6 +35,7 @@ const HorizontalCard: React.FC<
 > = ({ id, title, thumbnail, vendorName, withApplicationStatus }) => {
   // TODO: this should fetch the applicationStatus
   const applicationStatus = withApplicationStatus && "Applied";
+  const navigate = useNavigate();
 
   return (
     <Flex
@@ -42,6 +44,11 @@ const HorizontalCard: React.FC<
         borderBottom: "1px solid",
         borderColor: theme.colors.gray[4],
       })}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigate(`/trainings/${id}`);
+      }}
     >
       <Image
         withPlaceholder
