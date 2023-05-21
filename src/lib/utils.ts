@@ -14,3 +14,16 @@ export const extractInitials = (name: string) => {
 
   return initials.toUpperCase();
 };
+
+export const pretyDate = (date: Date) => {
+  const d = new Date(date);
+  return d.toLocaleString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+export const getFileName = (filename: string) => {
+  return filename.split("-").slice(1).join("-");
+};

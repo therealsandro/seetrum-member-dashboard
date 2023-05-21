@@ -99,7 +99,7 @@ const data: MainLinkProps[] = [
     label: "Trainings",
     links: [
       { label: "All trainings", link: "/trainings" },
-      { label: "My trainings" /* link: "/mytrainings" */ },
+      { label: "My trainings", link: "/mytrainings" },
     ],
   },
   {
