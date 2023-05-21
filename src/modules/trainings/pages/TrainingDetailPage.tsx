@@ -1,5 +1,7 @@
 import { pretyDate } from "@/lib/utils";
+import { FileInfo } from "@/types/models/fileInfo";
 import { Training } from "@/types/models/training";
+import { FileCard } from "@/ui/Card/FileCard";
 import {
   IconArrowLeft,
   IconCalendarEvent,
@@ -20,10 +22,11 @@ export const TrainingDetailPage: React.FC<Training> = (trainignData) => {
       >
         Back to all trainings
       </Button>
-      <Flex gap={24} justify={"space-between"} w={"100%"}>
+      <Flex gap={24} pb={80} justify={"space-between"} w={"100%"}>
         <Flex direction="column" gap={24} sx={{ maxWidth: 640 }}>
           <Header {...trainignData} />
           <Description {...trainignData} />
+          <Attachments attachments={trainignData.attachments} />
         </Flex>
         <Flex sx={{ width: 315, flexShrink: 0 }}>
           <Image
@@ -104,6 +107,19 @@ const Description: React.FC<Training> = (trainignData) => {
       <Typography textVariant="title-md">Description</Typography>
       {/* TODO: Update to support rich text format */}
       {trainignData.description}
+    </Flex>
+  );
+};
+
+const Attachments: React.FC<{ attachments: FileInfo[] }> = ({
+  attachments,
+}) => {
+  return (
+    <Flex direction="column" gap={16}>
+      <Typography textVariant="title-md">Supporting Files</Typography>
+      {attachments.map((attachment, index) => (
+        <FileCard key={index} {...attachment} />
+      ))}
     </Flex>
   );
 };

@@ -23,3 +23,7 @@ export const pretyDate = (date: Date) => {
     year: "numeric",
   });
 };
+
+export const getFileName = (filename: string) => {
+  return filename.split("-").slice(1).join("-");
+};
