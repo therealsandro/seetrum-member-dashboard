@@ -11,6 +11,7 @@ import {
 import { Typography } from "@/ui/Typography";
 import { Button, Flex, Image } from "@mantine/core";
 import { ApplicationTrackingCard } from "../components/ApplicationTrackingCard";
+import { trainingMemberDummy } from "@/types/models/trainingMember";
 
 export const TrainingDetailPage: React.FC<Training> = (trainignData) => {
   return (
@@ -36,7 +37,7 @@ export const TrainingDetailPage: React.FC<Training> = (trainignData) => {
             radius={"lg"}
             src={trainignData.thumbnailFileName}
           />
-          <ApplicationTrackingCard />
+          <ApplicationTrackingCard {...trainingMemberDummy} />
         </Flex>
       </Flex>
     </Flex>
