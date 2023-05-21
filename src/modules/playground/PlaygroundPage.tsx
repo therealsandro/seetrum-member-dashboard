@@ -1,8 +1,11 @@
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
-import { Box, Container, Stack, Text } from "@mantine/core";
+import { Box, Button, Container, Flex, Stack, Text } from "@mantine/core";
 import React from "react";
-import { TrainingPlayground } from "./TrainingPlayground";
+import {
+  TrainingMemberPlayground,
+  TrainingPlayground,
+} from "./TrainingPlayground";
 
 export const PlaygroundPage: React.FC = () => {
   const user = useAuthStore((state) => state.user);
@@ -12,10 +15,19 @@ export const PlaygroundPage: React.FC = () => {
     <ProtectedPage>
       <Container>
         <Stack>
-          <Text>
-            <pre>Login as {user && user.email}</pre>
-          </Text>
+          <Flex
+            sx={{ borderBottom: "1px solid gray" }}
+            p={"sm"}
+            justify={"space-between"}
+            align={"center"}
+          >
+            <Text>Login as {user && user.email + " " + user.id}</Text>
+            <Button onClick={logOut} variant="outline">
+              Logout
+            </Button>
+          </Flex>
           <TrainingPlayground />
+          <TrainingMemberPlayground />
         </Stack>
       </Container>
     </ProtectedPage>
