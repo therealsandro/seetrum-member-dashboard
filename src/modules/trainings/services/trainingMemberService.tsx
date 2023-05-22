@@ -1,4 +1,4 @@
-import { COLLECTION_TRAINING } from "@/lib/constants";
+import { COLLECTION_TRAINING_MEMBER } from "@/lib/constants";
 import {
   addNewDocument,
   getDocumentsByQuery,
@@ -14,7 +14,7 @@ export const getTrainingMemberByMemberId = async (
 ): Promise<TrainingMember[]> => {
   try {
     return await getDocumentsByQuery<TrainingMember>(
-      COLLECTION_TRAINING,
+      COLLECTION_TRAINING_MEMBER,
       where("memberId", "==", memberId)
     );
   } catch (e) {
@@ -27,7 +27,7 @@ export const createTrainingMember = async (
 ): Promise<TrainingMember> => {
   try {
     const res = await addNewDocument<TrainingMemberModel>(
-      COLLECTION_TRAINING,
+      COLLECTION_TRAINING_MEMBER,
       payload
     );
     return res;
