@@ -7,18 +7,21 @@ import React from "react";
 import { MyTrainingFilter } from "../components/MyTrainingFilter";
 import { TrainingCard } from "../components/TrainingCard";
 import { TrainingToolbar } from "../components/TrainingToolbar";
-
-const trainingDummyData = {
-  id: "trainingDummy",
-  thumbnail: "testing.png",
-  title: "Auditor Energi Termal dan Kelistrikan",
-  vendorName: "LSP HAKE",
-};
+import { useTrainings } from "../store/useTrainings";
+import { trainingModelDummy } from "@/types/models/training";
+import { Timestamp } from "firebase/firestore";
 
 export const TrainingsPage: React.FC<{ myTrainings?: boolean }> = ({
   myTrainings = false,
 }) => {
   useDocumentTitle(`${DEFAULT_TITLE} | ${myTrainings ? "My" : ""} Trainings`);
+  const loading = useTrainings((state) => state.loading);
+  const trainingList = useTrainings((state) => state.trainings);
+  const getTrainings = useTrainings((state) => state.getTrainings);
+
+  React.useEffect(() => {
+    getTrainings();
+  }, [getTrainings]);
 
   return (
     <ProtectedPage>
@@ -38,18 +41,32 @@ export const TrainingsPage: React.FC<{ myTrainings?: boolean }> = ({
           )}
         </TrainingToolbar>
         <Flex gap={24} direction="column" pt={16} pb={80}>
-          {Array(5)
-            .fill("-")
-            .map((i, idx) => {
-              return (
-                <TrainingCard
-                  key={idx}
-                  variant="horizontal"
-                  {...trainingDummyData}
-                  withApplicationStatus={myTrainings}
-                />
-              );
-            })}
+          {loading || !trainingList
+            ? Array(4)
+                .fill("-")
+                .map((e, i) => {
+                  return (
+                    <TrainingCard
+                      createdAt={Timestamp.now()}
+                      updatedAt={Timestamp.now()}
+                      loading={loading}
+                      key={i}
+                      id="-"
+                      variant="horizontal"
+                      {...trainingModelDummy}
+                    />
+                  );
+                })
+            : trainingList.map((trainingData, idx) => {
+                return (
+                  <TrainingCard
+                    key={idx}
+                    variant="horizontal"
+                    {...trainingData}
+                    // applicationStatus={myTrainings}
+                  />
+                );
+              })}
         </Flex>
       </Flex>
     </ProtectedPage>

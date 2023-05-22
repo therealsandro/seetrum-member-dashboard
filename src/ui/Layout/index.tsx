@@ -35,7 +35,7 @@ export const MainLayout = ({ title = DEFAULT_TITLE }) => {
           hiddenBreakpoint={"md"}
           hidden={!opened}
           width={{ sm: 256, lg: 300 }}
-          p="xs"
+          p="sm"
         >
           <Navbar.Section grow mt="xs">
             <MainLinks />
