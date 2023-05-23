@@ -1,10 +1,17 @@
 import { getFileName } from "@/lib/utils";
 import { FileInfo } from "@/types/models/fileInfo";
-import { Flex } from "@mantine/core";
-import { IconBoxArrowUpRight, IconPDF } from "../Icons";
+import { ActionIcon, Flex, Group } from "@mantine/core";
+import { IconBoxArrowUpRight, IconPDF, IconTrash } from "../Icons";
 import { Typography } from "../Typography";
 
-export const FileCard: React.FC<FileInfo> = (file) => {
+interface FileCardProps extends FileInfo {
+  onRemoveFile?: () => void;
+}
+
+export const FileCard: React.FC<FileCardProps> = ({
+  onRemoveFile,
+  ...file
+}) => {
   return (
     <Flex
       align={"center"}
@@ -29,23 +36,28 @@ export const FileCard: React.FC<FileInfo> = (file) => {
         {file.contentType.includes("pdf") ? (
           <IconPDF color="white" size={28} />
         ) : (
-          <IconPDF />
+          <IconPDF color="white" size={28} />
         )}
       </Flex>
       <Typography p={12} textVariant="title-md" sx={{ flex: 1 }}>
         {getFileName(file.filename)}
       </Typography>
-      <Flex
-        mx={8}
-        w={37}
-        h="100%"
-        align={"center"}
-        justify="center"
-        // TODO: handle onButtonClick
-        onClick={() => console.log(1349, file.filename)}
-      >
-        <IconBoxArrowUpRight size={18} />
-      </Flex>
+      <Group spacing={8} mx={8}>
+        {onRemoveFile && (
+          <ActionIcon w={37} h="100%" c="night" onClick={onRemoveFile}>
+            <IconTrash size={18} />
+          </ActionIcon>
+        )}
+        <ActionIcon
+          w={37}
+          h="100%"
+          // TODO: handle onButtonClick
+          c="night"
+          onClick={() => console.log(1349, file.filename)}
+        >
+          <IconBoxArrowUpRight size={18} />
+        </ActionIcon>
+      </Group>
     </Flex>
   );
 };

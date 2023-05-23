@@ -17,6 +17,10 @@ import {
   BsClockHistory,
   BsBoxArrowUpRight,
   BsFiletypePdf,
+  BsUpload,
+  BsTrash,
+  BsExclamationCircle,
+  BsAsterisk,
 } from "react-icons/bs";
 
 export const IconArrowLeft = BsArrowLeft;
@@ -42,3 +46,8 @@ export const IconSearch = BsSearch;
 export const IconWhatsapp = BsWhatsapp;
 
 export const IconPDF = BsFiletypePdf;
+
+export const IconUpload = BsUpload;
+export const IconTrash = BsTrash;
+export const IconExclamation = BsExclamationCircle;
+export const IconAsterisk = BsAsterisk;

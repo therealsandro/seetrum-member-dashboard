@@ -11,7 +11,7 @@ export const uploadFile = async (file: File, tag: string = "others") => {
   try {
     const res = await uploadBytes(fileRef, file);
     const fileInfo: FileInfo = {
-      filename: res.metadata.name,
+      filename,
       contentType: res.metadata.contentType ?? "",
       size: res.metadata.size,
       tag,

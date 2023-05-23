@@ -1,5 +1,4 @@
 import { routePaths } from "@/routes";
-import { BackButton } from "@/ui/Button";
 import { IconArrowRight, IconPeople, IconPerson } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import {

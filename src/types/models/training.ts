@@ -17,12 +17,16 @@ export type FileRequirement = {
   title: string;
   description: string;
   accepts: string;
+  required: boolean;
+  maxSize: number;
 };
-export const fileRequirementDummy = {
+export const fileRequirementDummy: FileRequirement = {
   title: "Curriculum vitae",
   description:
     "Upload your comprehensive CV highlighting your relevant qualifications, experiences, educations, and skills. We can accept only PDF files that are less than 2 MB in size.",
-  accepts: "image/png,image/jpeg",
+  accepts: "application/pdf",
+  required: true,
+  maxSize: 2 * 1024 ** 2,
 };
 
 export const trainingModelDummy: TrainingModel = {
