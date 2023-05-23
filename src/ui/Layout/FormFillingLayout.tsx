@@ -3,10 +3,8 @@ import { TrainingCard } from "@/modules/trainings/components/TrainingCard";
 import {
   AppShell,
   Box,
-  Button,
   Container,
   Flex,
-  Footer,
   Skeleton,
   Stepper,
   useMantineTheme,
@@ -14,7 +12,6 @@ import {
 import { useState } from "react";
 import { LoaderFunctionArgs, Outlet, useLoaderData } from "react-router-dom";
 import { Header } from "../Header";
-import { IconArrowLeft, IconArrowRight } from "../Icons";
 import { Typography } from "../Typography";
 import { Training } from "@/types/models/training";
 import { getTrainingById } from "@/modules/trainings/services/trainingService";
@@ -57,37 +54,6 @@ export const FormFillingLayout = () => {
   return (
     <AppShell
       header={<Header opened={false} setOpened={() => {}} withoutNavigation />}
-      footer={
-        <Footer height={64} p={"sm"}>
-          <Container>
-            <Flex w="100%" justify="space-between">
-              {step > 0 ? (
-                <Button
-                  leftIcon={<IconArrowLeft />}
-                  variant="outline"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setStep((lastStep) => (lastStep > 0 ? step - 1 : 0));
-                  }}
-                >
-                  Back
-                </Button>
-              ) : (
-                <Flex />
-              )}
-              <Button
-                rightIcon={step < 2 && <IconArrowRight />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setStep((lastStep) => (lastStep < 2 ? step + 1 : 2));
-                }}
-              >
-                {step === 2 ? "Submit application" : "Next"}
-              </Button>
-            </Flex>
-          </Container>
-        </Footer>
-      }
     >
       <ProtectedPage>
         <Container>
@@ -113,7 +79,11 @@ export const FormFillingLayout = () => {
                     borderRadius: theme.radius.lg,
                   }}
                 >
-                  <Stepper active={step} onStepClick={setStep}>
+                  <Stepper
+                    active={step}
+                    onStepClick={setStep}
+                    allowNextStepsSelect={false}
+                  >
                     <Stepper.Step />
                     <Stepper.Step />
                     <Stepper.Step />
@@ -123,7 +93,7 @@ export const FormFillingLayout = () => {
                   </Typography>
                   <Typography>{steps[step].desctiption}</Typography>
                 </Flex>
-                <Outlet context={step} />
+                <Outlet context={[step, setStep]} />
               </Flex>
               <Flex w={308} sx={{ flexShrink: 0 }}>
                 <Skeleton visible={!Boolean(training)}>
