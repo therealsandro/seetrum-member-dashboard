@@ -1,6 +1,7 @@
 import { pretyDate } from "@/lib/utils";
 import { FileInfo } from "@/types/models/fileInfo";
 import { Training } from "@/types/models/training";
+import { trainingMemberDummy } from "@/types/models/trainingMember";
 import { FileCard } from "@/ui/Card/FileCard";
 import {
   IconArrowLeft,
@@ -10,10 +11,32 @@ import {
 } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import { Button, Flex, Image } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { ApplicationTrackingCard } from "../components/ApplicationTrackingCard";
-import { trainingMemberDummy } from "@/types/models/trainingMember";
+import { useTrainings } from "../store/useTrainings";
 
-export const TrainingDetailPage: React.FC<Training> = (trainignData) => {
+export const TrainingDetailPage: React.FC = () => {
+  const { id } = useParams();
+  const loading = useTrainings((state) => state.loading);
+  const getTrainingById = useTrainings((state) => state.getTrainingsById);
+  // const error = useTrainings((state) => state.error);
+  const [trainingData, setTraining] = useState<Training | undefined>(undefined);
+
+  useEffect(() => {
+    if (id) {
+      getTrainingById(id).then((training) => {
+        if (training) setTraining(training);
+      });
+    }
+  }, [id, getTrainingById]);
+
+  if (loading || !trainingData) {
+    return <div>Loading...</div>;
+  }
+
+  console.log(trainingData, 1349);
+
   return (
     <Flex gap={24} direction="column" align={"flex-start"}>
       <Button
@@ -26,16 +49,16 @@ export const TrainingDetailPage: React.FC<Training> = (trainignData) => {
       </Button>
       <Flex gap={24} pb={80} justify={"space-between"} w={"100%"}>
         <Flex direction="column" gap={24} sx={{ maxWidth: 640 }}>
-          <Header {...trainignData} />
-          <Description {...trainignData} />
-          <Attachments attachments={trainignData.attachments} />
+          <Header {...trainingData} />
+          <Description {...trainingData} />
+          <Attachments attachments={trainingData.attachments} />
         </Flex>
         <Flex sx={{ width: 315, flexShrink: 0 }} gap={16} direction="column">
           <Image
             withPlaceholder
             height={210}
             radius={"lg"}
-            src={trainignData.thumbnailFileName}
+            src={trainingData.thumbnailFileName}
           />
           <ApplicationTrackingCard {...trainingMemberDummy} />
         </Flex>
@@ -55,7 +78,7 @@ const Header: React.FC<Training> = (trainignData) => {
     getData(
       <IconCalendarEvent />,
       "Application deadline",
-      pretyDate(trainignData.dueDate)
+      pretyDate(trainignData.dueDate.toDate())
     ),
     getData(
       <IconClockHistory />,

@@ -46,14 +46,7 @@ const ROUTES = {
       },
       {
         path: "trainings/:id",
-        element: (
-          <TrainingDetailPage
-            {...trainingModelDummy}
-            id="test"
-            createdAt={Timestamp.now()}
-            updatedAt={Timestamp.now()}
-          />
-        ),
+        element: <TrainingDetailPage />,
       },
     ],
   },
