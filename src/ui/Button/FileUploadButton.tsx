@@ -1,35 +1,28 @@
 import { formatSize } from "@/lib/utils";
-import { uploadFile } from "@/services/firebase/storage";
+import { getFileURL, uploadFile } from "@/services/firebase/storage";
 import { FileInfo } from "@/types/models/fileInfo";
 import { FileRequirement } from "@/types/models/training";
 import { FileCard } from "@/ui/Card/FileCard";
-import { IconAsterisk, IconExclamation, IconUpload } from "@/ui/Icons";
+import {
+  IconAsterisk,
+  IconExclamation,
+  IconTrash,
+  IconUpload,
+} from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import {
   Accordion,
   Box,
   Button,
-  Center,
   FileButton,
   Flex,
   Group,
-  Loader,
+  Image,
   Modal,
   Stack,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
-/*
-  Todo:
-  [x] Create Shell
-  [x] Style Shell
-  [x] Create accordion
-  [x] Create custom file button
-  [x] Props
-  [x] error state
-  [x] error modal
-  [] variant image
-*/
 
 interface FileUploadButtonProps extends FileRequirement {
   value?: FileInfo;
@@ -49,9 +42,13 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
+  const [src, setSrc] = useState("");
+
+  const isImage = accepts.includes("image");
 
   const removeFile = () => {
     onFileChange(undefined);
+    setSrc("");
   };
 
   const submitFile = async (file: File) => {
@@ -66,6 +63,10 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
       const newFileInfo = await uploadFile(file, title);
       console.log(newFileInfo);
       onFileChange(newFileInfo);
+      if (isImage) {
+        setSrc("");
+        getFileURL(newFileInfo.filename).then(setSrc);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -127,46 +128,73 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
               },
             }}
           >
-            <Stack spacing={16}>
-              <Typography textVariant="body-md" c="dimmed">
-                {description}
-              </Typography>
-
-              {loading ? (
-                <Center>
-                  <Loader />
-                </Center>
-              ) : (
-                fileInfo && <FileCard onRemoveFile={removeFile} {...fileInfo} />
+            <Flex gap={16}>
+              {isImage && (
+                <Image
+                  src={src}
+                  radius={8}
+                  withPlaceholder
+                  width={90}
+                  height={120}
+                />
               )}
-
-              {error && (
-                <Flex c="red.3" align={"center"} gap={8}>
-                  <IconExclamation size={16} />
-                  <Typography textVariant="body-md">
-                    Please provide your {title}
-                  </Typography>
-                </Flex>
-              )}
-              <FileButton onChange={submitFile} accept={accepts}>
-                {(props) => (
-                  <Button
-                    {...props}
-                    size="md"
-                    variant="outline"
-                    c="night"
-                    sx={(theme) => ({
-                      borderColor: theme.fn.rgba(theme.colors.night[6], 0.12),
-                    })}
-                    leftIcon={<IconUpload size={18} />}
-                  >
-                    <Typography textVariant="label-lg">
-                      Upload {title}
-                    </Typography>
-                  </Button>
+              <Stack spacing={16}>
+                <Typography textVariant="body-md" c="dimmed">
+                  {description}
+                </Typography>
+                {!isImage && fileInfo && (
+                  <FileCard onRemoveFile={removeFile} {...fileInfo} />
                 )}
-              </FileButton>
-            </Stack>
+                {error && (
+                  <Flex c="red.3" align={"center"} gap={8}>
+                    <IconExclamation size={16} />
+                    <Typography textVariant="body-md">
+                      Please provide your {title}
+                    </Typography>
+                  </Flex>
+                )}
+                <Group>
+                  <FileButton onChange={submitFile} accept={accepts}>
+                    {(props) => (
+                      <Button
+                        {...props}
+                        size="md"
+                        variant="outline"
+                        c="night"
+                        w={!isImage ? "100%" : undefined}
+                        loading={loading}
+                        sx={(theme) => ({
+                          borderColor: theme.fn.rgba(
+                            theme.colors.night[6],
+                            0.12
+                          ),
+                        })}
+                        leftIcon={<IconUpload size={18} />}
+                      >
+                        <Typography textVariant="label-lg">
+                          Upload {title}
+                        </Typography>
+                      </Button>
+                    )}
+                  </FileButton>
+                  {isImage && fileInfo && (
+                    <Button
+                      size="md"
+                      loading={loading}
+                      onClick={removeFile}
+                      variant="outline"
+                      c="red"
+                      sx={(theme) => ({
+                        borderColor: theme.fn.rgba(theme.colors.night[6], 0.12),
+                      })}
+                      leftIcon={<IconTrash size={18} />}
+                    >
+                      Remove {title}
+                    </Button>
+                  )}
+                </Group>
+              </Stack>
+            </Flex>
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
