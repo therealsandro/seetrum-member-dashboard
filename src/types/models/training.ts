@@ -29,10 +29,19 @@ export const fileRequirementDummy: FileRequirement = {
   maxSize: 2 * 1024 ** 2,
 };
 
+export const fileRequirementImageDummy: FileRequirement = {
+  title: "Photo",
+  description:
+    "Upload a professional photo of yourself for identification purposes. We can accept only JPEG or PNG files that are less than 2 MB in size.",
+  accepts: "image/png,image/jpeg",
+  required: true,
+  maxSize: 2 * 1024 ** 2,
+};
+
 export const trainingModelDummy: TrainingModel = {
   title: "Electrical Energy System Auditor",
   trainerName: "Enertec",
-  thumbnailFileName: "1684417943368-file.png",
+  thumbnailFileName: "1684857025848-hero-ilustration.png",
   description: `
   Society of Energy Efficiency Trust Movement (SEETRUM) sebagai organisasi yang memiliki visi untuk membangun ekosistem di bidang energi efisiensi guna meningkatkan kepercayaan kepada para seluruh stakeholder di bidang energi efisiensi. Untuk itu, SEETRUM memiliki beberapa misi, salah satunya adalah untuk menjembatani dan memfasilitasi semua pemangku kepentingan untuk membangun ekosistem energi efisiensi yang kohesif di Indonesia.
 
@@ -49,5 +58,5 @@ export const trainingModelDummy: TrainingModel = {
   Terima kasih.`,
   dueDate: new Date(),
   attachments: [fileInfoDummy],
-  fileRequirements: [fileRequirementDummy],
+  fileRequirements: [fileRequirementDummy, fileRequirementImageDummy],
 };
