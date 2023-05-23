@@ -14,9 +14,14 @@ import React from "react";
 interface Props {
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  withoutNavigation?: boolean;
 }
 
-export const Header: React.FC<Props> = ({ opened, setOpened }) => {
+export const Header: React.FC<Props> = ({
+  opened,
+  setOpened,
+  withoutNavigation = false,
+}) => {
   const theme = useMantineTheme();
   const logOut = useAuthStore((state) => state.logOut);
 
@@ -31,15 +36,17 @@ export const Header: React.FC<Props> = ({ opened, setOpened }) => {
             },
           }}
         >
-          <MediaQuery largerThan="md" styles={{ display: "none" }}>
-            <Burger
-              opened={opened}
-              onClick={() => setOpened((o) => !o)}
-              size="sm"
-              color={theme.colors.gray[6]}
-              mr="xl"
-            />
-          </MediaQuery>
+          {!withoutNavigation && (
+            <MediaQuery largerThan="md" styles={{ display: "none" }}>
+              <Burger
+                opened={opened}
+                onClick={() => setOpened((o) => !o)}
+                size="sm"
+                color={theme.colors.gray[6]}
+                mr="xl"
+              />
+            </MediaQuery>
+          )}
           <a href="https://seetrum.id">
             <img src={logoHorizontalUrl} alt={"seetrum logo"} />
           </a>

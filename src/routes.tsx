@@ -8,8 +8,11 @@ import { MainLayout } from "./ui/Layout";
 import { TrainingsPage } from "./modules/trainings/pages/TrainingPage";
 import { TrainingDetailPage } from "./modules/trainings/pages/TrainingDetailPage";
 import { PlaygroundPage } from "./modules/playground/PlaygroundPage";
-import { trainingModelDummy } from "./types/models/training";
-import { Timestamp } from "firebase/firestore";
+import { TrainingApplicationPage } from "./modules/trainings/pages/TrainingApplicationPage";
+import {
+  FormFillingLayout,
+  applicationTrainingSupportDataLoader,
+} from "./ui/Layout/FormFillingLayout";
 
 const ROUTES = {
   SIGNIN: {
@@ -47,6 +50,17 @@ const ROUTES = {
       {
         path: "trainings/:id",
         element: <TrainingDetailPage />,
+      },
+    ],
+  },
+  TRAINING_APPLICATION: {
+    path: "trainings/:id/apply",
+    loader: applicationTrainingSupportDataLoader,
+    element: <FormFillingLayout />,
+    children: [
+      {
+        path: "",
+        element: <TrainingApplicationPage />,
       },
     ],
   },
