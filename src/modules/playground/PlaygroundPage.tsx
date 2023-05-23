@@ -1,19 +1,23 @@
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
-import { Box, Button, Container, Flex, Stack, Text } from "@mantine/core";
+import { FileInfo } from "@/types/models/fileInfo";
+import {
+  fileRequirementDummy,
+  fileRequirementImageDummy,
+} from "@/types/models/training";
+import { Button, Container, Flex, Stack, Text } from "@mantine/core";
 import React, { useState } from "react";
+import { FileUploadButton } from "../../ui/Button/FileUploadButton";
 import {
   TrainingMemberPlayground,
   TrainingPlayground,
 } from "./TrainingPlayground";
-import { FileUploadButton } from "../../ui/Button/FileUploadButton";
-import { fileRequirementDummy } from "@/types/models/training";
-import { FileInfo } from "@/types/models/fileInfo";
 
 export const PlaygroundPage: React.FC = () => {
   const user = useAuthStore((state) => state.user);
   const logOut = useAuthStore((state) => state.logOut);
   const [fileInfo, setFileInfo] = useState<FileInfo>();
+  const [fileInfoImg, setFileInfoImg] = useState<FileInfo>();
 
   return (
     <ProtectedPage>
@@ -35,30 +39,17 @@ export const PlaygroundPage: React.FC = () => {
           <pre>{JSON.stringify(fileInfo, null, 2)}</pre>
           <FileUploadButton
             value={fileInfo}
-            error="Provide"
             onFileChange={setFileInfo}
             {...fileRequirementDummy}
+          />
+          <pre>{JSON.stringify(fileInfoImg, null, 2)}</pre>
+          <FileUploadButton
+            value={fileInfoImg}
+            onFileChange={setFileInfoImg}
+            {...fileRequirementImageDummy}
           />
         </Stack>
       </Container>
     </ProtectedPage>
-  );
-};
-
-interface InfoSummaryProps {
-  label: string;
-  value?: any;
-}
-
-const InfoSummary: React.FC<InfoSummaryProps> = ({ label, value = "-" }) => {
-  return (
-    <Box px="sm">
-      <Text size="md" weight={"bold"}>
-        {label}
-      </Text>
-      <Text c="dimmed" size="md">
-        {value || "empty"}
-      </Text>
-    </Box>
   );
 };

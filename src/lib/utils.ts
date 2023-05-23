@@ -24,6 +24,18 @@ export const pretyDate = (date: Date) => {
   });
 };
 
+export const formatSize = (bytes: number) => {
+  if (bytes < 1024) {
+    return bytes + " B";
+  } else if (bytes < 1048576) {
+    const kilobytes = (bytes / 1024).toFixed(2);
+    return kilobytes + " KB";
+  } else {
+    const megabytes = (bytes / 1048576).toFixed(2);
+    return megabytes + " MB";
+  }
+};
+
 export const getFileName = (filename: string) => {
   return filename.split("-").slice(1).join("-");
 };
