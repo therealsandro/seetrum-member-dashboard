@@ -14,6 +14,7 @@ export type TrainingMemberModel = {
   issuedCertificate: string;
   gender: string;
   employmentStatus: string;
+  institutionName: string;
   address: string;
   requiredFiles: FileInfo[];
 };
@@ -29,6 +30,7 @@ export const trainingMemberDummy: TrainingMemberModel = {
   issuedCertificate: "",
   gender: "male",
   employmentStatus: "employed",
+  institutionName: "Seetrum",
   address: "Jawa Tengah",
   requiredFiles: [fileInfoDummy],
 };
