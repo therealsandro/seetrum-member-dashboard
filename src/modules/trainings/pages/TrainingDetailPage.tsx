@@ -12,16 +12,20 @@ import {
 import { Typography } from "@/ui/Typography";
 import { Button, Flex, Image } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ApplicationTrackingCard } from "../components/ApplicationTrackingCard";
 import { useTrainings } from "../store/useTrainings";
+import { getFileURL } from "@/services/firebase/storage";
 
 export const TrainingDetailPage: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  // Data gether
   const loading = useTrainings((state) => state.loading);
   const getTrainingById = useTrainings((state) => state.getTrainingsById);
   // const error = useTrainings((state) => state.error);
   const [trainingData, setTraining] = useState<Training | undefined>(undefined);
+  const [imageUrl, setImage] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (id) {
@@ -34,16 +38,34 @@ export const TrainingDetailPage: React.FC = () => {
   if (loading || !trainingData) {
     return <div>Loading...</div>;
   }
+  getFileURL(trainingData.thumbnailFileName).then((fileURL) =>
+    setImage(fileURL)
+  );
 
   console.log(trainingData, 1349);
 
   return (
-    <Flex gap={24} direction="column" align={"flex-start"}>
+    <Flex
+      gap={24}
+      direction="column"
+      align={"flex-start"}
+      sx={{
+        "& a.mantine-Button-root:hover": {
+          backgroundColor: "unset",
+          textDecoration: "underline",
+        },
+      }}
+    >
       <Button
+        component="a"
         variant="subtle"
         radius="md"
-        sx={{ color: "black" }}
+        p={0}
+        sx={{
+          color: "black",
+        }}
         leftIcon={<IconArrowLeft />}
+        onClick={() => navigate(-1)}
       >
         Back to all trainings
       </Button>
@@ -58,7 +80,13 @@ export const TrainingDetailPage: React.FC = () => {
             withPlaceholder
             height={210}
             radius={"lg"}
-            src={trainingData.thumbnailFileName}
+            src={imageUrl}
+            sx={(t) => ({
+              overflow: "hidden",
+              borderRadius: "16px",
+              border: "1px solid",
+              borderColor: t.fn.rgba(t.colors.night[6], 0.08),
+            })}
           />
           <ApplicationTrackingCard {...trainingMemberDummy} />
         </Flex>
