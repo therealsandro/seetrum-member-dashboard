@@ -15,7 +15,7 @@ export const TrainingApplicationPage: React.FC = () => {
   const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
-    if (user) setApplicationForm({ ...user });
+    if (user) setApplicationForm({ ...user, employmentStatus: user.userType });
   }, [user, setApplicationForm]);
 
   switch (step) {
@@ -26,22 +26,34 @@ export const TrainingApplicationPage: React.FC = () => {
             placeholder="Enter your full name"
             label="Full name"
             withAsterisk
+            value={applicationForm?.name ?? ""}
+            onChange={(e) => setApplicationForm({ name: e.target.value })}
           />
           <TextInput
             placeholder="Enter your email"
             label="Email"
             withAsterisk
+            value={applicationForm?.email ?? ""}
+            onChange={(e) => setApplicationForm({ email: e.target.value })}
           />
           <TextInput
             placeholder="Enter your mobile phone number"
             label="Mobile phone number"
             withAsterisk
+            value={applicationForm?.phoneNumber ?? ""}
+            onChange={(e) =>
+              setApplicationForm({ phoneNumber: e.target.value })
+            }
           />
           <TextInput
             type="number"
             placeholder="Enter your age"
             label="Age"
             withAsterisk
+            value={applicationForm?.age?.toString() ?? ""}
+            onChange={(e) =>
+              setApplicationForm({ age: parseInt(e.target.value) })
+            }
           />
           <Select
             placeholder="Enter your gender"
@@ -51,21 +63,25 @@ export const TrainingApplicationPage: React.FC = () => {
               { value: "female", label: "Female" },
             ]}
             withAsterisk
+            value={applicationForm?.gender ?? ""}
+            onChange={(e) => e && setApplicationForm({ gender: e })}
           />
           <Select
             placeholder="Enter your employment status"
             label="Employment status"
             withAsterisk
+            value={applicationForm?.employmentStatus ?? ""}
+            onChange={(e) => e && setApplicationForm({ employmentStatus: e })}
             data={[
-              { value: "unemployed", label: "Unemployed" },
-              { value: "employed", label: "Employed" },
-              { value: "student", label: "Student" },
+              { value: "individual", label: "Unemployed" },
+              { value: "organization", label: "Employed" },
             ]}
           />
           <TextInput
             placeholder="Enter your current institution"
             label="Current institution"
             withAsterisk
+            // value={applicationForm?.employmentStatus ?? ''}
           />
         </Flex>
       );
@@ -77,6 +93,8 @@ export const TrainingApplicationPage: React.FC = () => {
             placeholder="Enter your address"
             label="Address"
             withAsterisk
+            value={applicationForm?.address ?? ""}
+            onChange={(e) => setApplicationForm({ address: e.target.value })}
           />
           <Select
             data={[{ value: "test", label: "Test Selector" }]}
