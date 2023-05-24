@@ -40,7 +40,7 @@ const HorizontalCard: React.FC<Training & TrainingCardAddonProps> = ({
   loading,
   ...trainingData
 }) => {
-  const [imageUrl, setImage] = useState<string>(trainingData.thumbnailFileName);
+  const [imageUrl, setImage] = useState<string | undefined>(undefined);
   getFileURL(trainingData.thumbnailFileName).then((ur) => setImage(ur));
   const navigate = useNavigate();
 
@@ -50,11 +50,12 @@ const HorizontalCard: React.FC<Training & TrainingCardAddonProps> = ({
       sx={(theme) => ({
         borderBottom: "1px solid",
         borderColor: theme.colors.gray[4],
+        cursor: "pointer",
       })}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        navigate(`/trainings/${trainingData.id}`);
+        navigate(`${trainingData.id}`);
       }}
     >
       <Image
@@ -104,7 +105,7 @@ const HorizontalCard: React.FC<Training & TrainingCardAddonProps> = ({
   );
 };
 const VerticalCard: React.FC<Training> = ({ id, title, thumbnailFileName }) => {
-  const [imageUrl, setImage] = useState<string>(thumbnailFileName);
+  const [imageUrl, setImage] = useState<string | undefined>(undefined);
   getFileURL(thumbnailFileName).then((ur) => setImage(ur));
   const navigate = useNavigate();
 

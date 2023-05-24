@@ -12,13 +12,14 @@ import {
 import { Typography } from "@/ui/Typography";
 import { Button, Flex, Image } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ApplicationTrackingCard } from "../components/ApplicationTrackingCard";
 import { useTrainings } from "../store/useTrainings";
 import { getFileURL } from "@/services/firebase/storage";
 
 export const TrainingDetailPage: React.FC = () => {
   const { id } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   // Data gether
   const loading = useTrainings((state) => state.loading);
@@ -42,8 +43,6 @@ export const TrainingDetailPage: React.FC = () => {
     setImage(fileURL)
   );
 
-  console.log(trainingData, 1349);
-
   return (
     <Flex
       gap={24}
@@ -65,7 +64,13 @@ export const TrainingDetailPage: React.FC = () => {
           color: "black",
         }}
         leftIcon={<IconArrowLeft />}
-        onClick={() => navigate(-1)}
+        onClick={() =>
+          navigate(
+            "/" +
+              (location.pathname.includes("mytraining") ? "my" : "") +
+              "trainings"
+          )
+        }
       >
         Back to all trainings
       </Button>
@@ -160,7 +165,7 @@ const Description: React.FC<Training> = (trainignData) => {
     <Flex direction={"column"} gap={16}>
       <Typography textVariant="title-md">Description</Typography>
       {/* TODO: Update to support rich text format */}
-      {trainignData.description}
+      <Flex dangerouslySetInnerHTML={{ __html: trainignData.description }} />
     </Flex>
   );
 };

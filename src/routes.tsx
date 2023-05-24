@@ -41,15 +41,29 @@ const ROUTES = {
       },
       {
         path: "trainings",
-        element: <TrainingsPage />,
+        children: [
+          {
+            index: true,
+            element: <TrainingsPage />,
+          },
+          {
+            path: ":id",
+            element: <TrainingDetailPage />,
+          },
+        ],
       },
       {
         path: "mytrainings",
-        element: <TrainingsPage myTrainings />,
-      },
-      {
-        path: "trainings/:id",
-        element: <TrainingDetailPage />,
+        children: [
+          {
+            index: true,
+            element: <TrainingsPage myTrainings />,
+          },
+          {
+            path: ":id",
+            element: <TrainingDetailPage />,
+          },
+        ],
       },
     ],
   },
