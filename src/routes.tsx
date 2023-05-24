@@ -3,12 +3,12 @@ import { LoginPage } from "./modules/auth/pages/LoginPage";
 import { RegisterOptionAltPage } from "./modules/auth/pages/RegisterOptionAltPage";
 import { RegisterOptionPage } from "./modules/auth/pages/RegisterOptionPage";
 import { RegisterPage } from "./modules/auth/pages/RegisterPage";
-import { ProfilePage } from "./modules/user/pages/ProfilePage";
-import { MainLayout } from "./ui/Layout";
-import { TrainingsPage } from "./modules/trainings/pages/TrainingPage";
-import { TrainingDetailPage } from "./modules/trainings/pages/TrainingDetailPage";
+import { DashboardPage } from "./modules/dashboard/pages/DashboardPage";
 import { PlaygroundPage } from "./modules/playground/PlaygroundPage";
 import { TrainingApplicationPage } from "./modules/trainings/pages/TrainingApplicationPage";
+import { TrainingDetailPage } from "./modules/trainings/pages/TrainingDetailPage";
+import { TrainingsPage } from "./modules/trainings/pages/TrainingPage";
+import { MainLayout } from "./ui/Layout";
 import {
   FormFillingLayout,
   applicationTrainingSupportDataLoader,
@@ -37,7 +37,7 @@ const ROUTES = {
     children: [
       {
         index: true,
-        element: <ProfilePage />,
+        element: <DashboardPage />,
       },
       {
         path: "trainings",
