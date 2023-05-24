@@ -3,7 +3,7 @@ import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { Typography } from "@/ui/Typography";
 import { Flex } from "@mantine/core";
 import { useDocumentTitle } from "@mantine/hooks";
-import React from "react";
+import React, { useState } from "react";
 import { MyTrainingFilter } from "../components/MyTrainingFilter";
 import { TrainingCard } from "../components/TrainingCard";
 import { TrainingToolbar } from "../components/TrainingToolbar";
@@ -13,6 +13,7 @@ import { Timestamp } from "firebase/firestore";
 import { useLocation } from "react-router-dom";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import { useTrainingMember } from "../store/useTrainingMember";
+import { TrainingMemberStatus } from "@/types/models/trainingMember";
 
 export const TrainingsPage: React.FC = () => {
   const location = useLocation();
@@ -21,9 +22,15 @@ export const TrainingsPage: React.FC = () => {
   const loading = useTrainings((state) => state.loading);
   const trainings = useTrainings((state) => state.trainings);
   const getTrainings = useTrainings((state) => state.getTrainings);
+  const setTrainingSort = useTrainings((state) => state.setSortings);
   const member = useAuthStore((s) => s.user);
   const trainingMembers = useTrainingMember((s) => s.trainingMember);
   const getTMByTID = useTrainingMember((s) => s.getTrainingMemberByMemberId);
+
+  const [filter, setFilter] = useState<TrainingMemberStatus | undefined>(
+    undefined
+  );
+  const [searchVal, setSearchV] = useState("");
 
   React.useEffect(() => {
     getTrainings();
@@ -31,30 +38,34 @@ export const TrainingsPage: React.FC = () => {
   }, [getTrainings, getTMByTID, member]);
 
   const trainingList = !myTrainings
-    ? trainings?.map((trainingData, idx) => {
-        return (
-          <TrainingCard
-            key={idx}
-            variant="horizontal"
-            {...trainingData}
-            // applicationStatus={myTrainings}
-          />
-        );
-      })
-    : trainingMembers?.map((tm) => {
-        const t = trainings?.find((t) => t.id === tm.trainingId);
-        if (t) {
+    ? trainings
+        ?.filter((t) =>
+          searchVal
+            ? t.title.toLowerCase().includes(searchVal.toLowerCase())
+            : true
+        )
+        .map((trainingData, idx) => {
           return (
-            <TrainingCard
-              key={tm.id}
-              variant="horizontal"
-              {...t}
-              applicationStatus={tm}
-            />
+            <TrainingCard key={idx} variant="horizontal" {...trainingData} />
           );
-        }
-        return <></>;
-      });
+        })
+    : trainingMembers
+        ?.filter((tm) => (filter ? tm.status === filter : true))
+        .map((tm) => {
+          const t = trainings?.find((t) => t.id === tm.trainingId);
+          if (t) {
+            return (
+              <TrainingCard
+                key={tm.id}
+                variant="horizontal"
+                {...t}
+                applicationStatus={tm}
+              />
+            );
+          }
+          return undefined;
+        })
+        .filter((t) => t);
   return (
     <ProtectedPage>
       <Flex direction="column">
@@ -65,26 +76,29 @@ export const TrainingsPage: React.FC = () => {
         <TrainingToolbar
           myTrainings={myTrainings}
           // TODO: Update this function handle
-          onSearchChanged={(val) => console.log("[searchChanged]", val)}
-          onSortChanged={(val) => console.log("[sortChanged]", val)}
+          onSearchChanged={(val) => setSearchV(val)}
+          onSortChanged={(val) => setTrainingSort(val[0], val[1])}
         >
           {myTrainings && (
-            <MyTrainingFilter value="0" onChange={(val) => console.log(val)} />
+            <MyTrainingFilter
+              value=""
+              onChange={(val) => setFilter(val as TrainingMemberStatus)}
+            />
           )}
         </TrainingToolbar>
         <Flex gap={24} direction="column" pt={16} pb={80}>
-          {loading || !trainingList
+          {loading || !trainings
             ? Array(4)
                 .fill("-")
                 .map((e, i) => {
                   return (
                     <TrainingCard
+                      key={i}
+                      loading={loading}
+                      variant="horizontal"
+                      id="-"
                       createdAt={Timestamp.now()}
                       updatedAt={Timestamp.now()}
-                      loading={loading}
-                      key={i}
-                      id="-"
-                      variant="horizontal"
                       {...trainingModelDummy}
                     />
                   );

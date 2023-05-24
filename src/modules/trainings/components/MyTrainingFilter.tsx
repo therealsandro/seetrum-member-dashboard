@@ -6,11 +6,18 @@ interface MyTrainingFilterProps {
   onChange: (value: number | string) => void;
 }
 
+const filterOptions = [
+  { value: "", label: "All my trainings" },
+  { value: "applied", label: "Applied" },
+  { value: "accepted", label: "Accepted" },
+  { value: "issued", label: "Completed" },
+  { value: "rejected", label: "Rejected" },
+];
 export const MyTrainingFilter: React.FC<MyTrainingFilterProps> = ({
   value,
   onChange,
 }) => {
-  const [val, setValue] = useState(value || "0");
+  const [val, setValue] = useState(value || "");
   return (
     <Chip.Group
       value={val}
@@ -20,11 +27,9 @@ export const MyTrainingFilter: React.FC<MyTrainingFilterProps> = ({
       }}
     >
       <Flex gap={8}>
-        <FilterChip value={"0"} label={"All my trainings"} />
-        <FilterChip value={"1"} label={"Applied"} />
-        <FilterChip value={"2"} label={"Accepted"} />
-        <FilterChip value={"3"} label={"Completed"} />
-        <FilterChip value={"4"} label={"Rejected"} />
+        {filterOptions.map((f) => {
+          return <FilterChip key={f.value} {...f} />;
+        })}
       </Flex>
     </Chip.Group>
   );

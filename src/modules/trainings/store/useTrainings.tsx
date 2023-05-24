@@ -7,11 +7,14 @@ interface TrainingState {
   trainings: Training[] | null;
   loading: boolean;
   error: any | null;
+  sortBy: number;
+  orderBy: number;
   getTrainings: () => Promise<Training[] | null>;
   getTrainingsById: (id: string) => Promise<Training | null>;
   setTrainings: (trainings: Training[]) => void;
   addTraining: (training: Training) => void;
   updateTraining: (training: Training) => void;
+  setSortings: (sortBy: number, orderBy: number) => void;
 }
 
 export const useTrainings = create<TrainingState>((set, get) => ({
@@ -24,7 +27,8 @@ export const useTrainings = create<TrainingState>((set, get) => ({
     try {
       set({ loading: true });
       const trainingsList = await getAllTrainings();
-      set({ trainings: trainingsList, loading: false, error: null });
+      const tL = sortTraining(get().sortBy, get().orderBy, trainingsList);
+      set({ trainings: tL, loading: false, error: null });
       return trainingsList;
     } catch (error) {
       showErrorNotif({ title: "Failed fetch trainings" });
@@ -66,4 +70,34 @@ export const useTrainings = create<TrainingState>((set, get) => ({
         ? state.trainings.map((t) => (t.id === training.id ? training : t))
         : [training],
     })),
+  sortBy: 0,
+  orderBy: 1,
+  setSortings: (sortBy, orderBy) => {
+    const trainings = get().trainings;
+    const newOrderTrainings = trainings
+      ? sortTraining(sortBy, orderBy, trainings)
+      : trainings;
+    console.log(newOrderTrainings);
+    return set({
+      sortBy,
+      orderBy,
+      trainings: newOrderTrainings,
+    });
+  },
 }));
+
+const sortTraining = (
+  sortBy: number,
+  orderBy: number,
+  trainings: Training[]
+): Training[] => {
+  const trainingsList = [trainings].flat();
+  return trainingsList.sort((a, b) => {
+    if (sortBy === 0) {
+      return orderBy
+        ? b.createdAt.toMillis() - a.createdAt.toMillis()
+        : a.createdAt.toMillis() - b.createdAt.toMillis();
+    }
+    return ("" + a.title).localeCompare(b.title) * (orderBy ? -1 : 1);
+  });
+};
