@@ -68,6 +68,7 @@ const HorizontalCard: React.FC<Training & TrainingCardAddonProps> = ({
           borderRadius: "16px",
           border: "1px solid",
           borderColor: t.fn.rgba(t.colors.night[6], 0.08),
+          flexShrink: 0,
         })}
       />
       <Flex px={16} py={8} gap={8} direction="column">

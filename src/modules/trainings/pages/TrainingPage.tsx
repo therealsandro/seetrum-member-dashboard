@@ -46,7 +46,11 @@ export const TrainingsPage: React.FC = () => {
         )
         .map((trainingData, idx) => {
           return (
-            <TrainingCard key={idx} variant="horizontal" {...trainingData} />
+            <TrainingCard
+              key={trainingData.id}
+              variant="horizontal"
+              {...trainingData}
+            />
           );
         })
     : trainingMembers

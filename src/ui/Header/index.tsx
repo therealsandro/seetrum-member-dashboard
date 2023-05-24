@@ -47,7 +47,7 @@ export const Header: React.FC<Props> = ({
               />
             </MediaQuery>
           )}
-          <a href="https://seetrum.id">
+          <a href="/">
             <img src={logoHorizontalUrl} alt={"seetrum logo"} />
           </a>
         </Box>

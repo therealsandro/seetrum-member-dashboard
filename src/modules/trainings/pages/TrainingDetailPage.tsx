@@ -10,7 +10,15 @@ import {
   IconPeople,
 } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
-import { Box, Button, Center, Flex, Image, Loader } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Image,
+  Loader,
+  TypographyStylesProvider,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ApplicationTrackingCard } from "../components/ApplicationTrackingCard";
@@ -183,7 +191,9 @@ const Description: React.FC<Training> = (trainignData) => {
     <Flex direction={"column"} gap={16}>
       <Typography textVariant="title-md">Description</Typography>
       {/* TODO: Update to support rich text format */}
-      <Flex dangerouslySetInnerHTML={{ __html: trainignData.description }} />
+      <TypographyStylesProvider>
+        <Box dangerouslySetInnerHTML={{ __html: trainignData.description }} />
+      </TypographyStylesProvider>
     </Flex>
   );
 };
