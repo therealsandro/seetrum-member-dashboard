@@ -10,6 +10,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import React from "react";
+import { IconBoxArrowRight } from "../Icons";
 
 interface Props {
   opened: boolean;
@@ -51,7 +52,14 @@ export const Header: React.FC<Props> = ({
             <img src={logoHorizontalUrl} alt={"seetrum logo"} />
           </a>
         </Box>
-        <Button onClick={() => logOut()}>Log out</Button>
+        <Button
+          variant="outline"
+          radius={"md"}
+          rightIcon={<IconBoxArrowRight size={18} />}
+          onClick={() => logOut()}
+        >
+          Log out
+        </Button>
       </Flex>
     </MantineHeader>
   );
