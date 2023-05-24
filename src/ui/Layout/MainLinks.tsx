@@ -13,9 +13,16 @@ type NavLinkDataProps = {
 
 type MainLinkProps = {
   links?: NavLinkDataProps[];
+  onNavigate?: (path: string) => void;
 } & NavLinkDataProps;
 
-const MainLink: React.FC<MainLinkProps> = ({ label, icon, link, links }) => {
+const MainLink: React.FC<MainLinkProps> = ({
+  label,
+  icon,
+  link,
+  links,
+  onNavigate = (p) => {},
+}) => {
   const navigate = useNavigate();
 
   const handleNavigate = (
@@ -26,6 +33,7 @@ const MainLink: React.FC<MainLinkProps> = ({ label, icon, link, links }) => {
     e.stopPropagation();
     if (link) {
       navigate(link);
+      onNavigate(link);
     } else {
       notifications.show({
         title: "Coming Soon",
@@ -38,7 +46,12 @@ const MainLink: React.FC<MainLinkProps> = ({ label, icon, link, links }) => {
   const isChildActive = Boolean(
     links &&
       links
-        .map((l) => Boolean(l.link && location.pathname.includes(l.link)))
+        .map((l) =>
+          Boolean(
+            l.link &&
+              location.pathname.split("/")[1] === l.link.replace("/", "")
+          )
+        )
         .filter((i) => i).length > 0
   );
   const hasLinks = links && Array.isArray(links);
@@ -59,7 +72,8 @@ const MainLink: React.FC<MainLinkProps> = ({ label, icon, link, links }) => {
       {hasLinks &&
         links.map((submenu, idx) => {
           const active = Boolean(
-            submenu.link && location.pathname === submenu.link
+            submenu.link &&
+              location.pathname.split("/")[1] === submenu.link.replace("/", "")
           );
           return (
             <NavLink
@@ -109,7 +123,11 @@ const data: MainLinkProps[] = [
   },
 ];
 
-export const MainLinks: React.FC = () => {
-  const links = data.map((menu, idx) => <MainLink key={idx} {...menu} />);
+export const MainLinks: React.FC<{ onNavigate: (path: string) => void }> = ({
+  onNavigate,
+}) => {
+  const links = data.map((menu, idx) => (
+    <MainLink key={idx} {...menu} onNavigate={onNavigate} />
+  ));
   return <div>{links}</div>;
 };

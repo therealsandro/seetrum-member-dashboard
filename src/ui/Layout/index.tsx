@@ -38,7 +38,11 @@ export const MainLayout = ({ title = DEFAULT_TITLE }) => {
           p="sm"
         >
           <Navbar.Section grow mt="xs">
-            <MainLinks />
+            <MainLinks
+              onNavigate={() => {
+                setOpened(false);
+              }}
+            />
           </Navbar.Section>
           <ContactCard />
           <Navbar.Section>
