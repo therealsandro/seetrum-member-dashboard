@@ -1,7 +1,7 @@
 import { DEFAULT_TITLE } from "@/lib/constants";
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { Typography } from "@/ui/Typography";
-import { Flex } from "@mantine/core";
+import { Button, Flex } from "@mantine/core";
 import { useDocumentTitle } from "@mantine/hooks";
 import React, { useState } from "react";
 import { MyTrainingFilter } from "../components/MyTrainingFilter";
@@ -10,13 +10,15 @@ import { TrainingToolbar } from "../components/TrainingToolbar";
 import { useTrainings } from "../store/useTrainings";
 import { trainingModelDummy } from "@/types/models/training";
 import { Timestamp } from "firebase/firestore";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import { useTrainingMember } from "../store/useTrainingMember";
 import { TrainingMemberStatus } from "@/types/models/trainingMember";
+import { TrainingEmptyState } from "../components/EmptyState";
 
 export const TrainingsPage: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const myTrainings = Boolean(location.pathname.includes("mytrainings"));
   useDocumentTitle(`${DEFAULT_TITLE} | ${myTrainings ? "My" : ""} Trainings`);
   const loading = useTrainings((state) => state.loading);
@@ -97,23 +99,43 @@ export const TrainingsPage: React.FC = () => {
           )}
         </TrainingToolbar>
         <Flex gap={24} direction="column" pt={16} pb={80}>
-          {loading || !trainings
-            ? Array(4)
-                .fill("-")
-                .map((e, i) => {
-                  return (
-                    <TrainingCard
-                      key={i}
-                      loading={loading}
-                      variant="horizontal"
-                      id="-"
-                      createdAt={Timestamp.now()}
-                      updatedAt={Timestamp.now()}
-                      {...trainingModelDummy}
-                    />
-                  );
-                })
-            : trainingList}
+          {loading || !trainings || !trainingList ? (
+            Array(4)
+              .fill("-")
+              .map((e, i) => {
+                return (
+                  <TrainingCard
+                    key={i}
+                    loading={loading}
+                    variant="horizontal"
+                    id="-"
+                    createdAt={Timestamp.now()}
+                    updatedAt={Timestamp.now()}
+                    {...trainingModelDummy}
+                  />
+                );
+              })
+          ) : trainingList.length > 0 ? (
+            trainingList
+          ) : (
+            <TrainingEmptyState
+              variants={
+                myTrainings
+                  ? filter || searchVal
+                    ? "myTrainingNotFound"
+                    : "myTrainingEmpty"
+                  : searchVal
+                  ? "trainingNotFound"
+                  : "trainingEmpty"
+              }
+            >
+              {myTrainings && !(filter || searchVal) && (
+                <Button onClick={() => navigate("/trainings")}>
+                  Browse trainings
+                </Button>
+              )}
+            </TrainingEmptyState>
+          )}
         </Flex>
       </Flex>
     </ProtectedPage>
