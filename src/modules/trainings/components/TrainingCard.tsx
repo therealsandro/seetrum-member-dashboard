@@ -1,10 +1,10 @@
-import { getFileURL } from "@/services/firebase/storage";
+import { useFileURLStore } from "@/services/firebase/storage";
 import { Training } from "@/types/models/training";
 import { TrainingMember } from "@/types/models/trainingMember";
 import { IconArrowRight } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import { Badge, Button, Flex, Image, Skeleton } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface TrainingCardProps extends Training {
@@ -40,8 +40,12 @@ const HorizontalCard: React.FC<Training & TrainingCardAddonProps> = ({
   loading,
   ...trainingData
 }) => {
+  const getFileURL = useFileURLStore((s) => s.getFileURL);
   const [imageUrl, setImage] = useState<string | undefined>(undefined);
-  getFileURL(trainingData.thumbnailFileName).then((ur) => setImage(ur));
+  useEffect(() => {
+    if (!imageUrl)
+      getFileURL(trainingData.thumbnailFileName).then((ur) => setImage(ur));
+  }, [getFileURL, trainingData.thumbnailFileName, imageUrl]);
   const navigate = useNavigate();
 
   return (
@@ -107,8 +111,12 @@ const HorizontalCard: React.FC<Training & TrainingCardAddonProps> = ({
   );
 };
 const VerticalCard: React.FC<Training> = ({ id, title, thumbnailFileName }) => {
+  const getFileURL = useFileURLStore((s) => s.getFileURL);
+
   const [imageUrl, setImage] = useState<string | undefined>(undefined);
-  getFileURL(thumbnailFileName).then((ur) => setImage(ur));
+  useEffect(() => {
+    if (!imageUrl) getFileURL(thumbnailFileName).then((ur) => setImage(ur));
+  }, [getFileURL, imageUrl, thumbnailFileName]);
   const navigate = useNavigate();
 
   return (

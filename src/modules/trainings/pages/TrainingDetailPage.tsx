@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ApplicationTrackingCard } from "../components/ApplicationTrackingCard";
 import { useTrainings } from "../store/useTrainings";
-import { getFileURL } from "@/services/firebase/storage";
+import { useFileURLStore } from "@/services/firebase/storage";
 import { useTrainingMember } from "../store/useTrainingMember";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 
@@ -31,6 +31,7 @@ export const TrainingDetailPage: React.FC = () => {
   const { id: trainingId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const getFileURL = useFileURLStore((s) => s.getFileURL);
   // Data gether
   const loading = useTrainings((state) => state.loading);
   const getTrainingById = useTrainings((state) => state.getTrainingsById);
@@ -56,6 +57,11 @@ export const TrainingDetailPage: React.FC = () => {
     }
   }, [trainingId, member, getTrainingById, getTMByTID]);
 
+  useEffect(() => {
+    if (!imageUrl && trainingData)
+      getFileURL(trainingData.thumbnailFileName).then((ur) => setImage(ur));
+  }, [getFileURL, trainingData, trainingData?.thumbnailFileName, imageUrl]);
+
   if (loading || !trainingData || loadingTM || !member) {
     return (
       <Box mih={100} w={"100%"}>
@@ -65,9 +71,6 @@ export const TrainingDetailPage: React.FC = () => {
       </Box>
     );
   }
-  getFileURL(trainingData.thumbnailFileName).then((fileURL) =>
-    setImage(fileURL)
-  );
 
   return (
     <Flex

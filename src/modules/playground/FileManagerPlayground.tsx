@@ -1,4 +1,4 @@
-import { getFileURL, uploadFile } from "@/services/firebase/storage";
+import { useFileURLStore, uploadFile } from "@/services/firebase/storage";
 import { FileInfo } from "@/types/models/fileInfo";
 import { Typography } from "@/ui/Typography";
 import {
@@ -16,6 +16,7 @@ export const FileManagerPlayground: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [fileInfo, setFileInfo] = useState<FileInfo>();
   const [loading, setLoading] = useState(false);
+  const getFileURL = useFileURLStore((s) => s.getFileURL);
 
   const previews = files.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);

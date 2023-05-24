@@ -1,5 +1,5 @@
 import { formatSize } from "@/lib/utils";
-import { getFileURL, uploadFile } from "@/services/firebase/storage";
+import { uploadFile, useFileURLStore } from "@/services/firebase/storage";
 import { FileInfo } from "@/types/models/fileInfo";
 import { FileRequirement } from "@/types/models/training";
 import { FileCard } from "@/ui/Card/FileCard";
@@ -40,6 +40,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
   required = false,
   error,
 }) => {
+  const getFileURL = useFileURLStore((s) => s.getFileURL);
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const [src, setSrc] = useState("");
