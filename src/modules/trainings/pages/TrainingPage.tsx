@@ -52,7 +52,13 @@ export const TrainingsPage: React.FC = () => {
     : trainingMembers
         ?.filter((tm) => (filter ? tm.status === filter : true))
         .map((tm) => {
-          const t = trainings?.find((t) => t.id === tm.trainingId);
+          const t = trainings?.find(
+            (t) =>
+              t.id === tm.trainingId &&
+              (searchVal
+                ? t.title.toLowerCase().includes(searchVal.toLowerCase())
+                : true)
+          );
           if (t) {
             return (
               <TrainingCard
