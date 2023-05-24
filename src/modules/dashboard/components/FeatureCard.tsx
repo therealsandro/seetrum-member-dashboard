@@ -39,7 +39,7 @@ const features = [
 
 export const FeatureCollectionCard = () => {
   return (
-    <MediaQuery smallerThan={"md"} styles={{ flexDirection: "column" }}>
+    <MediaQuery smallerThan={"sm"} styles={{ flexDirection: "column" }}>
       <Flex className="features-wrapper" gap={16}>
         {features.map((feature) => (
           <FeatureCard key={feature.title} {...feature} />
@@ -101,7 +101,7 @@ const FeatureCard: React.FC<FeatureCardProps> = (featureData) => {
             View all trainings
           </Button>
         ) : (
-          <Badge>Comming soon</Badge>
+          <Badge sx={(t) => ({ textTransform: "unset" })}>Coming soon</Badge>
         )}
       </Flex>
     </Stack>

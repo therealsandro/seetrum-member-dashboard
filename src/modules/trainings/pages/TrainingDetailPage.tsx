@@ -103,13 +103,33 @@ export const TrainingDetailPage: React.FC = () => {
       >
         Back to all trainings
       </Button>
-      <Flex gap={24} pb={80} justify={"space-between"} w={"100%"}>
+      <Flex
+        gap={24}
+        pb={80}
+        justify={"space-between"}
+        w={"100%"}
+        sx={(t) => ({
+          flexDirection: "row",
+          [t.fn.smallerThan("sm")]: { flexDirection: "column" },
+        })}
+      >
         <Flex direction="column" gap={24} sx={{ maxWidth: 640 }}>
           <Header {...trainingData} />
           <Description {...trainingData} />
           <Attachments attachments={trainingData.attachments} />
         </Flex>
-        <Flex sx={{ width: 315, flexShrink: 0 }} gap={16} direction="column">
+        <Flex
+          sx={(t) => ({
+            width: 315,
+            [t.fn.smallerThan("sm")]: {
+              width: "100%",
+              "& img": { display: "none" },
+            },
+            flexShrink: 0,
+          })}
+          gap={16}
+          direction="column"
+        >
           <Image
             withPlaceholder
             height={210}
@@ -155,6 +175,9 @@ const Header: React.FC<Training> = (trainignData) => {
         sx={(theme) => ({
           background: theme.colors.platinum[1],
           borderRadius: 12,
+          [theme.fn.smallerThan("sm")]: {
+            flexDirection: "column",
+          },
         })}
       >
         {data.map((data, index) => (
@@ -163,14 +186,23 @@ const Header: React.FC<Training> = (trainignData) => {
             py={12}
             px={16}
             gap={8}
-            sx={{
+            sx={(t) => ({
               flex: 1,
+              borderBottom: "none",
               borderRight: "2px solid",
               borderColor: "white",
               ":last-child": {
                 borderRight: "none",
               },
-            }}
+              [t.fn.smallerThan("sm")]: {
+                borderRight: "none",
+                borderBottom: "2px solid",
+                borderColor: "white",
+                ":last-child": {
+                  borderBottom: "none",
+                },
+              },
+            })}
             direction={"column"}
           >
             <Flex gap={8} align={"center"}>

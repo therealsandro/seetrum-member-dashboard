@@ -73,6 +73,13 @@ const HorizontalCard: React.FC<Training & TrainingCardAddonProps> = ({
           border: "1px solid",
           borderColor: t.fn.rgba(t.colors.night[6], 0.08),
           flexShrink: 0,
+          [t.fn.smallerThan("sm")]: {
+            maxWidth: "30%",
+            ".mantine-Image-imageWrapper img": {
+              maxWidth: "100%",
+              objectPosition: "50% 50%",
+            },
+          },
         })}
       />
       <Flex px={16} py={8} gap={8} direction="column">

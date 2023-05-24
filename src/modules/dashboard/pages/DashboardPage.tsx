@@ -8,7 +8,7 @@ export const DashboardPage = () => {
     <Container p={0}>
       <Stack spacing={24}>
         <DashboardHeader />
-        <MediaQuery smallerThan={"md"} styles={{ padding: 0 }}>
+        <MediaQuery smallerThan={"sm"} styles={{ padding: 0 }}>
           <Stack align="center" sx={{ flex: 1, padding: 40, gap: 32 }}>
             <img
               height={200}
@@ -19,7 +19,8 @@ export const DashboardPage = () => {
               <Typography
                 textVariant="title-md"
                 sx={(t) => ({
-                  textAlign: t.fn.smallerThan("md") ? "start" : "center",
+                  textAlign: "center",
+                  [t.fn.smallerThan("sm")]: { textAlign: "start" },
                 })}
               >
                 Step into a world of energy efficiency opportunities,
@@ -29,7 +30,8 @@ export const DashboardPage = () => {
                 textVariant="body-md"
                 c="dimmed"
                 sx={(t) => ({
-                  textAlign: t.fn.smallerThan("md") ? "start" : "center",
+                  textAlign: "center",
+                  [t.fn.smallerThan("sm")]: { textAlign: "start" },
                 })}
               >
                 Discover and join upcoming events, apply for cutting-edge

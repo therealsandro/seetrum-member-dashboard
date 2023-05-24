@@ -5,6 +5,7 @@ import {
   Box,
   Container,
   Flex,
+  MediaQuery,
   Skeleton,
   Stepper,
   useMantineTheme,
@@ -95,13 +96,15 @@ export const FormFillingLayout = () => {
                 </Flex>
                 <Outlet context={[step, setStep, training]} />
               </Flex>
-              <Flex w={308} sx={{ flexShrink: 0 }}>
-                <Skeleton visible={!Boolean(training)}>
-                  <Box sx={{ position: "sticky", top: 75 }}>
-                    <TrainingCard variant="vertical" {...training} />
-                  </Box>
-                </Skeleton>
-              </Flex>
+              <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+                <Flex w={308} sx={{ flexShrink: 0 }}>
+                  <Skeleton visible={!Boolean(training)}>
+                    <Box sx={{ position: "sticky", top: 75 }}>
+                      <TrainingCard variant="vertical" {...training} />
+                    </Box>
+                  </Skeleton>
+                </Flex>
+              </MediaQuery>
             </Flex>
           </Flex>
         </Container>
