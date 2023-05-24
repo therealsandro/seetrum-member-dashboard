@@ -93,7 +93,7 @@ export const FormFillingLayout = () => {
                   </Typography>
                   <Typography>{steps[step].desctiption}</Typography>
                 </Flex>
-                <Outlet context={[step, setStep]} />
+                <Outlet context={[step, setStep, training]} />
               </Flex>
               <Flex w={308} sx={{ flexShrink: 0 }}>
                 <Skeleton visible={!Boolean(training)}>
