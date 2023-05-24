@@ -57,7 +57,7 @@ const ROUTES = {
         children: [
           {
             index: true,
-            element: <TrainingsPage myTrainings />,
+            element: <TrainingsPage />,
           },
           {
             path: ":id",

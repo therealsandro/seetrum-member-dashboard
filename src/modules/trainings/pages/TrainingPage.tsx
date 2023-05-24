@@ -10,19 +10,51 @@ import { TrainingToolbar } from "../components/TrainingToolbar";
 import { useTrainings } from "../store/useTrainings";
 import { trainingModelDummy } from "@/types/models/training";
 import { Timestamp } from "firebase/firestore";
+import { useLocation } from "react-router-dom";
+import { useAuthStore } from "@/modules/auth/stores/authStore";
+import { useTrainingMember } from "../store/useTrainingMember";
 
-export const TrainingsPage: React.FC<{ myTrainings?: boolean }> = ({
-  myTrainings = false,
-}) => {
+export const TrainingsPage: React.FC = () => {
+  const location = useLocation();
+  const myTrainings = Boolean(location.pathname.includes("mytrainings"));
   useDocumentTitle(`${DEFAULT_TITLE} | ${myTrainings ? "My" : ""} Trainings`);
   const loading = useTrainings((state) => state.loading);
-  const trainingList = useTrainings((state) => state.trainings);
+  const trainings = useTrainings((state) => state.trainings);
   const getTrainings = useTrainings((state) => state.getTrainings);
+  const member = useAuthStore((s) => s.user);
+  const trainingMembers = useTrainingMember((s) => s.trainingMember);
+  const getTMByTID = useTrainingMember((s) => s.getTrainingMemberByMemberId);
 
   React.useEffect(() => {
     getTrainings();
-  }, [getTrainings]);
+    if (member) getTMByTID(member.id);
+  }, [getTrainings, getTMByTID, member]);
 
+  const trainingList = !myTrainings
+    ? trainings?.map((trainingData, idx) => {
+        return (
+          <TrainingCard
+            key={idx}
+            variant="horizontal"
+            {...trainingData}
+            // applicationStatus={myTrainings}
+          />
+        );
+      })
+    : trainingMembers?.map((tm) => {
+        const t = trainings?.find((t) => t.id === tm.trainingId);
+        if (t) {
+          return (
+            <TrainingCard
+              key={tm.id}
+              variant="horizontal"
+              {...t}
+              applicationStatus={tm}
+            />
+          );
+        }
+        return <></>;
+      });
   return (
     <ProtectedPage>
       <Flex direction="column">
@@ -57,16 +89,7 @@ export const TrainingsPage: React.FC<{ myTrainings?: boolean }> = ({
                     />
                   );
                 })
-            : trainingList.map((trainingData, idx) => {
-                return (
-                  <TrainingCard
-                    key={idx}
-                    variant="horizontal"
-                    {...trainingData}
-                    // applicationStatus={myTrainings}
-                  />
-                );
-              })}
+            : trainingList}
         </Flex>
       </Flex>
     </ProtectedPage>

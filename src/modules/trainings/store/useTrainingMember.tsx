@@ -33,7 +33,7 @@ export const useTrainingMember = create<TrainingMemberStore>((set, get) => ({
       const trainingsList = await getTrainingMemberByMemberId(memberId);
       // trainingsList.sort((b, a) => a.createdAt.seconds - b.createdAt.seconds);
       set({
-        trainingMember: trainingsList,
+        trainingMember: Boolean(trainingsList) ? trainingsList : null,
         memberId,
         loading: false,
         error: null,

@@ -97,7 +97,8 @@ const HorizontalCard: React.FC<Training & TrainingCardAddonProps> = ({
             color="primary"
             sx={{ width: "fit-content", textTransform: "unset" }}
           >
-            {applicationStatus.status}
+            {applicationStatus.status[0].toUpperCase() +
+              applicationStatus.status.slice(1)}
           </Badge>
         )}
       </Flex>
