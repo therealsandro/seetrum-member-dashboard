@@ -10,7 +10,7 @@ export type TrainingMemberModel = {
   phoneNumber: string;
   trainingId: string;
   memberId: string;
-  status: "applied" | "accepted" | "rejected" | "issued";
+  status: TrainingMemberStatus;
   issuedCertificate: string;
   gender: "female" | "male";
   employmentStatus: "unemployed" | "employed";
@@ -38,3 +38,9 @@ export const trainingMemberDummy: TrainingMemberModel = {
   postalCode: "12345",
   requiredFiles: [fileInfoDummy],
 };
+
+export type TrainingMemberStatus =
+  | "applied"
+  | "accepted"
+  | "rejected"
+  | "issued";

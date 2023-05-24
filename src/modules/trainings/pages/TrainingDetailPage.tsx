@@ -1,7 +1,7 @@
 import { pretyDate } from "@/lib/utils";
 import { FileInfo } from "@/types/models/fileInfo";
 import { Training } from "@/types/models/training";
-import { trainingMemberDummy } from "@/types/models/trainingMember";
+import { TrainingMember } from "@/types/models/trainingMember";
 import { FileCard } from "@/ui/Card/FileCard";
 import {
   IconArrowLeft,
@@ -10,34 +10,52 @@ import {
   IconPeople,
 } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
-import { Button, Flex, Image } from "@mantine/core";
+import { Box, Button, Center, Flex, Image, Loader } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ApplicationTrackingCard } from "../components/ApplicationTrackingCard";
 import { useTrainings } from "../store/useTrainings";
 import { getFileURL } from "@/services/firebase/storage";
+import { useTrainingMember } from "../store/useTrainingMember";
+import { useAuthStore } from "@/modules/auth/stores/authStore";
 
 export const TrainingDetailPage: React.FC = () => {
-  const { id } = useParams();
+  const { id: trainingId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   // Data gether
   const loading = useTrainings((state) => state.loading);
   const getTrainingById = useTrainings((state) => state.getTrainingsById);
-  // const error = useTrainings((state) => state.error);
+  const member = useAuthStore((s) => s.user);
+  const loadingTM = useTrainingMember((state) => state.loading);
+  const getTMByTID = useTrainingMember(
+    (state) => state.getTrainingsByTrainingId
+  );
+
   const [trainingData, setTraining] = useState<Training | undefined>(undefined);
+  const [tmData, setTM] = useState<TrainingMember | undefined>(undefined);
   const [imageUrl, setImage] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (id) {
-      getTrainingById(id).then((training) => {
+    if (trainingId) {
+      getTrainingById(trainingId).then((training) => {
         if (training) setTraining(training);
       });
+      if (member)
+        getTMByTID(member.id, trainingId).then((tm) => {
+          if (tm) setTM(tm);
+        });
     }
-  }, [id, getTrainingById]);
+  }, [trainingId, member, getTrainingById, getTMByTID]);
 
-  if (loading || !trainingData) {
-    return <div>Loading...</div>;
+  if (loading || !trainingData || loadingTM || !member) {
+    return (
+      <Box mih={100} w={"100%"}>
+        <Center>
+          <Loader />
+        </Center>
+      </Box>
+    );
   }
   getFileURL(trainingData.thumbnailFileName).then((fileURL) =>
     setImage(fileURL)
@@ -93,7 +111,7 @@ export const TrainingDetailPage: React.FC = () => {
               borderColor: t.fn.rgba(t.colors.night[6], 0.08),
             })}
           />
-          <ApplicationTrackingCard {...trainingMemberDummy} />
+          <ApplicationTrackingCard {...tmData} />
         </Flex>
       </Flex>
     </Flex>
