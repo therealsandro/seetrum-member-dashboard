@@ -1,25 +1,83 @@
 import { DEFAULT_TITLE } from "@/lib/constants";
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { Typography } from "@/ui/Typography";
-import { Flex } from "@mantine/core";
+import { Button, Flex } from "@mantine/core";
 import { useDocumentTitle } from "@mantine/hooks";
-import React from "react";
+import React, { useState } from "react";
 import { MyTrainingFilter } from "../components/MyTrainingFilter";
 import { TrainingCard } from "../components/TrainingCard";
 import { TrainingToolbar } from "../components/TrainingToolbar";
+import { useTrainings } from "../store/useTrainings";
+import { trainingModelDummy } from "@/types/models/training";
+import { Timestamp } from "firebase/firestore";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/modules/auth/stores/authStore";
+import { useTrainingMember } from "../store/useTrainingMember";
+import { TrainingMemberStatus } from "@/types/models/trainingMember";
+import { TrainingEmptyState } from "../components/EmptyState";
 
-const trainingDummyData = {
-  id: "trainingDummy",
-  thumbnail: "testing.png",
-  title: "Auditor Energi Termal dan Kelistrikan",
-  vendorName: "LSP HAKE",
-};
-
-export const TrainingsPage: React.FC<{ myTrainings?: boolean }> = ({
-  myTrainings = false,
-}) => {
+export const TrainingsPage: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const myTrainings = Boolean(location.pathname.includes("mytrainings"));
   useDocumentTitle(`${DEFAULT_TITLE} | ${myTrainings ? "My" : ""} Trainings`);
+  const loading = useTrainings((state) => state.loading);
+  const trainings = useTrainings((state) => state.trainings);
+  const getTrainings = useTrainings((state) => state.getTrainings);
+  const setTrainingSort = useTrainings((state) => state.setSortings);
+  const member = useAuthStore((s) => s.user);
+  const trainingMembers = useTrainingMember((s) => s.trainingMember);
+  const getTMByTID = useTrainingMember((s) => s.getTrainingMemberByMemberId);
 
+  const [filter, setFilter] = useState<TrainingMemberStatus | undefined>(
+    undefined
+  );
+  const [searchVal, setSearchV] = useState("");
+
+  React.useEffect(() => {
+    getTrainings();
+    if (member) getTMByTID(member.id);
+  }, [getTrainings, getTMByTID, member]);
+
+  const trainingList = !myTrainings
+    ? trainings
+        ?.filter((t) =>
+          searchVal
+            ? t.title.toLowerCase().includes(searchVal.toLowerCase())
+            : true
+        )
+        .map((trainingData, idx) => {
+          return (
+            <TrainingCard
+              key={trainingData.id}
+              variant="horizontal"
+              {...trainingData}
+            />
+          );
+        })
+    : trainingMembers
+        ?.filter((tm) => (filter ? tm.status === filter : true))
+        .map((tm) => {
+          const t = trainings?.find(
+            (t) =>
+              t.id === tm.trainingId &&
+              (searchVal
+                ? t.title.toLowerCase().includes(searchVal.toLowerCase())
+                : true)
+          );
+          if (t) {
+            return (
+              <TrainingCard
+                key={tm.id}
+                variant="horizontal"
+                {...t}
+                applicationStatus={tm}
+              />
+            );
+          }
+          return undefined;
+        })
+        .filter((t) => t);
   return (
     <ProtectedPage>
       <Flex direction="column">
@@ -30,26 +88,55 @@ export const TrainingsPage: React.FC<{ myTrainings?: boolean }> = ({
         <TrainingToolbar
           myTrainings={myTrainings}
           // TODO: Update this function handle
-          onSearchChanged={(val) => console.log("[searchChanged]", val)}
-          onSortChanged={(val) => console.log("[sortChanged]", val)}
+          onSearchChanged={(val) => setSearchV(val)}
+          onSortChanged={(val) => setTrainingSort(val[0], val[1])}
         >
           {myTrainings && (
-            <MyTrainingFilter value="0" onChange={(val) => console.log(val)} />
+            <MyTrainingFilter
+              value=""
+              onChange={(val) => setFilter(val as TrainingMemberStatus)}
+            />
           )}
         </TrainingToolbar>
         <Flex gap={24} direction="column" pt={16} pb={80}>
-          {Array(5)
-            .fill("-")
-            .map((i, idx) => {
-              return (
-                <TrainingCard
-                  key={idx}
-                  variant="horizontal"
-                  {...trainingDummyData}
-                  withApplicationStatus={myTrainings}
-                />
-              );
-            })}
+          {loading || !trainings || !trainingList ? (
+            Array(4)
+              .fill("-")
+              .map((e, i) => {
+                return (
+                  <TrainingCard
+                    key={i}
+                    loading={loading}
+                    variant="horizontal"
+                    id="-"
+                    createdAt={Timestamp.now()}
+                    updatedAt={Timestamp.now()}
+                    {...trainingModelDummy}
+                    thumbnailFileName=""
+                  />
+                );
+              })
+          ) : trainingList.length > 0 ? (
+            trainingList
+          ) : (
+            <TrainingEmptyState
+              variants={
+                myTrainings
+                  ? filter || searchVal
+                    ? "myTrainingNotFound"
+                    : "myTrainingEmpty"
+                  : searchVal
+                  ? "trainingNotFound"
+                  : "trainingEmpty"
+              }
+            >
+              {myTrainings && !(filter || searchVal) && (
+                <Button onClick={() => navigate("/trainings")}>
+                  Browse trainings
+                </Button>
+              )}
+            </TrainingEmptyState>
+          )}
         </Flex>
       </Flex>
     </ProtectedPage>

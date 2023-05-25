@@ -1,5 +1,8 @@
 import { pretyDate } from "@/lib/utils";
-import { TrainingMember } from "@/types/models/trainingMember";
+import {
+  TrainingMember,
+  TrainingMemberStatus,
+} from "@/types/models/trainingMember";
 import { IconChevronDown } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import {
@@ -79,6 +82,12 @@ export const ApplicationTrackingCard: React.FC<
   );
 };
 
+const ApplicationLogState: Record<TrainingMemberStatus, string> = {
+  issued: "Certificate issued",
+  rejected: "Application rejected",
+  accepted: "Application accepted",
+  applied: "Application received",
+};
 // TODO: Implement history view with collapsible section
 const ApplicationHistory: React.FC<
   Partial<TrainingMember> & { isOpen: Boolean }
@@ -93,7 +102,9 @@ const ApplicationHistory: React.FC<
             bg="biceblue.6"
             sx={{ borderRadius: "16px", overflow: "hidden" }}
           />
-          <Typography>{applicantData.status}</Typography>
+          <Typography>
+            {ApplicationLogState[applicantData.status as TrainingMemberStatus]}
+          </Typography>
         </Flex>
         <Typography textVariant="body-sm">
           {pretyDate(new Date(Date.now()))}

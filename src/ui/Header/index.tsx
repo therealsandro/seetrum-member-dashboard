@@ -10,13 +10,19 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import React from "react";
+import { IconBoxArrowRight } from "../Icons";
 
 interface Props {
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  withoutNavigation?: boolean;
 }
 
-export const Header: React.FC<Props> = ({ opened, setOpened }) => {
+export const Header: React.FC<Props> = ({
+  opened,
+  setOpened,
+  withoutNavigation = false,
+}) => {
   const theme = useMantineTheme();
   const logOut = useAuthStore((state) => state.logOut);
 
@@ -31,20 +37,29 @@ export const Header: React.FC<Props> = ({ opened, setOpened }) => {
             },
           }}
         >
-          <MediaQuery largerThan="md" styles={{ display: "none" }}>
-            <Burger
-              opened={opened}
-              onClick={() => setOpened((o) => !o)}
-              size="sm"
-              color={theme.colors.gray[6]}
-              mr="xl"
-            />
-          </MediaQuery>
-          <a href="https://seetrum.id">
+          {!withoutNavigation && (
+            <MediaQuery largerThan="md" styles={{ display: "none" }}>
+              <Burger
+                opened={opened}
+                onClick={() => setOpened((o) => !o)}
+                size="sm"
+                color={theme.colors.gray[6]}
+                mr="xl"
+              />
+            </MediaQuery>
+          )}
+          <a href="/">
             <img src={logoHorizontalUrl} alt={"seetrum logo"} />
           </a>
         </Box>
-        <Button onClick={() => logOut()}>Log out</Button>
+        <Button
+          variant="outline"
+          radius={"md"}
+          rightIcon={<IconBoxArrowRight size={18} />}
+          onClick={() => logOut()}
+        >
+          Log out
+        </Button>
       </Flex>
     </MantineHeader>
   );

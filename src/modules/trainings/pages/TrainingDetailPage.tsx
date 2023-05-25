@@ -1,6 +1,7 @@
 import { pretyDate } from "@/lib/utils";
 import { FileInfo } from "@/types/models/fileInfo";
 import { Training } from "@/types/models/training";
+import { TrainingMember } from "@/types/models/trainingMember";
 import { FileCard } from "@/ui/Card/FileCard";
 import {
   IconArrowLeft,
@@ -9,35 +10,139 @@ import {
   IconPeople,
 } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
-import { Button, Flex, Image } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Image,
+  Loader,
+  TypographyStylesProvider,
+} from "@mantine/core";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ApplicationTrackingCard } from "../components/ApplicationTrackingCard";
-import { trainingMemberDummy } from "@/types/models/trainingMember";
+import { useTrainings } from "../store/useTrainings";
+import { useFileURLStore } from "@/services/firebase/storage";
+import { useTrainingMember } from "../store/useTrainingMember";
+import { useAuthStore } from "@/modules/auth/stores/authStore";
 
-export const TrainingDetailPage: React.FC<Training> = (trainignData) => {
+export const TrainingDetailPage: React.FC = () => {
+  const { id: trainingId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const getFileURL = useFileURLStore((s) => s.getFileURL);
+  // Data gether
+  const loading = useTrainings((state) => state.loading);
+  const getTrainingById = useTrainings((state) => state.getTrainingsById);
+  const member = useAuthStore((s) => s.user);
+  const loadingTM = useTrainingMember((state) => state.loading);
+  const getTMByTID = useTrainingMember(
+    (state) => state.getTrainingsByTrainingId
+  );
+
+  const [trainingData, setTraining] = useState<Training | undefined>(undefined);
+  const [tmData, setTM] = useState<TrainingMember | undefined>(undefined);
+  const [imageUrl, setImage] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (trainingId) {
+      getTrainingById(trainingId).then((training) => {
+        if (training) setTraining(training);
+      });
+      if (member)
+        getTMByTID(member.id, trainingId).then((tm) => {
+          if (tm) setTM(tm);
+        });
+    }
+  }, [trainingId, member, getTrainingById, getTMByTID]);
+
+  useEffect(() => {
+    if (!imageUrl && trainingData)
+      getFileURL(trainingData.thumbnailFileName).then((ur) => setImage(ur));
+  }, [getFileURL, trainingData, trainingData?.thumbnailFileName, imageUrl]);
+
+  if (loading || !trainingData || loadingTM || !member) {
+    return (
+      <Box mih={100} w={"100%"}>
+        <Center>
+          <Loader />
+        </Center>
+      </Box>
+    );
+  }
+
   return (
-    <Flex gap={24} direction="column" align={"flex-start"}>
+    <Flex
+      gap={24}
+      direction="column"
+      align={"flex-start"}
+      sx={{
+        "& a.mantine-Button-root:hover": {
+          backgroundColor: "unset",
+          textDecoration: "underline",
+        },
+      }}
+    >
       <Button
+        component="a"
         variant="subtle"
         radius="md"
-        sx={{ color: "black" }}
+        p={0}
+        sx={{
+          color: "black",
+        }}
         leftIcon={<IconArrowLeft />}
+        onClick={() =>
+          navigate(
+            "/" +
+              (location.pathname.includes("mytraining") ? "my" : "") +
+              "trainings"
+          )
+        }
       >
         Back to all trainings
       </Button>
-      <Flex gap={24} pb={80} justify={"space-between"} w={"100%"}>
+      <Flex
+        gap={24}
+        pb={80}
+        justify={"space-between"}
+        w={"100%"}
+        sx={(t) => ({
+          flexDirection: "row",
+          [t.fn.smallerThan("sm")]: { flexDirection: "column" },
+        })}
+      >
         <Flex direction="column" gap={24} sx={{ maxWidth: 640 }}>
-          <Header {...trainignData} />
-          <Description {...trainignData} />
-          <Attachments attachments={trainignData.attachments} />
+          <Header {...trainingData} />
+          <Description {...trainingData} />
+          <Attachments attachments={trainingData.attachments} />
         </Flex>
-        <Flex sx={{ width: 315, flexShrink: 0 }} gap={16} direction="column">
+        <Flex
+          sx={(t) => ({
+            width: 315,
+            [t.fn.smallerThan("sm")]: {
+              width: "100%",
+              "& img": { display: "none" },
+            },
+            flexShrink: 0,
+          })}
+          gap={16}
+          direction="column"
+        >
           <Image
             withPlaceholder
             height={210}
             radius={"lg"}
-            src={trainignData.thumbnailFileName}
+            src={imageUrl}
+            sx={(t) => ({
+              overflow: "hidden",
+              borderRadius: "16px",
+              border: "1px solid",
+              borderColor: t.fn.rgba(t.colors.night[6], 0.08),
+            })}
           />
-          <ApplicationTrackingCard {...trainingMemberDummy} />
+          <ApplicationTrackingCard {...tmData} />
         </Flex>
       </Flex>
     </Flex>
@@ -55,7 +160,7 @@ const Header: React.FC<Training> = (trainignData) => {
     getData(
       <IconCalendarEvent />,
       "Application deadline",
-      pretyDate(trainignData.dueDate)
+      pretyDate(trainignData.dueDate.toDate())
     ),
     getData(
       <IconClockHistory />,
@@ -70,6 +175,9 @@ const Header: React.FC<Training> = (trainignData) => {
         sx={(theme) => ({
           background: theme.colors.platinum[1],
           borderRadius: 12,
+          [theme.fn.smallerThan("sm")]: {
+            flexDirection: "column",
+          },
         })}
       >
         {data.map((data, index) => (
@@ -78,14 +186,23 @@ const Header: React.FC<Training> = (trainignData) => {
             py={12}
             px={16}
             gap={8}
-            sx={{
+            sx={(t) => ({
               flex: 1,
+              borderBottom: "none",
               borderRight: "2px solid",
               borderColor: "white",
               ":last-child": {
                 borderRight: "none",
               },
-            }}
+              [t.fn.smallerThan("sm")]: {
+                borderRight: "none",
+                borderBottom: "2px solid",
+                borderColor: "white",
+                ":last-child": {
+                  borderBottom: "none",
+                },
+              },
+            })}
             direction={"column"}
           >
             <Flex gap={8} align={"center"}>
@@ -109,7 +226,9 @@ const Description: React.FC<Training> = (trainignData) => {
     <Flex direction={"column"} gap={16}>
       <Typography textVariant="title-md">Description</Typography>
       {/* TODO: Update to support rich text format */}
-      {trainignData.description}
+      <TypographyStylesProvider>
+        <Box dangerouslySetInnerHTML={{ __html: trainignData.description }} />
+      </TypographyStylesProvider>
     </Flex>
   );
 };

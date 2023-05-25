@@ -1,3 +1,5 @@
+import { matches } from "@mantine/form";
+
 export const toTitleCase = (str: string) => {
   return str.replace(/\w\S*/g, function (txt) {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
@@ -38,4 +40,12 @@ export const formatSize = (bytes: number) => {
 
 export const getFileName = (filename: string) => {
   return filename.split("-").slice(1).join("-");
+};
+
+export const isIDNPhoneNumber = (errorMessage: string) => {
+  return (value: unknown) =>
+    matches(
+      /^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/,
+      errorMessage
+    )(value);
 };

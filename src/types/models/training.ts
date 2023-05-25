@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import { BaseModel } from ".";
 import { FileInfo, fileInfoDummy } from "./fileInfo";
 
@@ -8,7 +9,7 @@ export type TrainingModel = {
   trainerName: string;
   thumbnailFileName: string;
   description: string;
-  dueDate: Date;
+  dueDate: Timestamp;
   attachments: FileInfo[];
   fileRequirements: FileRequirement[];
 };
@@ -56,7 +57,7 @@ export const trainingModelDummy: TrainingModel = {
   Silahkan menghubungi Instagram kami, @seetrum.id jika Anda memiliki pertanyaan seputar pelatihan ini atau Anda mengalami kesulitan dalam mengisi formulir ini.
   
   Terima kasih.`,
-  dueDate: new Date(),
+  dueDate: Timestamp.now(),
   attachments: [fileInfoDummy],
   fileRequirements: [fileRequirementDummy, fileRequirementImageDummy],
 };

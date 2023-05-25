@@ -1,5 +1,5 @@
 import { formatSize } from "@/lib/utils";
-import { getFileURL, uploadFile } from "@/services/firebase/storage";
+import { uploadFile, useFileURLStore } from "@/services/firebase/storage";
 import { FileInfo } from "@/types/models/fileInfo";
 import { FileRequirement } from "@/types/models/training";
 import { FileCard } from "@/ui/Card/FileCard";
@@ -22,7 +22,7 @@ import {
   Stack,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface FileUploadButtonProps extends FileRequirement {
   value?: FileInfo;
@@ -40,15 +40,18 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
   required = false,
   error,
 }) => {
+  const getFileURL = useFileURLStore((s) => s.getFileURL);
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const [src, setSrc] = useState("");
+  const resetRef = useRef<() => void>(null);
 
   const isImage = accepts.includes("image");
 
   const removeFile = () => {
     onFileChange(undefined);
     setSrc("");
+    resetRef.current?.();
   };
 
   const submitFile = async (file: File) => {
@@ -154,7 +157,11 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
                   </Flex>
                 )}
                 <Group>
-                  <FileButton onChange={submitFile} accept={accepts}>
+                  <FileButton
+                    resetRef={resetRef}
+                    onChange={submitFile}
+                    accept={accepts}
+                  >
                     {(props) => (
                       <Button
                         {...props}

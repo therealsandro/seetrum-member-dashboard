@@ -14,16 +14,16 @@ import { useDebouncedState } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 
 const sortOptions = {
-  "createdAt desc": { label: "Newest" },
-  "createdAt asc": { label: "Oldest" },
-  "title asc": { label: "Training title (A-Z)" },
-  "title desc": { label: "Training title (Z-A)" },
+  "createdAt desc": { label: "Newest", sort: [0, 1] },
+  "createdAt asc": { label: "Oldest", sort: [0, 0] },
+  "title asc": { label: "Training title (A-Z)", sort: [1, 0] },
+  "title desc": { label: "Training title (Z-A)", sort: [1, 1] },
 } as const;
 
 interface TrainingToolbarProps {
   myTrainings?: boolean;
   onSearchChanged: (val: string) => void;
-  onSortChanged: (val: keyof typeof sortOptions) => void;
+  onSortChanged: (val: [number, number]) => void;
   children?: React.ReactNode;
 }
 
@@ -37,6 +37,8 @@ export const TrainingToolbar: React.FC<TrainingToolbarProps> = ({
 }) => {
   const [searchValue, setSearchValue] = useDebouncedState("", 500);
   const [sortBy, setSortBy] = useState<sortOption>("createdAt desc");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [sortByOps, setSortByOps] = useState<[number, number]>([0, 1]);
 
   useEffect(() => {
     onSearchChanged(searchValue);
@@ -126,7 +128,8 @@ export const TrainingToolbar: React.FC<TrainingToolbarProps> = ({
                       })}
                       onClick={() => {
                         setSortBy(sortOption.value as sortOption);
-                        onSortChanged(sortOption.value as sortOption);
+                        setSortByOps(sortOption.sort as [number, number]);
+                        onSortChanged(sortOption.sort as [number, number]);
                       }}
                     >
                       {sortOption.label}

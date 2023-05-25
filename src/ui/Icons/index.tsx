@@ -21,6 +21,7 @@ import {
   BsTrash,
   BsExclamationCircle,
   BsAsterisk,
+  BsBoxArrowRight,
 } from "react-icons/bs";
 
 export const IconArrowLeft = BsArrowLeft;
@@ -28,6 +29,7 @@ export const IconArrowRight = BsArrowRight;
 export const IconChevronRight = BsChevronRight;
 export const IconChevronDown = BsChevronDown;
 export const IconBoxArrowUpRight = BsBoxArrowUpRight;
+export const IconBoxArrowRight = BsBoxArrowRight;
 
 export const IconPerson = BsPerson;
 export const IconPeople = BsPeople;

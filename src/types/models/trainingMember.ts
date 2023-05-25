@@ -10,12 +10,14 @@ export type TrainingMemberModel = {
   phoneNumber: string;
   trainingId: string;
   memberId: string;
-  status: "proposed" | "accepted" | "rejected" | "issued";
+  status: TrainingMemberStatus;
   issuedCertificate: string;
-  gender: string;
-  employmentStatus: string;
+  gender: "female" | "male";
+  employmentStatus: "unemployed" | "employed";
   institutionName: string;
   address: string;
+  province: string;
+  postalCode: string;
   requiredFiles: FileInfo[];
 };
 
@@ -26,11 +28,19 @@ export const trainingMemberDummy: TrainingMemberModel = {
   age: 20,
   phoneNumber: "08123123123",
   trainingId: "c8wzhSGbozS3QcW5ae5h",
-  status: "proposed",
+  status: "applied",
   issuedCertificate: "",
   gender: "male",
   employmentStatus: "employed",
   institutionName: "Seetrum",
   address: "Jawa Tengah",
+  province: "Jawa Tengah",
+  postalCode: "12345",
   requiredFiles: [fileInfoDummy],
 };
+
+export type TrainingMemberStatus =
+  | "applied"
+  | "accepted"
+  | "rejected"
+  | "issued";
