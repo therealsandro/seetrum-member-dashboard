@@ -1,42 +1,50 @@
 import { DEFAULT_TITLE } from "@/lib/constants";
-import { AppShell, Loader, Navbar } from "@mantine/core";
 import { Header } from "../Header";
 
 import { extractInitials } from "@/lib/utils";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import {
+  AppShell,
   Avatar,
   Box,
+  Button,
+  Flex,
   Group,
+  Loader,
+  Navbar,
   UnstyledButton,
   rem,
   useMantineTheme,
 } from "@mantine/core";
 import React from "react";
-import { IconArrowRight } from "../Icons";
+import { IconChevronRight, IconWhatsapp } from "../Icons";
 import { Typography } from "../Typography";
 import { MainLinks } from "./MainLinks";
+import { Outlet } from "react-router-dom";
+import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 
-interface Props {
-  title?: string;
-  children: React.ReactNode;
-}
-
-export const MainLayout: React.FC<Props> = ({
-  title = DEFAULT_TITLE,
-  children,
-}) => {
+export const MainLayout = ({ title = DEFAULT_TITLE }) => {
   const [opened, setOpened] = React.useState(false);
 
   return (
     <AppShell
-      padding="md"
-      fixed={false}
+      padding="lg"
+      navbarOffsetBreakpoint={"md"}
       navbar={
-        <Navbar hidden={!opened} width={{ sm: 200, lg: 300 }} p="xs">
+        <Navbar
+          hiddenBreakpoint={"md"}
+          hidden={!opened}
+          width={{ sm: 256, lg: 300 }}
+          p="sm"
+        >
           <Navbar.Section grow mt="xs">
-            <MainLinks />
+            <MainLinks
+              onNavigate={() => {
+                setOpened(false);
+              }}
+            />
           </Navbar.Section>
+          <ContactCard />
           <Navbar.Section>
             <User />
           </Navbar.Section>
@@ -44,7 +52,11 @@ export const MainLayout: React.FC<Props> = ({
       }
       header={<Header opened={opened} setOpened={setOpened} />}
     >
-      {children}
+      <ProtectedPage>
+        <Box sx={{ position: "relative" }}>
+          <Outlet />
+        </Box>
+      </ProtectedPage>
     </AppShell>
   );
 };
@@ -54,7 +66,19 @@ export const User: React.FC<any> = (props) => {
   const user = useAuthStore((state) => state.user);
 
   if (!user) {
-    return <Loader />;
+    return (
+      <Flex
+        sx={{
+          height: 60,
+          paddingTop: theme.spacing.sm,
+          borderTop: `${rem(1)} solid ${theme.colors.gray[2]}`,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Loader />
+      </Flex>
+    );
   }
 
   const { name, email } = user;
@@ -71,7 +95,7 @@ export const User: React.FC<any> = (props) => {
           display: "block",
           width: "100%",
           padding: theme.spacing.xs,
-          borderRadius: theme.radius.sm,
+          borderRadius: theme.radius.md,
           color: theme.black,
 
           "&:hover": {
@@ -94,9 +118,41 @@ export const User: React.FC<any> = (props) => {
             </Typography>
           </Box>
 
-          <IconArrowRight size={rem(18)} />
+          <IconChevronRight size={rem(18)} />
         </Group>
       </UnstyledButton>
     </Box>
+  );
+};
+
+export const ContactCard = () => {
+  return (
+    <Flex
+      p={12}
+      pt={16}
+      mb={12}
+      gap={4}
+      bg={"platinum.1"}
+      direction="column"
+      sx={{ borderRadius: 16 }}
+    >
+      <Typography textVariant="title-md">Need Assistance?</Typography>
+      <Typography textVariant="body-md" mb={12}>
+        Our team is here to help! Click here to contact us directly on WhatsApp.
+      </Typography>
+      <Button
+        component="a"
+        variant="outline"
+        radius={"md"}
+        target="_blank"
+        sx={(theme) => ({ borderColor: theme.colors.gray[4] })}
+        href="https://wa.me/6285727055636"
+      >
+        <IconWhatsapp size={18} />
+        <Typography px={8} textVariant="label-lg">
+          Contact us
+        </Typography>
+      </Button>
+    </Flex>
   );
 };

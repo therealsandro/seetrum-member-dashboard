@@ -1,3 +1,5 @@
+import { matches } from "@mantine/form";
+
 export const toTitleCase = (str: string) => {
   return str.replace(/\w\S*/g, function (txt) {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
@@ -13,4 +15,37 @@ export const extractInitials = (name: string) => {
   }
 
   return initials.toUpperCase();
+};
+
+export const pretyDate = (date: Date) => {
+  const d = new Date(date);
+  return d.toLocaleString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+export const formatSize = (bytes: number) => {
+  if (bytes < 1024) {
+    return bytes + " B";
+  } else if (bytes < 1048576) {
+    const kilobytes = (bytes / 1024).toFixed(2);
+    return kilobytes + " KB";
+  } else {
+    const megabytes = (bytes / 1048576).toFixed(2);
+    return megabytes + " MB";
+  }
+};
+
+export const getFileName = (filename: string) => {
+  return filename.split("-").slice(1).join("-");
+};
+
+export const isIDNPhoneNumber = (errorMessage: string) => {
+  return (value: unknown) =>
+    matches(
+      /^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/,
+      errorMessage
+    )(value);
 };

@@ -18,12 +18,12 @@ type TextVariantType =
   | "label-sm";
 
 interface TypographyProps {
-  textVariant: TextVariantType;
-  children: React.ReactNode;
+  textVariant?: TextVariantType;
+  children?: React.ReactNode;
 }
 
 export const Typography: React.FC<TypographyProps & TextProps> = ({
-  textVariant,
+  textVariant = "body-md",
   children,
   ...textProps
 }) => {
