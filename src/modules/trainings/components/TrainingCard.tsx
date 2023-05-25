@@ -43,7 +43,7 @@ const HorizontalCard: React.FC<Training & TrainingCardAddonProps> = ({
   const getFileURL = useFileURLStore((s) => s.getFileURL);
   const [imageUrl, setImage] = useState<string | undefined>(undefined);
   useEffect(() => {
-    if (!imageUrl)
+    if (trainingData.thumbnailFileName && !imageUrl)
       getFileURL(trainingData.thumbnailFileName).then((ur) => setImage(ur));
   }, [getFileURL, trainingData.thumbnailFileName, imageUrl]);
   const navigate = useNavigate();
@@ -122,7 +122,8 @@ const VerticalCard: React.FC<Training> = ({ id, title, thumbnailFileName }) => {
 
   const [imageUrl, setImage] = useState<string | undefined>(undefined);
   useEffect(() => {
-    if (!imageUrl) getFileURL(thumbnailFileName).then((ur) => setImage(ur));
+    if (thumbnailFileName && !imageUrl)
+      getFileURL(thumbnailFileName).then((ur) => setImage(ur));
   }, [getFileURL, imageUrl, thumbnailFileName]);
   const navigate = useNavigate();
 

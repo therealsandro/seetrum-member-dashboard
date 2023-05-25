@@ -3,6 +3,8 @@ import { FileInfo } from "@/types/models/fileInfo";
 import { ActionIcon, Flex, Group } from "@mantine/core";
 import { IconBoxArrowUpRight, IconPDF, IconTrash } from "../Icons";
 import { Typography } from "../Typography";
+import { useFileURLStore } from "@/services/firebase/storage";
+import { showErrorNotif } from "../notifications";
 
 interface FileCardProps extends FileInfo {
   onRemoveFile?: () => void;
@@ -12,6 +14,17 @@ export const FileCard: React.FC<FileCardProps> = ({
   onRemoveFile,
   ...file
 }) => {
+  const getFileURL = useFileURLStore((s) => s.getFileURL);
+
+  const handleOpenFile = async () => {
+    try {
+      const url = await getFileURL(file.filename);
+      window.open(url, "_blank");
+    } catch (e) {
+      showErrorNotif({ message: "Error in fetching file URL" });
+    }
+  };
+
   return (
     <Flex
       align={"center"}
@@ -53,7 +66,7 @@ export const FileCard: React.FC<FileCardProps> = ({
           h="100%"
           // TODO: handle onButtonClick
           c="night"
-          onClick={() => console.log(1349, file.filename)}
+          onClick={handleOpenFile}
         >
           <IconBoxArrowUpRight size={18} />
         </ActionIcon>

@@ -33,11 +33,11 @@ export const useFileURLStore = create<FileURLStoreProps>((set, get) => ({
   caches: {},
   getFileURL: async (filename: string) => {
     if (get().caches[filename]) {
-      console.log("cache hit", get().caches[filename], get().caches);
+      // console.log("cache hit", get().caches[filename], get().caches);
       return get().caches[filename];
     }
 
-    console.log("cache miss", filename, get().caches);
+    // console.log("cache miss", filename, get().caches);
     const fileRef = ref(FirebaseStorage, `${folder}/${filename}`);
     try {
       const url = await getDownloadURL(fileRef);

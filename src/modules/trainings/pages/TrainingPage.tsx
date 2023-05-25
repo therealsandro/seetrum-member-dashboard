@@ -112,6 +112,7 @@ export const TrainingsPage: React.FC = () => {
                     createdAt={Timestamp.now()}
                     updatedAt={Timestamp.now()}
                     {...trainingModelDummy}
+                    thumbnailFileName=""
                   />
                 );
               })
