@@ -3,16 +3,8 @@ import {
   TrainingMember,
   TrainingMemberStatus,
 } from "@/types/models/trainingMember";
-import { IconChevronDown } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
-import {
-  Box,
-  Button,
-  Flex,
-  FlexProps,
-  ThemeIcon,
-  useMantineTheme,
-} from "@mantine/core";
+import { Box, Button, Flex, FlexProps, useMantineTheme } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

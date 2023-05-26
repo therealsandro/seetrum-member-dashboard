@@ -1,6 +1,8 @@
 import { BaseModel } from ".";
 
-export type User = BaseModel & Omit<UserRegistrationData, "password">;
+export type User = BaseModel &
+  Omit<UserRegistrationData, "password"> &
+  AdminRole;
 
 export type UserType = "individual" | "organization";
 
@@ -21,4 +23,8 @@ type Organization = {
   picName: string;
   picEmail: string;
   picPhoneNumber: string;
+};
+
+type AdminRole = {
+  isAdmin?: boolean;
 };
