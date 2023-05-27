@@ -35,3 +35,16 @@ export const createTrainingMember = async (
     throw e;
   }
 };
+
+export const getTrainingMemberByTrainingId = async (
+  trainingId: string
+): Promise<TrainingMember[]> => {
+  try {
+    return await getDocumentsByQuery<TrainingMember>(
+      COLLECTION_TRAINING_MEMBER,
+      where("trainingId", "==", trainingId)
+    );
+  } catch (e) {
+    throw e;
+  }
+};
