@@ -1,6 +1,7 @@
 import { COLLECTION_TRAINING_MEMBER } from "@/lib/constants";
 import {
   addNewDocument,
+  getCountByQuery,
   getDocumentsByQuery,
 } from "@/services/firebase/helper";
 import {
@@ -41,6 +42,19 @@ export const getTrainingMemberByTrainingId = async (
 ): Promise<TrainingMember[]> => {
   try {
     return await getDocumentsByQuery<TrainingMember>(
+      COLLECTION_TRAINING_MEMBER,
+      where("trainingId", "==", trainingId)
+    );
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const getTrainingMemberCountByTrainingId = async (
+  trainingId: string
+): Promise<Number> => {
+  try {
+    return await getCountByQuery(
       COLLECTION_TRAINING_MEMBER,
       where("trainingId", "==", trainingId)
     );
