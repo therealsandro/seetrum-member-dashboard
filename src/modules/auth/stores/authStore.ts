@@ -10,8 +10,9 @@ import {
 
 interface AuthState {
   user: User | null;
+  isAdmin: boolean;
   loading: boolean;
-  setUser: (user: any) => void;
+  setUser: (user: User | null) => void;
   register: (userRegisterData: UserRegistrationData) => void;
   logIn: (email: string, password: string) => void;
   logInWithGoogle: () => void;
@@ -20,9 +21,14 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
+  isAdmin: false,
   loading: true,
   setUser: (newUser) => {
-    set({ user: newUser, loading: false });
+    set({
+      user: newUser,
+      loading: false,
+      isAdmin: Boolean(newUser?.isAdmin),
+    });
   },
   register: async (userRegisterData) => {
     try {
