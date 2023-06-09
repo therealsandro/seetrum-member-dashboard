@@ -1,3 +1,12 @@
+import { kProvinsi } from "@/lib/constants";
+import { isIDNPhoneNumber } from "@/lib/utils";
+import { useAuthStore } from "@/modules/auth/stores/authStore";
+import { FileInfo } from "@/types/models/fileInfo";
+import { Training } from "@/types/models/training";
+import { TrainingMember } from "@/types/models/trainingMember";
+import { FileUploadButton } from "@/ui/Button";
+import { IconArrowLeft, IconArrowRight } from "@/ui/Icons";
+import { showErrorNotif } from "@/ui/notifications";
 import {
   Button,
   Center,
@@ -9,21 +18,11 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { useAuthStore } from "@/modules/auth/stores/authStore";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
-import { TrainingMember } from "@/types/models/trainingMember";
-import { isIDNPhoneNumber } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { fetchDataIndonesia } from "@/services/api/dataIndonesia";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { createTrainingMember } from "../services/trainingMemberService";
-import { showErrorNotif } from "@/ui/notifications";
-import { IconArrowLeft, IconArrowRight } from "@/ui/Icons";
-import { Training } from "@/types/models/training";
-import { FileUploadButton } from "@/ui/Button";
-import { FileInfo } from "@/types/models/fileInfo";
 
-let runOnce = true;
 const fIDummy: FileInfo = {
   tag: "dummy",
   contentType: "",
@@ -112,21 +111,6 @@ export const TrainingApplicationPage: React.FC = () => {
     }
     setLoading(false);
   });
-
-  const [provinsi, setProvinsi] = useState<string[]>([]);
-
-  // run once
-  useEffect(() => {
-    if (runOnce) {
-      runOnce = false;
-      fetchDataIndonesia()
-        .then((data) => {
-          const newProvinsi = data.map((v) => v.nama);
-          setProvinsi(newProvinsi);
-        })
-        .catch(console.error);
-    }
-  }, []);
 
   // autofill from user
   useEffect(() => {
@@ -250,7 +234,7 @@ export const TrainingApplicationPage: React.FC = () => {
               value={form.values.address ?? ""}
             />
             <Select
-              data={provinsi}
+              data={kProvinsi}
               placeholder="Pick your province"
               label="Province"
               withAsterisk
