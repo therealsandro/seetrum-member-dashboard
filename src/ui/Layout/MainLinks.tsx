@@ -1,14 +1,22 @@
-import { NavLink, ThemeIcon } from "@mantine/core";
+import { NavLink, SegmentedControl, Stack, ThemeIcon } from "@mantine/core";
 
 import { notifications } from "@mantine/notifications";
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IconAward, IconBriefcase, IconCalendar, IconHome } from "../Icons";
+import {
+  IconAdminAward,
+  IconAward,
+  IconBriefcase,
+  IconCalendar,
+  IconHome,
+} from "../Icons";
+import { useAuthStore } from "@/modules/auth/stores/authStore";
 
 type NavLinkDataProps = {
   label: string;
   icon?: React.ReactNode;
   link?: string;
+  isAdmin?: boolean;
 };
 
 type MainLinkProps = {
@@ -96,12 +104,12 @@ const MainLink: React.FC<MainLinkProps> = ({
 
 const data: MainLinkProps[] = [
   {
-    icon: <IconHome size="1rem" />,
+    icon: <IconHome size="20px" />,
     label: "Home",
     link: "/",
   },
   {
-    icon: <IconCalendar size="1rem" />,
+    icon: <IconCalendar size="20px" />,
     label: "Events",
     links: [
       { label: "All Events" /* link: "/events" */ },
@@ -109,7 +117,7 @@ const data: MainLinkProps[] = [
     ],
   },
   {
-    icon: <IconAward size="1rem" />,
+    icon: <IconAward size="20px" />,
     label: "Trainings",
     links: [
       { label: "All trainings", link: "/trainings" },
@@ -117,17 +125,68 @@ const data: MainLinkProps[] = [
     ],
   },
   {
-    icon: <IconBriefcase size="1rem" />,
+    icon: <IconBriefcase size="20px" />,
     label: "Opportunity",
     // link: "/opportunity",
+  },
+  // Admin Links
+  {
+    icon: <IconCalendar size="20px" />,
+    label: "Events",
+    // link: "/admin/events",
+    isAdmin: true,
+  },
+  {
+    icon: <IconAdminAward />,
+    label: "Manage Trainings",
+    link: "/admin/trainings",
+    isAdmin: true,
+  },
+  {
+    icon: <IconBriefcase size="20px" />,
+    label: "Opportunity",
+    // link: "/opportunity",
+    isAdmin: true,
   },
 ];
 
 export const MainLinks: React.FC<{ onNavigate: (path: string) => void }> = ({
   onNavigate,
 }) => {
-  const links = data.map((menu, idx) => (
-    <MainLink key={idx} {...menu} onNavigate={onNavigate} />
-  ));
-  return <div>{links}</div>;
+  const { isAdmin } = useAuthStore();
+  const { pathname } = useLocation();
+  const [adminMode, setMode] = useState<boolean>(pathname.includes("/admin"));
+
+  const navigate = useNavigate();
+  const handleChangeMode = (mode: string) => {
+    const toAdmin = Boolean(mode === "admin");
+    if (adminMode && toAdmin) return;
+
+    const navigateTo = toAdmin
+      ? "/admin" + pathname
+      : pathname.split("/admin").join("");
+    setMode(toAdmin);
+    navigate(navigateTo);
+  };
+
+  return (
+    <Stack>
+      {isAdmin && (
+        <SegmentedControl
+          color="primary"
+          value={adminMode ? "admin" : "member"}
+          onChange={handleChangeMode}
+          data={[
+            { label: "Member", value: "member" },
+            { label: "Admin", value: "admin" },
+          ]}
+        />
+      )}
+      {data
+        .filter((d) => Boolean(d.isAdmin) === (isAdmin ? adminMode : false))
+        .map((menu, idx) => (
+          <MainLink key={idx} {...menu} onNavigate={onNavigate} />
+        ))}
+    </Stack>
+  );
 };

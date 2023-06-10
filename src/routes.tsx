@@ -13,6 +13,7 @@ import {
   FormFillingLayout,
   applicationTrainingSupportDataLoader,
 } from "./ui/Layout/FormFillingLayout";
+import { ManageTrainingsPage } from "./modules/trainings/pages/ManageTrainings";
 
 const ROUTES = {
   SIGNIN: {
@@ -62,6 +63,20 @@ const ROUTES = {
           {
             path: ":id",
             element: <TrainingDetailPage />,
+          },
+        ],
+      },
+      {
+        path: "admin",
+        children: [
+          {
+            path: "trainings",
+            children: [
+              {
+                index: true,
+                element: <ManageTrainingsPage />,
+              },
+            ],
           },
         ],
       },
