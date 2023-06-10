@@ -34,9 +34,9 @@ export const ProtectedPage: React.FC<Props> = ({ children }) => {
 
   React.useEffect(() => {
     if (!user && !loading) {
-      navigate(routePaths.SIGNIN);
+      if (pathname.includes("/admin") && !isAdmin) navigate("/");
+      else navigate(routePaths.SIGNIN);
     }
-    if (pathname.includes("/admin") && !isAdmin) navigate("/");
   }, [user, loading, pathname, isAdmin, navigate]);
 
   return <>{children}</>;
