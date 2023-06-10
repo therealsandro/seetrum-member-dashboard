@@ -99,8 +99,10 @@ const AdminIconWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-export const IconAdminAward = () => (
+export const IconAdminAward = ({ size }: { size?: number | string }) => (
   <AdminIconWrapper>
-    <IconAward size={"20px"} />
+    <IconAward
+      size={size ? (typeof size === "number" ? `${size}px` : size) : "20px"}
+    />
   </AdminIconWrapper>
 );

@@ -2,7 +2,7 @@ import { NavLink, SegmentedControl, Stack, ThemeIcon } from "@mantine/core";
 
 import { notifications } from "@mantine/notifications";
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   IconAdminAward,
   IconAward,
@@ -155,6 +155,7 @@ export const MainLinks: React.FC<{ onNavigate: (path: string) => void }> = ({
 }) => {
   const { isAdmin } = useAuthStore();
   const { pathname } = useLocation();
+  const { tabId } = useParams();
   const [adminMode, setMode] = useState<boolean>(pathname.includes("/admin"));
 
   const navigate = useNavigate();
@@ -164,7 +165,11 @@ export const MainLinks: React.FC<{ onNavigate: (path: string) => void }> = ({
 
     const navigateTo = toAdmin
       ? "/admin" + pathname
-      : pathname.split("/admin").join("");
+      : pathname
+          .split("/admin")
+          .join("")
+          .split(tabId ? `/${tabId}` : "")
+          .join("");
     setMode(toAdmin);
     navigate(navigateTo);
   };

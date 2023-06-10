@@ -14,6 +14,7 @@ import {
   applicationTrainingSupportDataLoader,
 } from "./ui/Layout/FormFillingLayout";
 import { ManageTrainingsPage } from "./modules/trainings/pages/ManageTrainings";
+import { ManageDetailTrainingLayout } from "./modules/trainings/pages/ManageTrainingDetailLayout";
 
 const ROUTES = {
   SIGNIN: {
@@ -75,6 +76,16 @@ const ROUTES = {
               {
                 index: true,
                 element: <ManageTrainingsPage />,
+              },
+              {
+                path: ":id",
+                element: <ManageDetailTrainingLayout />,
+                children: [
+                  {
+                    path: ":tabId?",
+                    element: <h1>Training Detail Contents</h1>,
+                  } as RouteObject,
+                ],
               },
             ],
           },

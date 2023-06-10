@@ -26,6 +26,18 @@ export const pretyDate = (date: Date) => {
   });
 };
 
+export const pretyDateTime = (date: Date) => {
+  const d = new Date(date);
+  return d.toLocaleString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+};
+
 export const formatSize = (bytes: number) => {
   if (bytes < 1024) {
     return bytes + " B";
