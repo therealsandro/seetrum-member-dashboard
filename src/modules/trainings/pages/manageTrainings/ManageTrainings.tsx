@@ -1,8 +1,8 @@
 import { Typography } from "@/ui/Typography";
 import { Skeleton, Stack } from "@mantine/core";
-import { useTrainings } from "../store/useTrainings";
+import { useTrainings } from "../../store/useTrainings";
 import { useEffect } from "react";
-import { TrainingCard } from "../components/TrainingCard";
+import { TrainingCard } from "../../components/TrainingCard";
 
 export const ManageTrainingsPage = () => {
   const [getTrainings, trainings] = useTrainings((s) => [

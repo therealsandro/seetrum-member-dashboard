@@ -1,7 +1,7 @@
 import { Divider, Flex, Skeleton, Stack, ThemeIcon } from "@mantine/core";
 import { Timestamp } from "firebase/firestore";
 import { Outlet, useParams } from "react-router-dom";
-import { useTrainings } from "../store/useTrainings";
+import { useTrainings } from "../../store/useTrainings";
 import { useEffect, useState } from "react";
 import { Training } from "@/types/models/training";
 import { Typography } from "@/ui/Typography";
