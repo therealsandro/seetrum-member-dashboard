@@ -3,6 +3,7 @@ import {
   addNewDocument,
   getAllDocuments,
   getDocumentById,
+  updateDocument,
 } from "@/services/firebase/helper";
 import { Training, TrainingModel } from "@/types/models/training";
 
@@ -38,6 +39,18 @@ export const getTrainingById = async (trainingId: string) => {
       throw new Error("Training not found");
     }
     return training;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const updateTraining = async (
+  trainingId: string,
+  payload: Partial<Training>
+) => {
+  try {
+    await updateDocument(COLLECTION_TRAINING, trainingId, payload);
   } catch (e) {
     console.error(e);
     throw e;
