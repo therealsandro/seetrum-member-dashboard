@@ -3,6 +3,7 @@ import {
   addNewDocument,
   getCountByQuery,
   getDocumentsByQuery,
+  updateDocument,
 } from "@/services/firebase/helper";
 import {
   TrainingMember,
@@ -59,6 +60,18 @@ export const getTrainingMemberCountByTrainingId = async (
       where("trainingId", "==", trainingId)
     );
   } catch (e) {
+    throw e;
+  }
+};
+
+export const updateTrainingMember = async (
+  trainingMemberId: string,
+  payload: Partial<TrainingMember>
+) => {
+  try {
+    await updateDocument(COLLECTION_TRAINING_MEMBER, trainingMemberId, payload);
+  } catch (e) {
+    console.error(e);
     throw e;
   }
 };
