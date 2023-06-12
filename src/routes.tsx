@@ -85,6 +85,12 @@ const ROUTES = {
                   {
                     path: ":tabId?",
                     element: <ManageTrainingDetail />,
+                    children: [
+                      {
+                        path: ":applicantId",
+                        element: <h1>Applicant details</h1>,
+                      },
+                    ],
                   },
                 ],
               },
