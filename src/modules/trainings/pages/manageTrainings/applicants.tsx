@@ -62,7 +62,7 @@ export const ManageTrainingApplicants = () => {
       },
       {
         header: "Status",
-        size: 120,
+        size: 100,
         accessorFn(originalRow) {
           let status: string;
           switch (originalRow.status) {
@@ -107,26 +107,43 @@ export const ManageTrainingApplicants = () => {
       {
         header: "Certificate",
         accessorFn(originalRow) {
-          if (!Boolean(originalRow.issuedCertificate))
+          if (
+            !Boolean(originalRow.issuedCertificate) ||
+            originalRow.issuedCertificate.length === 0
+          )
             return (
               <Typography textVariant="body-md" color="dimmed">
                 <i>No certificate uploaded</i>
               </Typography>
             );
           return (
-            <Flex>
-              {originalRow.issuedCertificate.map((certif) => (
+            <Flex align="center" gap={4}>
+              {originalRow.issuedCertificate.slice(0, 2).map((certif) => (
                 <Badge
                   key={certif.filename}
-                  leftSection={<IconPDF size={18} />}
                   variant="outline"
-                  size="md"
+                  h={26}
                   py={4}
-                  sx={{ textTransform: "none" }}
+                  sx={(t) => ({
+                    textTransform: "none",
+                    borderColor: t.fn.rgba(t.colors.night[6], 0.12),
+                    ".file-icon": {
+                      lineHeight: "1 !important",
+                      color: t.colors.red[6],
+                    },
+                  })}
                 >
-                  {certif.filename}
+                  <Flex gap={8} align="center">
+                    <IconPDF className="file-icon" size={16} />
+                    <Typography textVariant="label-md" c="night">
+                      {certif.filename.split("-").slice(1).join("-")}
+                    </Typography>
+                  </Flex>
                 </Badge>
               ))}
+              {originalRow.issuedCertificate.length > 2
+                ? `and ${originalRow.issuedCertificate.length - 2} more`
+                : undefined}
             </Flex>
           );
         },

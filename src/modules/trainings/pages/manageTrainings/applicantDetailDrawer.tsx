@@ -54,14 +54,19 @@ export const ApplicantDetails = () => {
 
       const promises = file.map((f) => uploadFile(f, "certificate"));
       const newFileInfo = await Promise.all(promises);
-      console.log(newFileInfo);
 
-      if (trainingId && applicantId) {
+      if (trainingId && applicantId && activeApplicant) {
         await updateTrainingMember(applicantId, {
-          issuedCertificate: newFileInfo,
+          issuedCertificate: [
+            activeApplicant.issuedCertificate ?? [],
+            newFileInfo,
+          ].flat(),
         });
         await updateActiveApplicant(trainingId, applicantId, {
-          issuedCertificate: newFileInfo,
+          issuedCertificate: [
+            activeApplicant.issuedCertificate ?? [],
+            newFileInfo,
+          ].flat(),
         });
 
         getApplicants(trainingId);
