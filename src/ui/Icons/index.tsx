@@ -27,6 +27,7 @@ import {
   BsBoxArrowRight,
   BsGear,
   BsDownload,
+  BsPlus,
 } from "react-icons/bs";
 
 export const IconArrowLeft = BsArrowLeft;
@@ -40,6 +41,7 @@ export const IconPerson = BsPerson;
 export const IconPeople = BsPeople;
 
 export const IconX = BsX;
+export const IconPlus = BsPlus;
 export const IconHome = BsHouse;
 export const IconCalendar = BsCalendarWeek;
 export const IconLightBulb = BsLightbulb;

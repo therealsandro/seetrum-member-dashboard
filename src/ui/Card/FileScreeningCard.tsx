@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Stack } from "@mantine/core";
+import { ActionIcon, Flex, Stack } from "@mantine/core";
 import {
   IconJPG,
   IconPDF,
@@ -8,10 +8,26 @@ import {
 } from "../Icons";
 import { FileInfo } from "@/types/models/fileInfo";
 import { Typography } from "../Typography";
+import { useFileURLStore } from "@/services/firebase/storage";
+import { showErrorNotif } from "../notifications";
 
 export const FileScreeningCard = (
-  fileInfo: FileInfo & { withDownload?: boolean; withDelete?: boolean }
+  fileInfo: FileInfo & {
+    withDownload?: boolean;
+    onDelete?: () => Promise<void> | void;
+  }
 ) => {
+  const getFileURL = useFileURLStore((s) => s.getFileURL);
+
+  const handleOpenFile = async (filename: string) => {
+    try {
+      const url = await getFileURL(filename);
+      window.open(url, "_blank");
+    } catch (e) {
+      showErrorNotif({ message: "Error in fetching file URL" });
+    }
+  };
+
   return (
     <Flex gap={12} w={"100%"} align={"center"}>
       <Flex
@@ -40,18 +56,28 @@ export const FileScreeningCard = (
         </Typography>
       </Stack>
       <Flex gap={8}>
-        <Button variant="subtle" px={12}>
+        <ActionIcon
+          w={30}
+          h={30}
+          c="night"
+          onClick={(e) => handleOpenFile(fileInfo.filename)}
+        >
           <IconBoxArrowUpRight size={18} />
-        </Button>
+        </ActionIcon>
         {fileInfo.withDownload && (
-          <Button variant="subtle" px={12}>
+          <ActionIcon w={30} h={30} c="night">
             <IconDownload size={18} />
-          </Button>
+          </ActionIcon>
         )}
-        {fileInfo.withDelete && (
-          <Button variant="subtle" px={12} sx={{ color: "red" }}>
+        {fileInfo.onDelete && (
+          <ActionIcon
+            w={30}
+            h={30}
+            c="red"
+            onClick={(e) => fileInfo.onDelete && fileInfo.onDelete()}
+          >
             <IconTrash size={18} />
-          </Button>
+          </ActionIcon>
         )}
       </Flex>
     </Flex>

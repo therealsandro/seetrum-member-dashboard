@@ -1,27 +1,34 @@
 import { extractInitials, toTitleCase } from "@/lib/utils";
 import { updateTrainingMember } from "@/modules/trainings/services/trainingMemberService";
 import { useApplicantStore } from "@/modules/trainings/store/useApplicantsStore";
+import { uploadFile } from "@/services/firebase/storage";
 import { TrainingMemberStatus } from "@/types/models/trainingMember";
 import { FileScreeningCard } from "@/ui/Card/FileScreeningCard";
+import { IconPlus } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import {
   Avatar,
   Button,
   Divider,
   Drawer,
+  FileButton,
   Flex,
+  Loader,
   Select,
   SimpleGrid,
   Stack,
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 type OutletContext = [
   number | undefined,
   React.Dispatch<React.SetStateAction<number | undefined>>
 ];
+
+const maxSize = 2 * 1024 ** 2;
+
 export const ApplicantDetails = () => {
   const { id: trainingId, applicantId } = useParams();
   const {
@@ -34,6 +41,36 @@ export const ApplicantDetails = () => {
   useEffect(() => {
     if (trainingId && applicantId) getAplicantById(trainingId, applicantId);
   }, [getAplicantById, trainingId, applicantId]);
+
+  const [loading, setLoading] = useState(false);
+
+  const submitFile = async (file: File[]) => {
+    try {
+      setLoading(true);
+
+      if (file.some((f) => f.size > maxSize)) {
+        throw Error("File size limit exceeded");
+      }
+
+      const promises = file.map((f) => uploadFile(f, "certificate"));
+      const newFileInfo = await Promise.all(promises);
+      console.log(newFileInfo);
+
+      if (trainingId && applicantId) {
+        await updateTrainingMember(applicantId, {
+          issuedCertificate: newFileInfo,
+        });
+        await updateActiveApplicant(trainingId, applicantId, {
+          issuedCertificate: newFileInfo,
+        });
+
+        getApplicants(trainingId);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    setLoading(false);
+  };
 
   return (
     <Drawer.Content>
@@ -74,7 +111,7 @@ export const ApplicantDetails = () => {
         <Drawer.CloseButton />
       </Drawer.Header>
       <Drawer.Body sx={{ gap: 0 }}>
-        <Stack h={"100vh"} pb={80} pt={16}>
+        <Stack pb={80} pt={16}>
           <Typography textVariant="title-md">Applicant Information</Typography>
           <Flex gap={16} align={"center"}>
             <Avatar size={64} radius={64} color="cyan">
@@ -118,23 +155,68 @@ export const ApplicantDetails = () => {
           </Stack>
           <Divider />
           <Typography textVariant="title-md">Certificate</Typography>
+          <Typography textVariant="body-md">
+            You can upload applicant’s certificate here only if the application
+            has been accepted,
+          </Typography>
           <Stack spacing={16} align="center">
             {activeApplicant &&
             Boolean(activeApplicant.issuedCertificate) &&
             activeApplicant.issuedCertificate.length > 0 ? (
               activeApplicant.issuedCertificate.map((file) => {
                 return (
-                  <FileScreeningCard key={file.filename} {...file} withDelete />
+                  <FileScreeningCard
+                    key={file.filename}
+                    {...file}
+                    onDelete={async () => {
+                      if (
+                        trainingId &&
+                        applicantId &&
+                        activeApplicant.issuedCertificate
+                      ) {
+                        const certifs =
+                          activeApplicant.issuedCertificate.filter(
+                            (c) => c.filename !== file.filename
+                          );
+                        await updateTrainingMember(applicantId, {
+                          issuedCertificate: certifs,
+                        });
+                        await updateActiveApplicant(trainingId, applicantId, {
+                          issuedCertificate: certifs,
+                        });
+
+                        getApplicants(trainingId);
+                      }
+                    }}
+                  />
                 );
               })
+            ) : loading ? (
+              <Loader />
             ) : (
-              <>
-                <Typography color="dimmed">
-                  <i>No certificate uploaded</i>
-                </Typography>
-              </>
+              <Typography color="dimmed">
+                <i>No certificate uploaded</i>
+              </Typography>
             )}
           </Stack>
+          <FileButton
+            onChange={(e) => submitFile(e)}
+            accept="image/png,image/jpeg,application/pdf"
+            multiple
+          >
+            {(props) => (
+              <Button
+                {...props}
+                w={"fit-content"}
+                disabled={activeApplicant?.status !== "accepted"}
+                radius={8}
+                variant="outline"
+                leftIcon={<IconPlus size={18} />}
+              >
+                Add a new certificate
+              </Button>
+            )}
+          </FileButton>
         </Stack>
         <DrawerFooter />
       </Drawer.Body>
