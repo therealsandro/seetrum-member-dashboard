@@ -22,6 +22,7 @@ import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { createTrainingMember } from "../services/trainingMemberService";
+import { useTrainingMember } from "../store/useTrainingMember";
 
 const fIDummy: FileInfo = {
   tag: "dummy",
@@ -38,6 +39,7 @@ export const TrainingApplicationPage: React.FC = () => {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const loadingUser = useAuthStore((state) => state.loading);
+  const { addTrainingMember } = useTrainingMember();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<Partial<TrainingMember>>({
@@ -101,9 +103,13 @@ export const TrainingApplicationPage: React.FC = () => {
         applicant.requiredFiles = applicant.requiredFiles.filter(
           (f) => f.tag !== fIDummy.tag
         );
-      form.isValid() &&
-        (await createTrainingMember(applicant as TrainingMember));
-      navigate("/mytrainings");
+      if (form.isValid()) {
+        const newTrainingMember = await createTrainingMember(
+          applicant as TrainingMember
+        );
+        addTrainingMember(newTrainingMember);
+        navigate("/mytrainings");
+      }
     } catch (error) {
       showErrorNotif({
         title: "Error occurred while applying you in this training.",
