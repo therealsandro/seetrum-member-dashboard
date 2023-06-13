@@ -1,21 +1,22 @@
-import { TrainingMember } from "@/types/models/trainingMember";
+import { extractInitials, toTitleCase } from "@/lib/utils";
+import { updateTrainingMember } from "@/modules/trainings/services/trainingMemberService";
+import { useApplicantStore } from "@/modules/trainings/store/useApplicantsStore";
+import { TrainingMemberStatus } from "@/types/models/trainingMember";
+import { FileScreeningCard } from "@/ui/Card/FileScreeningCard";
 import { Typography } from "@/ui/Typography";
 import {
+  Avatar,
+  Button,
+  Divider,
   Drawer,
   Flex,
   Select,
-  Stack,
-  Button,
-  Avatar,
-  Divider,
   SimpleGrid,
+  Stack,
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { useApplicantStore } from "@/modules/trainings/store/useApplicantsStore";
-import { extractInitials, toTitleCase } from "@/lib/utils";
-import { FileScreeningCard } from "@/ui/Card/FileScreeningCard";
 
 type OutletContext = [
   number | undefined,
@@ -23,20 +24,22 @@ type OutletContext = [
 ];
 export const ApplicantDetails = () => {
   const { id: trainingId, applicantId } = useParams();
-  const { getAplicantById } = useApplicantStore();
-  const [applicant, setApplicant] = useState<TrainingMember>();
+  const {
+    activeApplicant,
+    getAplicantById,
+    updateActiveApplicant,
+    getApplicants,
+  } = useApplicantStore();
 
   useEffect(() => {
-    if (trainingId && applicantId)
-      getAplicantById(trainingId, applicantId).then((aplcnt) =>
-        setApplicant(aplcnt)
-      );
+    if (trainingId && applicantId) getAplicantById(trainingId, applicantId);
   }, [getAplicantById, trainingId, applicantId]);
 
   return (
     <Drawer.Content>
       <Drawer.Header
         sx={(t) => ({
+          zIndex: 1,
           gap: 16,
           padding: 16,
           borderBottom: "1px solid",
@@ -47,14 +50,24 @@ export const ApplicantDetails = () => {
           <Flex w={"100%"} justify="space-between">
             <Typography textVariant="title-lg">Applicant Details</Typography>
             <Select
-              value={applicant?.status}
+              value={activeApplicant?.status}
               data={[
                 { label: "Accepted", value: "accepted" },
                 { label: "Rejected", value: "rejected" },
               ]}
               placeholder="Application Status"
-              // TODO: implement update trainingMember.status
-              onChange={(val) => console.log("Change application status", val)}
+              onChange={async (val) => {
+                console.log("Change application status", val);
+                if (trainingId && activeApplicant && val) {
+                  await updateTrainingMember(activeApplicant.id, {
+                    status: val as TrainingMemberStatus,
+                  });
+                  await updateActiveApplicant(trainingId, activeApplicant.id, {
+                    status: val as TrainingMemberStatus,
+                  });
+                  getApplicants(trainingId);
+                }
+              }}
             />
           </Flex>
         </Drawer.Title>
@@ -65,38 +78,35 @@ export const ApplicantDetails = () => {
           <Typography textVariant="title-md">Applicant Information</Typography>
           <Flex gap={16} align={"center"}>
             <Avatar size={64} radius={64} color="cyan">
-              {extractInitials(applicant?.name || "")}
+              {extractInitials(activeApplicant?.name || "")}
             </Avatar>
-            <FieldView
-              label="Full name"
-              value={extractInitials(applicant?.name || "")}
-            />
+            <FieldView label="Full name" value={activeApplicant?.name} />
           </Flex>
           <SimpleGrid cols={2}>
-            <FieldView label="Email" value={applicant?.email} />
+            <FieldView label="Email" value={activeApplicant?.email} />
             <FieldView
               label="Mobile phone number"
-              value={applicant?.phoneNumber}
+              value={activeApplicant?.phoneNumber}
             />
-            <FieldView label="Age" value={applicant?.age} />
+            <FieldView label="Age" value={activeApplicant?.age} />
             <FieldView
               label="Gender"
-              value={toTitleCase(applicant?.gender || "")}
+              value={toTitleCase(activeApplicant?.gender || "")}
             />
             <FieldView
               label="Employment status"
-              value={toTitleCase(applicant?.employmentStatus || "")}
+              value={toTitleCase(activeApplicant?.employmentStatus || "")}
             />
             <FieldView
               label="Current institution"
-              value={toTitleCase(applicant?.institutionName || "")}
+              value={toTitleCase(activeApplicant?.institutionName || "")}
             />
           </SimpleGrid>
           <Divider />
           <Typography textVariant="title-md">Uploaded Files</Typography>
           <Stack spacing={16}>
-            {applicant &&
-              applicant.requiredFiles.map((file) => {
+            {activeApplicant &&
+              activeApplicant.requiredFiles.map((file) => {
                 return (
                   <FileScreeningCard
                     key={file.filename}
@@ -109,10 +119,10 @@ export const ApplicantDetails = () => {
           <Divider />
           <Typography textVariant="title-md">Certificate</Typography>
           <Stack spacing={16} align="center">
-            {applicant &&
-            Boolean(applicant.issuedCertificate) &&
-            applicant.issuedCertificate.length > 0 ? (
-              applicant.issuedCertificate.map((file) => {
+            {activeApplicant &&
+            Boolean(activeApplicant.issuedCertificate) &&
+            activeApplicant.issuedCertificate.length > 0 ? (
+              activeApplicant.issuedCertificate.map((file) => {
                 return (
                   <FileScreeningCard key={file.filename} {...file} withDelete />
                 );

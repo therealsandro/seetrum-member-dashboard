@@ -12,6 +12,11 @@ interface ApplicantStoreStates {
     memberId: string
   ) => Promise<TrainingMember | undefined>;
   isValid?: Record<string, boolean>;
+  updateActiveApplicant: (
+    trainingId: string,
+    memberId: string,
+    updateData: Partial<TrainingMember>
+  ) => Promise<void>;
 }
 
 export const useApplicantStore = create(
@@ -57,6 +62,15 @@ export const useApplicantStore = create(
       );
       set({ activeApplicant: updatedApplicant });
       return updatedApplicant;
+    },
+    async updateActiveApplicant(trainingId, memberId, updateData) {
+      const applicant = await get().getAplicantById(trainingId, memberId);
+      if (applicant) {
+        set((s) => ({
+          activeApplicant: { ...applicant, ...updateData },
+          isValid: { ...s.isValid, [trainingId]: false },
+        }));
+      }
     },
   }))
 );

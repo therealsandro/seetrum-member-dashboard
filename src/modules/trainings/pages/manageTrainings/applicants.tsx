@@ -1,4 +1,5 @@
 import { toTitleCase } from "@/lib/utils";
+import { useApplicantStore } from "@/modules/trainings/store/useApplicantsStore";
 import { TrainingMember } from "@/types/models/trainingMember";
 import { IconChevronRight, IconPDF } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
@@ -6,18 +7,15 @@ import { Badge, Box, Button, Drawer, Flex, Loader, Stack } from "@mantine/core";
 import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { useApplicantStore } from "../../store/useApplicantsStore";
 
 export const ManageTrainingApplicants = () => {
   const navigate = useNavigate();
-  const { getApplicants } = useApplicantStore();
-  const [applicants, setApplicants] = useState<TrainingMember[]>();
+  const { applicants, getApplicants } = useApplicantStore();
   const [activeIndex, setActiveIndex] = useState<number>();
   const { id: trainingId, applicantId } = useParams();
 
   useEffect(() => {
-    if (trainingId)
-      getApplicants(trainingId).then((aplcnt) => setApplicants(aplcnt));
+    if (trainingId) getApplicants(trainingId);
   }, [trainingId, getApplicants]);
 
   const columns = useMemo<MRT_ColumnDef<TrainingMember>[]>(
@@ -86,7 +84,21 @@ export const ManageTrainingApplicants = () => {
               break;
           }
           return (
-            <Badge size="sm" sx={{ textTransform: "none" }}>
+            <Badge
+              size="md"
+              variant="filled"
+              color={
+                originalRow.status === "rejected"
+                  ? "red"
+                  : originalRow.status === "applied"
+                  ? "platinum.6"
+                  : "biceblue"
+              }
+              sx={{
+                textTransform: "none",
+                color: originalRow.status === "applied" ? "black" : undefined,
+              }}
+            >
               {toTitleCase(status)}
             </Badge>
           );
@@ -145,7 +157,7 @@ export const ManageTrainingApplicants = () => {
     [navigate]
   );
 
-  if (!applicants)
+  if (!(trainingId && applicants && applicants[trainingId]))
     return (
       <Stack h={100} w={"100%"} align="center" justify="center">
         <Loader />
@@ -156,7 +168,7 @@ export const ManageTrainingApplicants = () => {
     <>
       <MantineReactTable
         columns={columns}
-        data={applicants}
+        data={applicants[trainingId]}
         mantineTableHeadRowProps={{
           sx: (t) => ({ background: t.colors.gray[0] }),
         }}
