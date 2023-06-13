@@ -39,7 +39,8 @@ export const TrainingApplicationPage: React.FC = () => {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const loadingUser = useAuthStore((state) => state.loading);
-  const { addTrainingMember } = useTrainingMember();
+  const { addTrainingMember, getTrainingMemberByMemberId } =
+    useTrainingMember();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<Partial<TrainingMember>>({
@@ -108,6 +109,7 @@ export const TrainingApplicationPage: React.FC = () => {
           applicant as TrainingMember
         );
         addTrainingMember(newTrainingMember);
+        user && (await getTrainingMemberByMemberId(user.id));
         navigate("/mytrainings");
       }
     } catch (error) {

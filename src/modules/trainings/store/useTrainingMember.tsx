@@ -8,6 +8,7 @@ interface TrainingMemberStore {
   memberId: string | null;
   loading: boolean;
   error: any | null;
+  isValid?: boolean;
   getTrainingMemberByMemberId: (
     memberId: string
   ) => Promise<TrainingMember[] | null>;
@@ -26,7 +27,7 @@ export const useTrainingMember = create<TrainingMemberStore>((set, get) => ({
   loading: false,
   error: null,
   getTrainingMemberByMemberId: async (memberId) => {
-    if (get().trainingMember) return get().trainingMember;
+    if (get().trainingMember && get().isValid) return get().trainingMember;
 
     try {
       set({ loading: true });
@@ -37,7 +38,9 @@ export const useTrainingMember = create<TrainingMemberStore>((set, get) => ({
         memberId,
         loading: false,
         error: null,
+        isValid: true,
       });
+      setTimeout(() => set({ isValid: false }), 60 * 1000);
       return trainingsList;
     } catch (error) {
       showErrorNotif({ title: "Failed fetch trainings" });
@@ -70,9 +73,9 @@ export const useTrainingMember = create<TrainingMemberStore>((set, get) => ({
     set((state) => {
       if (state.trainingMember) {
         state.trainingMember.push(trainingMember);
-        return { trainingMember: state.trainingMember };
+        return { trainingMember: state.trainingMember, isValid: false };
       } else {
-        return { trainingMember: [trainingMember] };
+        return { trainingMember: [trainingMember], isValid: false };
       }
     }),
   updateTrainingMember: (trainingMember) =>
@@ -82,5 +85,6 @@ export const useTrainingMember = create<TrainingMemberStore>((set, get) => ({
             tM.id === trainingMember.id ? trainingMember : tM
           )
         : [trainingMember],
+      isValid: false,
     })),
 }));
