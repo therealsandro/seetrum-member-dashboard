@@ -11,7 +11,7 @@ export type TrainingMemberModel = {
   trainingId: string;
   memberId: string;
   status: TrainingMemberStatus;
-  issuedCertificate: string;
+  issuedCertificate: FileInfo[];
   gender: "female" | "male";
   employmentStatus: "unemployed" | "employed";
   institutionName: string;
@@ -29,7 +29,7 @@ export const trainingMemberDummy: TrainingMemberModel = {
   phoneNumber: "08123123123",
   trainingId: "c8wzhSGbozS3QcW5ae5h",
   status: "applied",
-  issuedCertificate: "",
+  issuedCertificate: [],
   gender: "male",
   employmentStatus: "employed",
   institutionName: "Seetrum",

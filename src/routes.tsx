@@ -16,6 +16,7 @@ import {
 import { ManageTrainingsPage } from "./modules/trainings/pages/manageTrainings/ManageTrainings";
 import { ManageDetailTrainingLayout } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetailLayout";
 import { ManageTrainingDetail } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetail";
+import { ApplicantDetails } from "./modules/trainings/pages/manageTrainings/applicantDetailDrawer";
 
 const ROUTES = {
   SIGNIN: {
@@ -88,7 +89,7 @@ const ROUTES = {
                     children: [
                       {
                         path: ":applicantId",
-                        element: <h1>Applicant details</h1>,
+                        element: <ApplicantDetails />,
                       },
                     ],
                   },

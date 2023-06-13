@@ -1,16 +1,24 @@
 import { toTitleCase } from "@/lib/utils";
-import { useAuthStore } from "@/modules/auth/stores/authStore";
-import { useTrainingMember } from "@/modules/trainings/store/useTrainingMember";
 import { TrainingMember } from "@/types/models/trainingMember";
 import { IconChevronRight, IconPDF } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
-import { Badge, Box, Button, Drawer, Flex, Stack } from "@mantine/core";
+import { Badge, Box, Button, Drawer, Flex, Loader, Stack } from "@mantine/core";
 import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { useApplicantStore } from "../../store/useApplicantsStore";
 
 export const ManageTrainingApplicants = () => {
   const navigate = useNavigate();
+  const { getApplicants } = useApplicantStore();
+  const [applicants, setApplicants] = useState<TrainingMember[]>();
+  const [activeIndex, setActiveIndex] = useState<number>();
+  const { id: trainingId, applicantId } = useParams();
+
+  useEffect(() => {
+    if (trainingId)
+      getApplicants(trainingId).then((aplcnt) => setApplicants(aplcnt));
+  }, [trainingId, getApplicants]);
 
   const columns = useMemo<MRT_ColumnDef<TrainingMember>[]>(
     () => [
@@ -95,16 +103,16 @@ export const ManageTrainingApplicants = () => {
             );
           return (
             <Flex>
-              {[originalRow.issuedCertificate].map((certif) => (
+              {originalRow.issuedCertificate.map((certif) => (
                 <Badge
-                  key={certif.toLowerCase()}
+                  key={certif.filename}
                   leftSection={<IconPDF size={18} />}
                   variant="outline"
                   size="md"
                   py={4}
                   sx={{ textTransform: "none" }}
                 >
-                  {originalRow.issuedCertificate}
+                  {certif.filename}
                 </Badge>
               ))}
             </Flex>
@@ -124,8 +132,8 @@ export const ManageTrainingApplicants = () => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log();
                 navigate(props.row.getValue("id"));
+                setActiveIndex(props.row.index);
               }}
             >
               <IconChevronRight />
@@ -137,25 +145,18 @@ export const ManageTrainingApplicants = () => {
     [navigate]
   );
 
-  const { trainingMember, getTrainingsByTrainingId } = useTrainingMember();
-  const { id: trainingId, applicantId } = useParams();
-  const { user } = useAuthStore();
-
-  useEffect(() => {
-    trainingId && user && getTrainingsByTrainingId(user.id, trainingId);
-  }, [user, trainingId, getTrainingsByTrainingId]);
-
-  if (!trainingMember) return <h1>Loading...</h1>;
-
-  const data: TrainingMember[] = Array(13)
-    .fill("-")
-    .map((i) => trainingMember[0]);
+  if (!applicants)
+    return (
+      <Stack h={100} w={"100%"} align="center" justify="center">
+        <Loader />
+      </Stack>
+    );
 
   return (
     <>
       <MantineReactTable
         columns={columns}
-        data={data}
+        data={applicants}
         mantineTableHeadRowProps={{
           sx: (t) => ({ background: t.colors.gray[0] }),
         }}
@@ -168,20 +169,22 @@ export const ManageTrainingApplicants = () => {
         }}
         enableTopToolbar={false}
       />
-      <Drawer
+      <Drawer.Root
         opened={Boolean(applicantId)}
-        onClose={() => navigate(-1)}
+        onClose={() => navigate(".")}
         position="right"
         size={640}
-        withCloseButton={false}
-        overlayProps={{
-          sx: (t) => ({
-            background: "transparent",
-          }),
+        style={{
+          height: "100%",
         }}
       >
-        <Outlet />
-      </Drawer>
+        <Drawer.Overlay
+          sx={(t) => ({
+            background: "transparent",
+          })}
+        />
+        <Outlet context={[activeIndex, setActiveIndex]} />
+      </Drawer.Root>
     </>
   );
 };
