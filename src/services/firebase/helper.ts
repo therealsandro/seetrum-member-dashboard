@@ -6,6 +6,7 @@ import {
   addDoc,
   collection,
   doc,
+  getCountFromServer,
   getDoc,
   getDocs,
   query,
@@ -117,4 +118,17 @@ export const addNewDocumentWithCustomId = async <T extends DocumentData>(
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
   } as unknown as T & BaseModel;
+};
+
+// AGGREGATION
+
+// Function to count documents in a collection
+export const getCountByQuery = async (
+  collectionName: string,
+  ...filter: QueryConstraint[]
+): Promise<Number> => {
+  const collectionRef = collection(FirebaseDB, collectionName);
+  const collectionQuery = query(collectionRef, ...filter);
+  const querySnapshot = await getCountFromServer(collectionQuery);
+  return querySnapshot.data().count;
 };

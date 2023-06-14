@@ -1,7 +1,9 @@
 import { COLLECTION_TRAINING_MEMBER } from "@/lib/constants";
 import {
   addNewDocument,
+  getCountByQuery,
   getDocumentsByQuery,
+  updateDocument,
 } from "@/services/firebase/helper";
 import {
   TrainingMember,
@@ -32,6 +34,44 @@ export const createTrainingMember = async (
     );
     return res;
   } catch (e) {
+    throw e;
+  }
+};
+
+export const getTrainingMemberByTrainingId = async (
+  trainingId: string
+): Promise<TrainingMember[]> => {
+  try {
+    return await getDocumentsByQuery<TrainingMember>(
+      COLLECTION_TRAINING_MEMBER,
+      where("trainingId", "==", trainingId)
+    );
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const getTrainingMemberCountByTrainingId = async (
+  trainingId: string
+): Promise<Number> => {
+  try {
+    return await getCountByQuery(
+      COLLECTION_TRAINING_MEMBER,
+      where("trainingId", "==", trainingId)
+    );
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const updateTrainingMember = async (
+  trainingMemberId: string,
+  payload: Partial<TrainingMember>
+) => {
+  try {
+    await updateDocument(COLLECTION_TRAINING_MEMBER, trainingMemberId, payload);
+  } catch (e) {
+    console.error(e);
     throw e;
   }
 };

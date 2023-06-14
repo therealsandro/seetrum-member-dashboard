@@ -1,5 +1,5 @@
+import { kProvinsi } from "@/lib/constants";
 import { routePaths } from "@/routes";
-import { fetchDataIndonesia } from "@/services/api/dataIndonesia";
 import { UserRegistrationData, UserType } from "@/types";
 import { BackButton } from "@/ui/Button";
 import { Typography } from "@/ui/Typography";
@@ -24,10 +24,10 @@ import {
   matchesField,
   useForm,
 } from "@mantine/form";
+import { useMediaQuery } from "@mantine/hooks";
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
-import { useMediaQuery } from "@mantine/hooks";
 
 type OrganizationFlat = {
   org_industry: string;
@@ -52,8 +52,6 @@ const userTypeCopy = {
   },
 };
 
-let runOnce = true;
-
 export const RegisterForm: React.FC = () => {
   const theme = useMantineTheme();
   const isExtraSmallScreen = useMediaQuery(
@@ -62,19 +60,6 @@ export const RegisterForm: React.FC = () => {
 
   const [active, setActive] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-  const [provinsi, setProvinsi] = React.useState<string[]>([]);
-
-  React.useEffect(() => {
-    if (runOnce) {
-      runOnce = false;
-      fetchDataIndonesia()
-        .then((data) => {
-          const newProvinsi = data.map((v) => v.nama);
-          setProvinsi(newProvinsi);
-        })
-        .catch(console.error);
-    }
-  }, []);
 
   const [searchParams] = useSearchParams();
   const userType: UserType =
@@ -298,7 +283,7 @@ export const RegisterForm: React.FC = () => {
                 ) : (
                   <Select
                     label={"Address"}
-                    data={provinsi}
+                    data={kProvinsi}
                     placeholder="Enter address"
                     searchable
                     withAsterisk
