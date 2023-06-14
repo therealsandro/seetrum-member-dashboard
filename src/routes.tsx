@@ -1,4 +1,4 @@
-import { RouteObject } from "react-router-dom";
+import { RouteObject, useLocation, useNavigate } from "react-router-dom";
 import { LoginPage } from "./modules/auth/pages/LoginPage";
 import { RegisterOptionAltPage } from "./modules/auth/pages/RegisterOptionAltPage";
 import { RegisterOptionPage } from "./modules/auth/pages/RegisterOptionPage";
@@ -17,6 +17,17 @@ import { ManageTrainingsPage } from "./modules/trainings/pages/manageTrainings/M
 import { ManageDetailTrainingLayout } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetailLayout";
 import { ManageTrainingDetail } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetail";
 import { ApplicantDetails } from "./modules/trainings/pages/manageTrainings/applicantDetailDrawer";
+import { useEffect } from "react";
+
+const Redirector = ({ path }: { path: string }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(`Redirecting to ${path} from ${location.pathname}`);
+  useEffect(() => {
+    if (location.pathname !== path) navigate(path, { replace: true });
+  }, [location.pathname, navigate, path]);
+  return <></>;
+};
 
 const ROUTES = {
   SIGNIN: {
@@ -70,7 +81,7 @@ const ROUTES = {
         ],
       },
       {
-        path: "admin",
+        path: "admin/*",
         children: [
           {
             path: "trainings",
@@ -96,6 +107,10 @@ const ROUTES = {
                 ],
               },
             ],
+          },
+          {
+            path: "*",
+            element: <Redirector path="/admin" />,
           },
         ],
       },
