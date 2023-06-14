@@ -6,7 +6,12 @@ import { useEffect, useState } from "react";
 import { Training } from "@/types/models/training";
 import { Typography } from "@/ui/Typography";
 import { pretyDateTime } from "@/lib/utils";
-import { IconAdminAward, IconClockHistory } from "@/ui/Icons";
+import {
+  IconCardHeading,
+  IconClockHistory,
+  IconGear,
+  IconPeople,
+} from "@/ui/Icons";
 import { TabBar, TabbarData } from "@/ui/Tabbar/tabBar";
 
 export const ManageDetailTrainingLayout = () => {
@@ -35,16 +40,16 @@ export const ManageDetailTrainingLayout = () => {
 const manageTrainingTabbarData: TabbarData[] = [
   {
     label: "Training info",
-    icon: <IconAdminAward size={24} />,
+    icon: <IconCardHeading size={24} />,
     value: "info",
   },
   {
-    icon: <IconAdminAward size={24} />,
+    icon: <IconPeople size={24} />,
     label: "Applicants",
     value: "applicants",
   },
   {
-    icon: <IconAdminAward size={24} />,
+    icon: <IconGear size={24} />,
     label: "Settings",
     value: "settings",
   },

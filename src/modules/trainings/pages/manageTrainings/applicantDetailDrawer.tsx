@@ -115,7 +115,7 @@ export const ApplicantDetails = () => {
         </Drawer.Title>
         <Drawer.CloseButton />
       </Drawer.Header>
-      <Drawer.Body sx={{ gap: 0 }}>
+      <Drawer.Body mih={"95vh"} sx={{ gap: 0 }}>
         <Stack pb={80} pt={16}>
           <Typography textVariant="title-md">Applicant Information</Typography>
           <Flex gap={16} align={"center"}>
