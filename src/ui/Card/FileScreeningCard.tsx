@@ -13,6 +13,7 @@ import { showErrorNotif } from "../notifications";
 
 export const FileScreeningCard = (
   fileInfo: FileInfo & {
+    showTag?: boolean;
     withDownload?: boolean;
     onDelete?: () => Promise<void> | void;
   }
@@ -50,8 +51,10 @@ export const FileScreeningCard = (
         )}
       </Flex>
       <Stack spacing={0} sx={{ flex: 1 }}>
-        <Typography textVariant="body-lg">{fileInfo.tag}</Typography>
-        <Typography textVariant="body-sm">
+        {fileInfo.showTag && (
+          <Typography textVariant="body-lg">{fileInfo.tag}</Typography>
+        )}
+        <Typography textVariant={fileInfo.showTag ? "body-sm" : "body-md"}>
           {fileInfo.filename.split("-").slice(1).join("-")}
         </Typography>
       </Stack>

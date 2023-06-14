@@ -150,11 +150,7 @@ export const ApplicantDetails = () => {
             {activeApplicant &&
               activeApplicant.requiredFiles.map((file) => {
                 return (
-                  <FileScreeningCard
-                    key={file.filename}
-                    {...file}
-                    withDownload
-                  />
+                  <FileScreeningCard key={file.filename} {...file} showTag />
                 );
               })}
           </Stack>
