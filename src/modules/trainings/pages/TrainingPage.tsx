@@ -56,7 +56,14 @@ export const TrainingsPage: React.FC = () => {
           );
         })
     : trainingMembers
-        ?.filter((tm) => (filter ? tm.status === filter : true))
+        ?.filter((tm) =>
+          filter
+            ? filter === "issued"
+              ? tm.issuedCertificate && tm.issuedCertificate.length > 0
+              : tm.status === filter &&
+                !(tm.issuedCertificate && tm.issuedCertificate.length >= 1)
+            : true
+        )
         .map((tm) => {
           const t = trainings?.find(
             (t) =>
