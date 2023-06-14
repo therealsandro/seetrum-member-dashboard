@@ -189,6 +189,16 @@ export const ManageTrainingApplicants = () => {
         mantineTableHeadRowProps={{
           sx: (t) => ({ background: t.colors.gray[0] }),
         }}
+        mantineTableBodyRowProps={({ row }) => ({
+          sx: { cursor: "pointer" },
+          onClick: (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            setActiveIndex(row.index);
+            navigate(row.original.id);
+          },
+        })}
         mantinePaperProps={{
           sx: { borderRadius: 16, boxShadow: "none" },
         }}
