@@ -37,10 +37,6 @@ export const useApplicantStore = create(
         applicants: { ...s.applicants, [trainingId]: lastesApplicants },
         isValid: { ...s.isValid, [trainingId]: true },
       }));
-      setTimeout(
-        () => set((s) => ({ isValid: { ...s.isValid, [trainingId]: false } })),
-        60 * 1000
-      );
       return lastesApplicants;
     },
     async getAplicantById(trainingId, memberId) {
