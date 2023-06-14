@@ -91,11 +91,16 @@ const ApplicationHistory: React.FC<
           <Box
             w={8}
             h={8}
-            bg="biceblue.6"
+            bg={applicantData.status === "rejected" ? "red.6" : "biceblue.6"}
             sx={{ borderRadius: "16px", overflow: "hidden" }}
           />
           <Typography>
-            {ApplicationLogState[applicantData.status as TrainingMemberStatus]}
+            {applicantData.issuedCertificate &&
+            applicantData.issuedCertificate.length > 0
+              ? "Certificate issued"
+              : ApplicationLogState[
+                  applicantData.status as TrainingMemberStatus
+                ]}
           </Typography>
         </Flex>
         <Typography textVariant="body-sm">
