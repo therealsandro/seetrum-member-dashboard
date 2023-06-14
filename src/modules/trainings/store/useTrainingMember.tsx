@@ -40,7 +40,7 @@ export const useTrainingMember = create<TrainingMemberStore>((set, get) => ({
         error: null,
         isValid: true,
       });
-      setTimeout(() => set({ isValid: false }), 60 * 1000);
+
       return trainingsList;
     } catch (error) {
       showErrorNotif({ title: "Failed fetch trainings" });
