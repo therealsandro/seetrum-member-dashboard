@@ -1,3 +1,4 @@
+import { kRowsPerPageOptions } from "@/lib/constants";
 import { toTitleCase } from "@/lib/utils";
 import { useApplicantStore } from "@/modules/trainings/store/useApplicantsStore";
 import { TrainingMember } from "@/types/models/trainingMember";
@@ -13,6 +14,12 @@ export const ManageTrainingApplicants = () => {
   const { applicants, getApplicants } = useApplicantStore();
   const [activeIndex, setActiveIndex] = useState<number>();
   const { id: trainingId, applicantId } = useParams();
+
+  // Pagination Controls
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: parseInt(kRowsPerPageOptions[0]),
+  });
 
   useEffect(() => {
     if (trainingId) getApplicants(trainingId);
@@ -181,11 +188,28 @@ export const ManageTrainingApplicants = () => {
       </Stack>
     );
 
+  const fisrtItem = pagination.pageIndex * pagination.pageSize + 1;
+  const fisrtItemNumber = applicants[trainingId].length === 0 ? 0 : fisrtItem;
+  const lastItem = (pagination.pageIndex + 1) * pagination.pageSize;
+  const lastItemNumber =
+    lastItem > applicants[trainingId].length
+      ? applicants[trainingId].length
+      : lastItem;
+
   return (
-    <>
+    <Stack spacing={24}>
+      <Typography textVariant="body-md">
+        Showing {fisrtItemNumber} - {lastItemNumber} applicants of total{" "}
+        {applicants[trainingId].length} training applicants.
+      </Typography>
       <MantineReactTable
         columns={columns}
         data={applicants[trainingId]}
+        onPaginationChange={setPagination}
+        state={{ pagination }}
+        mantinePaginationProps={{
+          rowsPerPageOptions: kRowsPerPageOptions,
+        }}
         mantineTableHeadRowProps={{
           sx: (t) => ({ background: t.colors.gray[0] }),
         }}
@@ -224,6 +248,6 @@ export const ManageTrainingApplicants = () => {
         />
         <Outlet context={[activeIndex, setActiveIndex]} />
       </Drawer.Root>
-    </>
+    </Stack>
   );
 };
