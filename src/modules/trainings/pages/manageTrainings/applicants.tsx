@@ -1,18 +1,40 @@
+import { kRowsPerPageOptions } from "@/lib/constants";
 import { toTitleCase } from "@/lib/utils";
 import { useApplicantStore } from "@/modules/trainings/store/useApplicantsStore";
 import { TrainingMember } from "@/types/models/trainingMember";
-import { IconChevronRight, IconPDF } from "@/ui/Icons";
+import { IconChevronRight, IconPDF, IconSearch } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
-import { Badge, Box, Button, Drawer, Flex, Loader, Stack } from "@mantine/core";
+import {
+  Badge,
+  Box,
+  Button,
+  Drawer,
+  Flex,
+  Input,
+  Loader,
+  SelectItem,
+  Stack,
+  useMantineTheme,
+} from "@mantine/core";
 import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
 import { useEffect, useMemo, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 
 export const ManageTrainingApplicants = () => {
+  const theme = useMantineTheme();
   const navigate = useNavigate();
   const { applicants, getApplicants } = useApplicantStore();
   const [activeIndex, setActiveIndex] = useState<number>();
   const { id: trainingId, applicantId } = useParams();
+
+  // Search controllers
+  const [globalFilter, setGlobalFilter] = useState("");
+
+  // Pagination Controls
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: parseInt(kRowsPerPageOptions[0]),
+  });
 
   useEffect(() => {
     if (trainingId) getApplicants(trainingId);
@@ -24,6 +46,7 @@ export const ManageTrainingApplicants = () => {
         id: "id",
         accessorKey: "id",
         header: "",
+        enableGlobalFilter: false,
       },
       {
         header: "No",
@@ -33,17 +56,19 @@ export const ManageTrainingApplicants = () => {
           );
         },
         size: 40,
+        enableGlobalFilter: false,
       },
       {
         header: "Name",
-        accessorFn: (row) => (
+        accessorKey: "name",
+        Cell: ({ row, renderedCellValue }) => (
           <Stack sx={{ gap: 0 }}>
-            <Typography textVariant="body-lg">{row.name}</Typography>
+            <Typography textVariant="body-lg">{renderedCellValue}</Typography>
             <Flex gap={4} align="center">
               <Typography textVariant="body-sm" color="dimmed">
-                {toTitleCase(row.province)}
+                {toTitleCase(row.original.province)}
               </Typography>
-              {row.institutionName !== "-" && (
+              {row.original.institutionName !== "-" && (
                 <Box
                   w={4}
                   h={4}
@@ -54,7 +79,9 @@ export const ManageTrainingApplicants = () => {
                 />
               )}
               <Typography textVariant="body-sm" color="dimmed">
-                {row.institutionName !== "-" ? row.institutionName : ""}
+                {row.original.institutionName !== "-"
+                  ? row.original.institutionName
+                  : ""}
               </Typography>
             </Flex>
           </Stack>
@@ -62,6 +89,7 @@ export const ManageTrainingApplicants = () => {
       },
       {
         header: "Status",
+        enableGlobalFilter: false,
         size: 100,
         accessorFn(originalRow) {
           let status: string;
@@ -83,33 +111,52 @@ export const ManageTrainingApplicants = () => {
               status = "Received";
               break;
           }
+          return status;
+        },
+        filterVariant: "select",
+        mantineFilterSelectProps: {
+          data: ["Received", "Accepted", "Rejected"] as (
+            | string
+            | SelectItem
+          )[] &
+            string,
+        },
+        Cell: ({ row, renderedCellValue }) => {
           return (
             <Badge
               size="md"
               variant="filled"
               color={
-                originalRow.status === "rejected"
+                row.original.status === "rejected"
                   ? "red"
-                  : originalRow.status === "applied"
+                  : row.original.status === "applied"
                   ? "platinum.6"
                   : "biceblue"
               }
               sx={{
                 textTransform: "none",
-                color: originalRow.status === "applied" ? "black" : undefined,
+                color: row.original.status === "applied" ? "black" : undefined,
               }}
             >
-              {toTitleCase(status)}
+              {renderedCellValue}
             </Badge>
           );
         },
       },
       {
         header: "Certificate",
+        enableGlobalFilter: false,
+        accessorKey: "issuedCertificate",
         accessorFn(originalRow) {
+          return Boolean(originalRow.issuedCertificate?.length ?? 0)
+            ? "true"
+            : "false";
+        },
+        filterVariant: "checkbox",
+        Cell({ row }) {
           if (
-            !Boolean(originalRow.issuedCertificate) ||
-            originalRow.issuedCertificate.length === 0
+            !Boolean(row.original.issuedCertificate) ||
+            row.original.issuedCertificate.length === 0
           )
             return (
               <Typography textVariant="body-md" color="dimmed">
@@ -118,7 +165,7 @@ export const ManageTrainingApplicants = () => {
             );
           return (
             <Flex align="center" gap={4}>
-              {originalRow.issuedCertificate.slice(0, 2).map((certif) => (
+              {row.original.issuedCertificate.slice(0, 2).map((certif) => (
                 <Badge
                   key={certif.filename}
                   variant="outline"
@@ -141,8 +188,8 @@ export const ManageTrainingApplicants = () => {
                   </Flex>
                 </Badge>
               ))}
-              {originalRow.issuedCertificate.length > 2
-                ? `and ${originalRow.issuedCertificate.length - 2} more`
+              {row.original.issuedCertificate.length > 2
+                ? `and ${row.original.issuedCertificate.length - 2} more`
                 : undefined}
             </Flex>
           );
@@ -150,6 +197,7 @@ export const ManageTrainingApplicants = () => {
       },
       {
         id: "actions",
+        enableGlobalFilter: false,
         header: "",
         size: 40,
         Cell(props) {
@@ -181,11 +229,37 @@ export const ManageTrainingApplicants = () => {
       </Stack>
     );
 
+  const fisrtItem = pagination.pageIndex * pagination.pageSize + 1;
+  const fisrtItemNumber = applicants[trainingId].length === 0 ? 0 : fisrtItem;
+  const lastItem = (pagination.pageIndex + 1) * pagination.pageSize;
+  const lastItemNumber =
+    lastItem > applicants[trainingId].length
+      ? applicants[trainingId].length
+      : lastItem;
+
   return (
-    <>
+    <Stack spacing={24}>
+      <Input
+        placeholder="Search applicants"
+        value={globalFilter}
+        onChange={(e) => setGlobalFilter(e.target.value)}
+        radius={100}
+        rightSection={<IconSearch color={theme.colors.night[5]} />}
+        sx={(t) => ({ maxWidth: t.fn.largerThan("sm") ? "50%" : "100%" })}
+      />
+      <Typography textVariant="body-md">
+        Showing {fisrtItemNumber} - {lastItemNumber} applicants of total{" "}
+        {applicants[trainingId].length} training applicants.
+      </Typography>
       <MantineReactTable
         columns={columns}
         data={applicants[trainingId]}
+        onPaginationChange={setPagination}
+        onGlobalFilterChange={setGlobalFilter}
+        state={{ pagination, globalFilter }}
+        mantinePaginationProps={{
+          rowsPerPageOptions: kRowsPerPageOptions,
+        }}
         mantineTableHeadRowProps={{
           sx: (t) => ({ background: t.colors.gray[0] }),
         }}
@@ -224,6 +298,6 @@ export const ManageTrainingApplicants = () => {
         />
         <Outlet context={[activeIndex, setActiveIndex]} />
       </Drawer.Root>
-    </>
+    </Stack>
   );
 };

@@ -77,6 +77,7 @@ const Header: React.FC<HeaderProps> = ({ updatedAt, title }) => {
       mx={-20}
       px={20}
       sx={(t) => ({
+        zIndex: 20,
         background: "white",
         position: "sticky",
         top: -32,
