@@ -9,7 +9,7 @@ export const DashboardPage = () => {
       <Stack spacing={24}>
         <DashboardHeader />
         <MediaQuery smallerThan={"sm"} styles={{ padding: 0 }}>
-          <Stack align="center" sx={{ flex: 1, padding: 40, gap: 32 }}>
+          <Stack align="center" sx={{ flex: 1, px: 40, gap: 32 }}>
             <img
               height={200}
               src={dashboardInitialUrl}

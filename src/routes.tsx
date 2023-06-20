@@ -128,7 +128,7 @@ const ROUTES = {
     ],
   },
   PLAYGROUND: {
-    path: "/playground",
+    path: "/admin/playground",
     element: <PlaygroundPage />,
   },
 } as const;
