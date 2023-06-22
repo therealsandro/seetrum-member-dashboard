@@ -4,12 +4,15 @@ import { FileInfo, fileInfoDummy } from "./fileInfo";
 
 export type Training = BaseModel & TrainingModel;
 
-export type TrainingModel = {
+export type CreateTrainingModel = {
   title: string;
   trainerName: string;
-  thumbnailFileName: string;
-  description: string;
   dueDate: Timestamp;
+};
+
+export type TrainingModel = CreateTrainingModel & {
+  description: string;
+  thumbnailFileName: string;
   attachments: FileInfo[];
   fileRequirements: FileRequirement[];
 };
