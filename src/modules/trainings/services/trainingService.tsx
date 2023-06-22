@@ -29,6 +29,7 @@ export const createTraining = async (
   try {
     const payloadWithDefault: TrainingModel = {
       ...payload,
+      description: "",
       thumbnailFileName: kDefaultThumbnailFilename,
       attachments: [],
       fileRequirements: kDefaultFileRequirements,
