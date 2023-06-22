@@ -5,7 +5,10 @@ import { Button, Flex } from "@mantine/core";
 import { useDocumentTitle } from "@mantine/hooks";
 import React, { useState } from "react";
 import { MyTrainingFilter } from "../components/MyTrainingFilter";
-import { TrainingCard } from "../components/TrainingCard";
+import {
+  ApplicationStatusUpdate,
+  TrainingCard,
+} from "../components/TrainingCard";
 import { TrainingToolbar } from "../components/TrainingToolbar";
 import { useTrainings } from "../store/useTrainings";
 import { trainingModelDummy } from "@/types/models/training";
@@ -47,12 +50,20 @@ export const TrainingsPage: React.FC = () => {
             : true
         )
         .map((trainingData, idx) => {
+          const isClosed =
+            trainingData.dueDate.seconds < Timestamp.now().seconds;
           return (
             <TrainingCard
               key={trainingData.id}
               variant="horizontal"
               {...trainingData}
-            />
+            >
+              {isClosed && (
+                <Typography textVariant="body-md" color="dimmed">
+                  No longer accepting applications
+                </Typography>
+              )}
+            </TrainingCard>
           );
         })
     : trainingMembers
@@ -74,12 +85,9 @@ export const TrainingsPage: React.FC = () => {
           );
           if (t) {
             return (
-              <TrainingCard
-                key={tm.id}
-                variant="horizontal"
-                {...t}
-                applicationStatus={tm}
-              />
+              <TrainingCard key={tm.id} variant="horizontal" {...t}>
+                <ApplicationStatusUpdate trainingId={t.id} />
+              </TrainingCard>
             );
           }
           return undefined;

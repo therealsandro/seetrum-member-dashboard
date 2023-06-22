@@ -126,7 +126,7 @@ export const addNewDocumentWithCustomId = async <T extends DocumentData>(
 export const getCountByQuery = async (
   collectionName: string,
   ...filter: QueryConstraint[]
-): Promise<Number> => {
+): Promise<number> => {
   const collectionRef = collection(FirebaseDB, collectionName);
   const collectionQuery = query(collectionRef, ...filter);
   const querySnapshot = await getCountFromServer(collectionQuery);
