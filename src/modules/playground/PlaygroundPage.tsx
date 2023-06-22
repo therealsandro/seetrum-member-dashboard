@@ -5,20 +5,38 @@ import {
   fileRequirementDummy,
   fileRequirementImageDummy,
 } from "@/types/models/training";
-import { Button, Container, Flex, Stack, Text } from "@mantine/core";
+import {
+  Badge,
+  Button,
+  Container,
+  Divider,
+  Flex,
+  Group,
+  Stack,
+  Text,
+} from "@mantine/core";
 import React, { useState } from "react";
 import { FileUploadButton } from "../../ui/Button/FileUploadButton";
 import {
   TrainingMemberPlayground,
   TrainingPlayground,
 } from "./TrainingPlayground";
+import { User } from "@/types";
+import { getDocumentsByQuery } from "@/services/firebase/helper";
+import { COLLECTION_USERS } from "@/lib/constants";
 
 export const PlaygroundPage: React.FC = () => {
   const user = useAuthStore((state) => state.user);
+  const isAdmin = useAuthStore((state) => state.isAdmin);
   const logOut = useAuthStore((state) => state.logOut);
   const [fileInfo, setFileInfo] = useState<FileInfo>();
   const [fileInfoImg, setFileInfoImg] = useState<FileInfo>();
 
+  const getUsersClick = async () => {
+    const users = await getAllUsers();
+
+    console.log(users.map((u) => u.name).join(";"));
+  };
   return (
     <ProtectedPage>
       <Container>
@@ -29,12 +47,18 @@ export const PlaygroundPage: React.FC = () => {
             justify={"space-between"}
             align={"center"}
           >
-            <Text>Login as {user && user.email + " " + user.id}</Text>
+            <Group>
+              <Text>Login as {user && user.email + " " + user.id}</Text>
+              {isAdmin && <Badge>Admin</Badge>}
+            </Group>
             <Button onClick={logOut} variant="outline">
               Logout
             </Button>
           </Flex>
+          <Button onClick={getUsersClick}>Get all user</Button>
+          <Divider />
           <TrainingPlayground />
+          <Divider />
           <TrainingMemberPlayground />
           <pre>{JSON.stringify(fileInfo, null, 2)}</pre>
           <FileUploadButton
@@ -52,4 +76,14 @@ export const PlaygroundPage: React.FC = () => {
       </Container>
     </ProtectedPage>
   );
+};
+
+const getAllUsers = async () => {
+  try {
+    const users = await getDocumentsByQuery<User>(COLLECTION_USERS);
+    return users;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
 };
