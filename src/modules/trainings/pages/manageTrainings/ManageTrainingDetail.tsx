@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { ManageTrainingApplicants } from "./applicants";
+import { TrainingInfoManagement } from "./info/trainingInfoManagement";
 
 type manageTrainingTabId = "info" | "applicants" | "settings";
 export const ManageTrainingDetail = () => {
@@ -13,6 +14,6 @@ export const ManageTrainingDetail = () => {
     case "settings":
       return <h1>Settings Page</h1>;
     default:
-      return <h1>Info Page</h1>;
+      return <TrainingInfoManagement />;
   }
 };

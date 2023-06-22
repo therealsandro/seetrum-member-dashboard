@@ -47,6 +47,7 @@ export const kProvinsi = [
   "PAPUA BARAT",
 ];
 
+export const kFileMaxSize = 2 * 1024 ** 2;
 export const kRowsPerPageOptions = ["10", "25", "50", "100", "200"];
 
 export const kDefaultThumbnailFilename = "0000000000000-default-thumbnail.jpg";
