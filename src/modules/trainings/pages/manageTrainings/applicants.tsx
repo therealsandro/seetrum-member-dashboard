@@ -94,19 +94,15 @@ export const ManageTrainingApplicants = () => {
         accessorFn(originalRow) {
           let status: string;
           switch (originalRow.status) {
-            case "applied":
-              status = "Received";
-              break;
             case "rejected":
               status = "Rejected";
               break;
             case "accepted":
-              status = "Accepted";
-              break;
-            case "issued":
+            case "completed":
               status = "Accepted";
               break;
 
+            case "applied":
             default:
               status = "Received";
               break;
