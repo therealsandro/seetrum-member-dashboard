@@ -1,4 +1,4 @@
-import { ActionIcon, Flex, Stack } from "@mantine/core";
+import { ActionIcon, Flex, Stack, Tooltip } from "@mantine/core";
 import {
   IconJPG,
   IconPDF,
@@ -10,6 +10,7 @@ import { FileInfo } from "@/types/models/fileInfo";
 import { Typography } from "../Typography";
 import { useFileURLStore } from "@/services/firebase/storage";
 import { showErrorNotif } from "../notifications";
+import { kLineClamp } from "@/lib/utils";
 
 export const FileScreeningCard = (
   fileInfo: FileInfo & {
@@ -50,14 +51,28 @@ export const FileScreeningCard = (
           <IconJPG size={22} />
         )}
       </Flex>
-      <Stack spacing={0} sx={{ flex: 1 }}>
-        {fileInfo.showTag && (
-          <Typography textVariant="body-lg">{fileInfo.tag}</Typography>
-        )}
-        <Typography textVariant={fileInfo.showTag ? "body-sm" : "body-md"}>
-          {fileInfo.filename.split("-").slice(1).join("-")}
-        </Typography>
-      </Stack>
+      <Tooltip
+        withArrow
+        label={fileInfo.filename.split("-").slice(1).join("-")}
+        multiline
+        sx={{ overflowWrap: "anywhere" }}
+        maw={300}
+        position="left"
+        openDelay={250}
+        transitionProps={{ transition: "pop", duration: 300 }}
+      >
+        <Stack spacing={0} sx={{ flex: 1, cursor: "default" }}>
+          {fileInfo.showTag && (
+            <Typography textVariant="body-lg">{fileInfo.tag}</Typography>
+          )}
+          <Typography
+            textVariant={fileInfo.showTag ? "body-sm" : "body-md"}
+            sx={{ ...kLineClamp(fileInfo.showTag ? 1 : 2) }}
+          >
+            {fileInfo.filename.split("-").slice(1).join("-")}
+          </Typography>
+        </Stack>
+      </Tooltip>
       <Flex gap={8}>
         <ActionIcon
           w={30}

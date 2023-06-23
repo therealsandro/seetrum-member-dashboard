@@ -61,3 +61,12 @@ export const isIDNPhoneNumber = (errorMessage: string) => {
       errorMessage
     )(value);
 };
+
+export const kLineClamp = (n: number): React.CSSProperties & any => ({
+  wordBreak: "break-all",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  display: "-webkit-box",
+  WebkitLineClamp: n.toString(),
+  WebkitBoxOrient: "vertical",
+});
