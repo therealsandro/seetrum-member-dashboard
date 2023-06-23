@@ -1,6 +1,7 @@
 import { pretyDate } from "@/lib/utils";
 import { useTrainings } from "@/modules/trainings/store/useTrainings";
 import { Training } from "@/types/models/training";
+import { IconEdit } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import {
   Stack,
@@ -9,11 +10,18 @@ import {
   TypographyStylesProvider,
   Box,
   Flex,
+  useMantineTheme,
+  Button,
 } from "@mantine/core";
 import { useState, ReactElement, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-export const TrainingInfoViewer = () => {
+export const TrainingInfoViewer = ({
+  onChangeMode,
+}: {
+  onChangeMode: () => void;
+}) => {
+  const thm = useMantineTheme();
   const { getTrainingsById } = useTrainings();
   const { id } = useParams();
   const [training, setTraining] = useState<Training>();
@@ -50,33 +58,59 @@ export const TrainingInfoViewer = () => {
   }, [getTrainingsById, id]);
 
   return (
-    <Stack>
-      <Sections label="Trainer">
-        {training && training.trainerName ? (
-          <Typography>{training.trainerName}</Typography>
-        ) : undefined}
-      </Sections>
-      <Sections label="Application Deadline">
-        {training && training.dueDate && (
-          <Typography>{pretyDate(training?.dueDate.toDate())}</Typography>
-        )}
-      </Sections>
-      <Sections
-        label="Description"
-        loading={
-          !Boolean(training?.description) ? (
-            <Loader py={32} w="100%" px="auto" />
-          ) : (
-            false
-          )
-        }
-      >
-        <TypographyStylesProvider>
-          <Box
-            dangerouslySetInnerHTML={{ __html: training?.description ?? "" }}
-          />
-        </TypographyStylesProvider>
-      </Sections>
+    <Stack
+      mt={8}
+      mb={24}
+      spacing={16}
+      p={16}
+      pb={20}
+      sx={{
+        borderRadius: 16,
+        border: "1px solid",
+        borderColor: thm.fn.rgba(thm.colors.night[5], 0.12),
+      }}
+    >
+      <Flex gap={16} align="center">
+        <Typography textVariant="title-lg" sx={{ flex: 1 }}>
+          General Info
+        </Typography>
+        <Button
+          variant="subtle"
+          radius={8}
+          leftIcon={<IconEdit />}
+          onClick={() => onChangeMode()}
+        >
+          <Typography textVariant="label-lg">Edit</Typography>
+        </Button>
+      </Flex>
+      <Stack>
+        <Sections label="Trainer">
+          {training && training.trainerName ? (
+            <Typography>{training.trainerName}</Typography>
+          ) : undefined}
+        </Sections>
+        <Sections label="Application Deadline">
+          {training && training.dueDate && (
+            <Typography>{pretyDate(training?.dueDate.toDate())}</Typography>
+          )}
+        </Sections>
+        <Sections
+          label="Description"
+          loading={
+            !Boolean(training?.description) ? (
+              <Loader py={32} w="100%" px="auto" />
+            ) : (
+              false
+            )
+          }
+        >
+          <TypographyStylesProvider>
+            <Box
+              dangerouslySetInnerHTML={{ __html: training?.description ?? "" }}
+            />
+          </TypographyStylesProvider>
+        </Sections>
+      </Stack>
     </Stack>
   );
 };
