@@ -1,3 +1,4 @@
+import { TrainingMemberStatus } from "@/types/models/trainingMember";
 import { Chip, Flex } from "@mantine/core";
 import { useState } from "react";
 
@@ -6,11 +7,11 @@ interface MyTrainingFilterProps {
   onChange: (value: number | string) => void;
 }
 
-const filterOptions = [
+const filterOptions: { value: TrainingMemberStatus | ""; label: string }[] = [
   { value: "", label: "All my trainings" },
   { value: "applied", label: "Applied" },
   { value: "accepted", label: "Accepted" },
-  { value: "issued", label: "Completed" },
+  { value: "completed", label: "Completed" },
   { value: "rejected", label: "Rejected" },
 ];
 export const MyTrainingFilter: React.FC<MyTrainingFilterProps> = ({

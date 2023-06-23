@@ -61,12 +61,14 @@ export const ApplicantDetails = () => {
             activeApplicant.issuedCertificate ?? [],
             newFileInfo,
           ].flat(),
+          status: "completed",
         });
         await updateActiveApplicant(trainingId, applicantId, {
           issuedCertificate: [
             activeApplicant.issuedCertificate ?? [],
             newFileInfo,
           ].flat(),
+          status: "completed",
         });
 
         getApplicants(trainingId);
@@ -92,7 +94,11 @@ export const ApplicantDetails = () => {
           <Flex w={"100%"} justify="space-between">
             <Typography textVariant="title-lg">Applicant Details</Typography>
             <Select
-              value={activeApplicant?.status}
+              value={
+                activeApplicant?.status === "completed"
+                  ? "accepted"
+                  : activeApplicant?.status
+              }
               data={[
                 { label: "Accepted", value: "accepted" },
                 { label: "Rejected", value: "rejected" },
@@ -179,12 +185,22 @@ export const ApplicantDetails = () => {
                           activeApplicant.issuedCertificate.filter(
                             (c) => c.filename !== file.filename
                           );
-                        await updateTrainingMember(applicantId, {
+                        const updatedApplicationData = {
                           issuedCertificate: certifs,
-                        });
-                        await updateActiveApplicant(trainingId, applicantId, {
-                          issuedCertificate: certifs,
-                        });
+                          status:
+                            certifs.length === 0
+                              ? "accepted"
+                              : activeApplicant.status,
+                        };
+                        await updateTrainingMember(
+                          applicantId,
+                          updatedApplicationData
+                        );
+                        await updateActiveApplicant(
+                          trainingId,
+                          applicantId,
+                          updatedApplicationData
+                        );
 
                         getApplicants(trainingId);
                       }
@@ -209,7 +225,12 @@ export const ApplicantDetails = () => {
               <Button
                 {...props}
                 w={"fit-content"}
-                disabled={activeApplicant?.status !== "accepted"}
+                disabled={
+                  !(
+                    activeApplicant?.status === "accepted" ||
+                    activeApplicant?.status === "completed"
+                  )
+                }
                 radius={8}
                 variant="outline"
                 leftIcon={<IconPlus size={18} />}

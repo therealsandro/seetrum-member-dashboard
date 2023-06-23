@@ -90,7 +90,7 @@ export const ApplicationTrackingCard: React.FC<
 };
 
 const ApplicationLogState: Record<TrainingMemberStatus, string> = {
-  issued: "Certificate issued",
+  completed: "Certificate issued",
   rejected: "Application rejected",
   accepted: "Application accepted",
   applied: "Application received",
@@ -110,12 +110,7 @@ const ApplicationHistory: React.FC<
             sx={{ borderRadius: "16px", overflow: "hidden" }}
           />
           <Typography>
-            {applicantData.issuedCertificate &&
-            applicantData.issuedCertificate.length > 0
-              ? "Certificate issued"
-              : ApplicationLogState[
-                  applicantData.status as TrainingMemberStatus
-                ]}
+            {ApplicationLogState[applicantData.status as TrainingMemberStatus]}
           </Typography>
         </Flex>
         <Typography textVariant="body-sm">
