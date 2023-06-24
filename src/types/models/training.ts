@@ -7,7 +7,7 @@ export type Training = BaseModel & TrainingModel;
 export type CreateTrainingModel = {
   title: string;
   trainerName: string;
-  dueDate: Timestamp;
+  dueDate: Timestamp | null;
 };
 
 export type TrainingModel = CreateTrainingModel & {
