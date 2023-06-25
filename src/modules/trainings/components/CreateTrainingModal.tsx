@@ -10,10 +10,12 @@ import {
   Switch,
   TextInput,
 } from "@mantine/core";
-import { DatePickerInput, DatePickerValue } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
+import { createTraining } from "../services/trainingService";
+import { useNavigate } from "react-router-dom";
 
 interface CreateTrainingModalProps {
   opened: boolean;
@@ -24,27 +26,36 @@ export const CreateTrainingModal: React.FC<CreateTrainingModalProps> = ({
   opened,
   onClose,
 }) => {
+  const navigate = useNavigate();
+  const [isWithTemplate, setIsWithTemplate] = useState(true);
+
   const form = useForm<CreateTrainingModel>({
     initialValues: {
       trainerName: "",
       title: "",
-      dueDate: null,
+      deadline: undefined,
     },
     validate: {
       title: isNotEmpty("Title can not be empty"),
       trainerName: isNotEmpty("Trainer name can not be empty"),
-      dueDate: isNotEmpty("Due date can not be empty"),
+      deadline: isNotEmpty("Due date can not be empty"),
     },
   });
 
-  const [isWithTemplate, setIsWithTemplate] = useState(true);
-
   const handleDueDateChange = (value: Date) => {
     const timestamp = Timestamp.fromDate(value);
-    form.setFieldValue("dueDate", timestamp);
+    form.setFieldValue("deadline", timestamp);
   };
 
-  const handleSubmit = form.onSubmit((value) => {});
+  const handleSubmit = form.onSubmit(async (value) => {
+    try {
+      const res = await createTraining(value, isWithTemplate);
+      navigate(`/admin/trainings/${res.id}`);
+    } catch (e) {
+      console.error(e);
+      showErrorNotif();
+    }
+  });
 
   const handleClose = () => {
     form.reset();
@@ -93,7 +104,7 @@ export const CreateTrainingModal: React.FC<CreateTrainingModalProps> = ({
             dropdownType="modal"
             withAsterisk
             onChange={handleDueDateChange}
-            error={form.errors.dueDate}
+            error={form.errors.deadline}
           />
           <Stack spacing={8}>
             <Group position="apart">

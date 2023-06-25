@@ -14,6 +14,7 @@ import {
   Training,
   TrainingModel,
 } from "@/types/models/training";
+import { Timestamp } from "firebase/firestore";
 
 export const getAllTrainings = async (): Promise<Training[]> => {
   try {
@@ -24,16 +25,21 @@ export const getAllTrainings = async (): Promise<Training[]> => {
 };
 
 export const createTraining = async (
-  payload: CreateTrainingModel
+  payload: CreateTrainingModel,
+  withTemplate = true
 ): Promise<Training> => {
   try {
     const payloadWithDefault: TrainingModel = {
       ...payload,
+      dueDate: payload.deadline ?? Timestamp.fromDate(new Date()),
       description: "",
       thumbnailFileName: kDefaultThumbnailFilename,
       attachments: [],
-      fileRequirements: kDefaultFileRequirements,
+      fileRequirements: withTemplate ? kDefaultFileRequirements : [],
     };
+
+    delete payloadWithDefault.deadline;
+
     const res = await addNewDocument<TrainingModel>(
       COLLECTION_TRAINING,
       payloadWithDefault

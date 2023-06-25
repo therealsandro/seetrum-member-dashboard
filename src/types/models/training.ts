@@ -7,10 +7,11 @@ export type Training = BaseModel & TrainingModel;
 export type CreateTrainingModel = {
   title: string;
   trainerName: string;
-  dueDate: Timestamp | null;
+  deadline?: Timestamp;
 };
 
 export type TrainingModel = CreateTrainingModel & {
+  dueDate: Timestamp;
   description: string;
   thumbnailFileName: string;
   attachments: FileInfo[];
