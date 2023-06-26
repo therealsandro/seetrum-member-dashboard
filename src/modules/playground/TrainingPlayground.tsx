@@ -119,7 +119,7 @@ export const TrainingPlayground: React.FC = () => {
     try {
       const defaultTraining: CreateTrainingModel = {
         title: "default training " + new Date().getTime(),
-        dueDate: Timestamp.fromDate(new Date()),
+        deadline: Timestamp.fromDate(new Date()),
         trainerName: "enercoss",
       };
       const res = await createTraining(defaultTraining);
