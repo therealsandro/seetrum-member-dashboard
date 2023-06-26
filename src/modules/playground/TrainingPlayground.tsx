@@ -1,4 +1,5 @@
 import {
+  CreateTrainingModel,
   Training,
   TrainingModel,
   fileRequirementDummy,
@@ -6,12 +7,23 @@ import {
   trainingModelDummy,
 } from "@/types/models/training";
 import { Typography } from "@/ui/Typography";
-import { Badge, Box, Button, Flex, Group, Paper, Stack } from "@mantine/core";
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Group,
+  Paper,
+  Stack,
+  TextInput,
+} from "@mantine/core";
 import { useState } from "react";
 import {
   createTraining,
+  createTrainingMaster,
   getAllTrainings,
   getTrainingById,
+  updateTraining,
 } from "../trainings/services/trainingService";
 import {
   TrainingMember,
@@ -20,13 +32,18 @@ import {
 import {
   createTrainingMember,
   getTrainingMemberByMemberId,
+  getTrainingMemberByTrainingId,
+  getTrainingMemberCountByTrainingId,
+  updateTrainingMember,
 } from "../trainings/services/trainingMemberService";
 import { useAuthStore } from "../auth/stores/authStore";
 import { Timestamp } from "firebase/firestore";
+import { kDefaultFileRequirements } from "@/lib/constants";
 
 export const TrainingPlayground: React.FC = () => {
   const [trainings, setTrainings] = useState<Training[]>();
   const [loading, setLoading] = useState(false);
+  const [value, setValue] = useState("");
 
   const fetchAllTraining = async () => {
     setLoading(true);
@@ -43,7 +60,7 @@ export const TrainingPlayground: React.FC = () => {
   const postTraining = async () => {
     setLoading(true);
     try {
-      await createTraining(trainingModelDummy);
+      await createTrainingMaster(trainingModelDummy);
       await fetchAllTraining();
     } catch (e) {
       console.error(e);
@@ -54,35 +71,42 @@ export const TrainingPlayground: React.FC = () => {
   const postRealTrainingEvent = async () => {
     setLoading(true);
     const newTrainingModel: TrainingModel = {
-      title:
-        "Pelatihan Auditor Energi Bangunan Gedung dan Pelatihan Auditor Termal dan Elektrikal",
+      title: "Pelatihan Auditor Termal dan Elektrikal",
       description: descHTML,
-      dueDate: Timestamp.fromDate(new Date(2023, 6, 20)),
-      thumbnailFileName: "1684931718872-pexels-photo-305833.jpeg",
+      dueDate: Timestamp.fromDate(
+        new Date(new Date().setDate(new Date().getDate() + 7))
+      ),
+
+      thumbnailFileName: "1685336531955-thermal-audit.jpeg",
       attachments: [
         {
-          filename:
-            "1684914887474-TOR Pelatihan Auditor Energi SEETRUM.docx.pdf",
+          filename: "1685333884982-TOR training.pdf",
           contentType: "application/pdf",
-          size: 59443,
-          tag: "TOR",
+          size: 373131,
+          tag: "Curriculum vitae",
         },
-      ],
-      trainerName: "EnerCoSS",
-      fileRequirements: [
-        { ...fileRequirementDummy, title: "Curriculum Vitae" },
-        { ...fileRequirementImageDummy, title: "Photo" },
-        { ...fileRequirementDummy, title: "Degree certificate (Ijazah)" },
-        { ...fileRequirementDummy, title: "Personal ID Card (KTP)" },
         {
-          ...fileRequirementDummy,
-          title: "Supporting Document",
-          required: false,
+          filename: "1685333945055-Tor Sertifikasi.pdf",
+          contentType: "application/pdf",
+          size: 303618,
+          tag: "Curriculum vitae",
         },
       ],
+      trainerName: "EnerCoSS & LSP Hake",
+      fileRequirements: kDefaultFileRequirements,
     };
+
+    const newTrainingModelBangunan: TrainingModel = {
+      ...newTrainingModel,
+      title: "Pelatihan Auditor Energi Bangunan Gedung",
+      thumbnailFileName: "1684931718872-pexels-photo-305833.jpeg",
+    };
+
     try {
-      await createTraining(newTrainingModel);
+      await Promise.all([
+        createTrainingMaster(newTrainingModel),
+        createTrainingMaster(newTrainingModelBangunan),
+      ]);
       await fetchAllTraining();
     } catch (e) {
       console.error(e);
@@ -90,15 +114,50 @@ export const TrainingPlayground: React.FC = () => {
     setLoading(false);
   };
 
+  const postTrainingWithDefault = async () => {
+    setLoading(true);
+    try {
+      const defaultTraining: CreateTrainingModel = {
+        title: "default training " + new Date().getTime(),
+        deadline: Timestamp.fromDate(new Date()),
+        trainerName: "enercoss",
+      };
+      const res = await createTraining(defaultTraining);
+      setTrainings([res]);
+    } catch (e) {
+      alert("error");
+    }
+    setLoading(false);
+  };
+
   const fetchTrainingById = async () => {
     setLoading(true);
-    const res = await getTrainingById("c8wzhSGbozS3QcW5ae5h");
-    alert(JSON.stringify(res, null, 2));
+    try {
+      const res = await getTrainingById(value);
+      setTrainings([res]);
+      console.log(res);
+    } catch (e) {
+      alert("error");
+    }
+    setLoading(false);
+  };
+
+  const updateTrainingTitle = (title: string) => async () => {
+    setLoading(true);
+    try {
+      await updateTraining(value, { title });
+    } catch (e) {
+      alert("erro");
+    }
     setLoading(false);
   };
 
   return (
     <>
+      <TextInput
+        label={"TrainingId"}
+        onChange={(e) => setValue(e.target.value)}
+      />
       <Group>
         <Button loading={loading} onClick={fetchAllTraining}>
           Get All Training
@@ -112,17 +171,32 @@ export const TrainingPlayground: React.FC = () => {
         <Button
           color="green.7"
           loading={loading}
+          onClick={postTrainingWithDefault}
+        >
+          Default training
+        </Button>
+        <Button
+          color="green.7"
+          loading={loading}
           onClick={postRealTrainingEvent}
         >
           Real Training
+        </Button>
+      </Group>
+      <Group>
+        <Button loading={loading} onClick={updateTrainingTitle("Rosetta")}>
+          update title to "Rosetta"
+        </Button>
+        <Button loading={loading} onClick={updateTrainingTitle("Ruby Hoshino")}>
+          update title to "Ruby Hoshino"
         </Button>
       </Group>
       <Stack>
         {trainings &&
           trainings.map((t, index) => (
             <Paper p={"sm"} withBorder key={t.id}>
+              <Typography textVariant="title-sm">{t.id}</Typography>
               <Typography textVariant="title-md">{t.title}</Typography>
-              <Typography textVariant="body-md">{t.description}</Typography>
             </Paper>
           ))}
       </Stack>
@@ -134,6 +208,8 @@ export const TrainingMemberPlayground: React.FC = () => {
   const user = useAuthStore((state) => state.user);
   const [trainingMembers, setTrainingMembers] = useState<TrainingMember[]>();
   const [loading, setLoading] = useState(false);
+  const [value, setValue] = useState("");
+  const [tmId, setTmId] = useState("");
 
   const fetchMyTraining = async () => {
     setLoading(true);
@@ -159,15 +235,48 @@ export const TrainingMemberPlayground: React.FC = () => {
     setLoading(false);
   };
 
-  const fetchTrainingById = async () => {
+  const fetchTrainingMemberByTrainingId = async () => {
     setLoading(true);
-    const res = await getTrainingById("c8wzhSGbozS3QcW5ae5h");
-    alert(JSON.stringify(res, null, 2));
+    try {
+      const res = await getTrainingMemberByTrainingId(value);
+      setTrainingMembers(res);
+      console.log(res.map((t) => t.name).join(";"));
+    } catch (e) {
+      alert("error");
+    }
+    setLoading(false);
+  };
+
+  const fetchTMCount = async () => {
+    setLoading(true);
+    try {
+      const res = await getTrainingMemberCountByTrainingId(value);
+      alert(`${res} tm in training id`);
+    } catch (e) {
+      alert("error");
+    }
+    setLoading(false);
+  };
+
+  const updateTMName = (name: string) => async () => {
+    setLoading(true);
+    try {
+      console.log(tmId);
+      await updateTrainingMember(tmId, { name });
+    } catch (e) {
+      alert("error");
+      console.error(e);
+    }
     setLoading(false);
   };
 
   return (
     <>
+      <TextInput
+        label={"training id"}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      <TextInput label={"tm id"} onChange={(e) => setTmId(e.target.value)} />
       <Group>
         <Button loading={loading} onClick={fetchMyTraining}>
           Get My Training Member
@@ -175,8 +284,19 @@ export const TrainingMemberPlayground: React.FC = () => {
         <Button loading={loading} onClick={postTraining}>
           Create Training Member
         </Button>
-        <Button loading={loading} onClick={fetchTrainingById}>
-          Get Training By Id
+        <Button loading={loading} onClick={fetchTrainingMemberByTrainingId}>
+          Get Training Member By Training Id
+        </Button>
+        <Button loading={loading} onClick={fetchTMCount}>
+          Get TM Count By Training Id
+        </Button>
+      </Group>
+      <Group>
+        <Button loading={loading} onClick={updateTMName("Rosetta")}>
+          update name to "Rosetta"
+        </Button>
+        <Button loading={loading} onClick={updateTMName("Ruby Hoshino")}>
+          update name to "Ruby Hoshino"
         </Button>
       </Group>
       <Stack>
@@ -185,10 +305,15 @@ export const TrainingMemberPlayground: React.FC = () => {
             <Paper p={"sm"} withBorder key={t.id}>
               <Flex align={"center"} justify={"space-between"}>
                 <Box>
-                  <Typography textVariant="title-md">{t.id}</Typography>
-                  <Typography textVariant="title-md">{t.trainingId}</Typography>
-                  <Typography textVariant="title-md">{t.memberId}</Typography>
+                  <Typography textVariant="title-md">id: {t.id}</Typography>
+                  <Typography textVariant="title-md">
+                    training id: {t.trainingId}
+                  </Typography>
+                  <Typography textVariant="title-md">
+                    member id{t.memberId}
+                  </Typography>
                   <Typography textVariant="body-md">{t.address}</Typography>
+                  <Typography textVariant="body-md">{t.name}</Typography>
                 </Box>
                 <Badge>{t.status}</Badge>
               </Flex>
@@ -206,4 +331,4 @@ const descHTML = `
 <li>Waktu pelaksanaan: Rabu, 24 Mei – Kamis, 25 Mei 2023 </li>
 <li>Tempat pelaksanaan: Hotel Ibis Tamarin, Jakarta</li>
 </ul>
-<p>Batas waktu pendaftaran pelatihan ini adalah pada 23 Mei 2023. Silahkan menghubungi Instagram kami, @seetrum.id jika Anda memiliki pertanyaan seputar pelatihan ini atau Anda mengalami kesulitan dalam mengisi formulir ini.</p>`;
+<p>Batas waktu pendaftaran pelatihan ini tertera pada tanggal di atas. Silahkan menghubungi Instagram kami, @seetrum.id jika Anda memiliki pertanyaan seputar pelatihan ini atau Anda mengalami kesulitan dalam mengisi formulir ini.</p>`;

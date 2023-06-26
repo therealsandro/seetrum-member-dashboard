@@ -1,6 +1,6 @@
 import { routePaths } from "@/routes";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 
 export const withAuth = <P extends object>(
@@ -27,15 +27,17 @@ interface Props {
 }
 
 export const ProtectedPage: React.FC<Props> = ({ children }) => {
-  const user = useAuthStore((state) => state.user);
+  const [user, isAdmin] = useAuthStore((state) => [state.user, state.isAdmin]);
   const loading = useAuthStore((state) => state.loading);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   React.useEffect(() => {
     if (!user && !loading) {
       navigate(routePaths.SIGNIN);
     }
-  }, [user, loading, navigate]);
+    if (user && !isAdmin && pathname.includes("/admin")) navigate("/");
+  }, [user, loading, pathname, isAdmin, navigate]);
 
   return <>{children}</>;
 };

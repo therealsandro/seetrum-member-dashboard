@@ -1,4 +1,4 @@
-import { RouteObject } from "react-router-dom";
+import { RouteObject, useLocation, useNavigate } from "react-router-dom";
 import { LoginPage } from "./modules/auth/pages/LoginPage";
 import { RegisterOptionAltPage } from "./modules/auth/pages/RegisterOptionAltPage";
 import { RegisterOptionPage } from "./modules/auth/pages/RegisterOptionPage";
@@ -13,6 +13,21 @@ import {
   FormFillingLayout,
   applicationTrainingSupportDataLoader,
 } from "./ui/Layout/FormFillingLayout";
+import { ManageTrainingsPage } from "./modules/trainings/pages/manageTrainings/ManageTrainings";
+import { ManageDetailTrainingLayout } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetailLayout";
+import { ManageTrainingDetail } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetail";
+import { ApplicantDetails } from "./modules/trainings/pages/manageTrainings/applicantDetailDrawer";
+import { useEffect } from "react";
+
+const Redirector = ({ path }: { path: string }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(`Redirecting to ${path} from ${location.pathname}`);
+  useEffect(() => {
+    if (location.pathname !== path) navigate(path, { replace: true });
+  }, [location.pathname, navigate, path]);
+  return <></>;
+};
 
 const ROUTES = {
   SIGNIN: {
@@ -65,6 +80,40 @@ const ROUTES = {
           },
         ],
       },
+      {
+        path: "admin/*",
+        children: [
+          {
+            path: "trainings",
+            children: [
+              {
+                index: true,
+                element: <ManageTrainingsPage />,
+              },
+              {
+                path: ":id",
+                element: <ManageDetailTrainingLayout />,
+                children: [
+                  {
+                    path: ":tabId?",
+                    element: <ManageTrainingDetail />,
+                    children: [
+                      {
+                        path: ":applicantId",
+                        element: <ApplicantDetails />,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: "*",
+            element: <Redirector path="/admin" />,
+          },
+        ],
+      },
     ],
   },
   TRAINING_APPLICATION: {
@@ -79,7 +128,7 @@ const ROUTES = {
     ],
   },
   PLAYGROUND: {
-    path: "/playground",
+    path: "/admin/playground",
     element: <PlaygroundPage />,
   },
 } as const;

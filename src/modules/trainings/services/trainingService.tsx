@@ -1,11 +1,20 @@
-import { COLLECTION_TRAINING } from "@/lib/constants";
+import {
+  COLLECTION_TRAINING,
+  kDefaultFileRequirements,
+  kDefaultThumbnailFilename,
+} from "@/lib/constants";
 import {
   addNewDocument,
   getAllDocuments,
   getDocumentById,
   updateDocument,
 } from "@/services/firebase/helper";
-import { Training, TrainingModel } from "@/types/models/training";
+import {
+  CreateTrainingModel,
+  Training,
+  TrainingModel,
+} from "@/types/models/training";
+import { Timestamp } from "firebase/firestore";
 
 export const getAllTrainings = async (): Promise<Training[]> => {
   try {
@@ -16,6 +25,32 @@ export const getAllTrainings = async (): Promise<Training[]> => {
 };
 
 export const createTraining = async (
+  payload: CreateTrainingModel,
+  withTemplate = true
+): Promise<Training> => {
+  try {
+    const payloadWithDefault: TrainingModel = {
+      ...payload,
+      dueDate: payload.deadline ?? Timestamp.fromDate(new Date()),
+      description: "",
+      thumbnailFileName: kDefaultThumbnailFilename,
+      attachments: [],
+      fileRequirements: withTemplate ? kDefaultFileRequirements : [],
+    };
+
+    delete payloadWithDefault.deadline;
+
+    const res = await addNewDocument<TrainingModel>(
+      COLLECTION_TRAINING,
+      payloadWithDefault
+    );
+    return res;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const createTrainingMaster = async (
   payload: TrainingModel
 ): Promise<Training> => {
   try {
