@@ -1,8 +1,4 @@
-import {
-  FileRequirement,
-  fileRequirementDummy,
-  fileRequirementImageDummy,
-} from "@/types/models/training";
+import { FileRequirement, fileRequirementDummy } from "@/types/models/training";
 
 export const DEFAULT_TITLE = "Dashboard";
 
@@ -10,6 +6,7 @@ export const DEFAULT_TITLE = "Dashboard";
 export const COLLECTION_USERS = "users";
 export const COLLECTION_TRAINING = "training";
 export const COLLECTION_TRAINING_MEMBER = "trainingMember";
+export const COLLECTION_EVENT = "event";
 
 // Provinsi
 export const kProvinsi = [
