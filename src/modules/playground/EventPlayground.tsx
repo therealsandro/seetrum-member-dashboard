@@ -4,8 +4,8 @@ import { Button, Group, Stack, TextInput } from "@mantine/core";
 import { useState } from "react";
 import {
   createEventMaster,
-  getAllEvents,
-  getEventById,
+  getAllScheduledEvents,
+  getScheduledEventById,
 } from "../event/services/eventService";
 
 export const EventPlayground: React.FC = () => {
@@ -20,7 +20,7 @@ export const EventPlayground: React.FC = () => {
   const handleGetEventById = async () => {
     setLoading(true);
     try {
-      const res = await getEventById(value);
+      const res = await getScheduledEventById(value);
       if (!res) throw Error("no events");
       setEvents([res]);
     } catch (e) {
@@ -32,7 +32,7 @@ export const EventPlayground: React.FC = () => {
   const handleGetAllEvents = async () => {
     setLoading(true);
     try {
-      const res = await getAllEvents();
+      const res = await getAllScheduledEvents();
       if (!res) throw Error("no events");
       setEvents(res);
     } catch (e) {

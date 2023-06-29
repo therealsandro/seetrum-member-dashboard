@@ -24,7 +24,7 @@ export const createEventMaster = async (
   }
 };
 
-export const getAllEvents = async (): Promise<ScheduledEvent[]> => {
+export const getAllScheduledEvents = async (): Promise<ScheduledEvent[]> => {
   try {
     return await getAllDocuments<ScheduledEvent>(COLLECTION_EVENT);
   } catch (e) {
@@ -32,7 +32,7 @@ export const getAllEvents = async (): Promise<ScheduledEvent[]> => {
   }
 };
 
-export const getEventById = async (eventId: string) => {
+export const getScheduledEventById = async (eventId: string) => {
   try {
     const training = await getDocumentById<ScheduledEvent>(
       COLLECTION_EVENT,
@@ -48,7 +48,7 @@ export const getEventById = async (eventId: string) => {
   }
 };
 
-export const updateEvent = async (
+export const updateScheduledEvent = async (
   eventId: string,
   payload: Partial<ScheduledEvent>
 ) => {
