@@ -7,6 +7,7 @@ export const COLLECTION_USERS = "users";
 export const COLLECTION_TRAINING = "training";
 export const COLLECTION_TRAINING_MEMBER = "trainingMember";
 export const COLLECTION_EVENT = "event";
+export const COLLECTION_EVENT_MEMBER = "eventMember";
 
 // Provinsi
 export const kProvinsi = [

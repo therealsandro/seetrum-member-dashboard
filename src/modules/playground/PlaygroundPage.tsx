@@ -20,7 +20,7 @@ import {
 } from "@mantine/core";
 import React, { useState } from "react";
 import { FileUploadButton } from "../../ui/Button/FileUploadButton";
-import { EventPlayground } from "./EventPlayground";
+import { EventMemberPlayground, EventPlayground } from "./EventPlayground";
 
 export const PlaygroundPage: React.FC = () => {
   const user = useAuthStore((state) => state.user);
@@ -58,6 +58,7 @@ export const PlaygroundPage: React.FC = () => {
           <Divider />
           <TrainingMemberPlayground /> */}
           <EventPlayground />
+          <EventMemberPlayground />
           <Box>
             <pre>{JSON.stringify(fileInfo, null, 2)}</pre>
             <FileUploadButton
