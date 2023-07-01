@@ -1,11 +1,14 @@
+import { kDefaultFileRequirements } from "@/lib/constants";
 import {
   CreateTrainingModel,
   Training,
   TrainingModel,
-  fileRequirementDummy,
-  fileRequirementImageDummy,
   trainingModelDummy,
 } from "@/types/models/training";
+import {
+  TrainingMember,
+  trainingMemberDummy,
+} from "@/types/models/trainingMember";
 import { Typography } from "@/ui/Typography";
 import {
   Badge,
@@ -17,18 +20,9 @@ import {
   Stack,
   TextInput,
 } from "@mantine/core";
+import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
-import {
-  createTraining,
-  createTrainingMaster,
-  getAllTrainings,
-  getTrainingById,
-  updateTraining,
-} from "../trainings/services/trainingService";
-import {
-  TrainingMember,
-  trainingMemberDummy,
-} from "@/types/models/trainingMember";
+import { useAuthStore } from "../auth/stores/authStore";
 import {
   createTrainingMember,
   getTrainingMemberByMemberId,
@@ -36,9 +30,13 @@ import {
   getTrainingMemberCountByTrainingId,
   updateTrainingMember,
 } from "../trainings/services/trainingMemberService";
-import { useAuthStore } from "../auth/stores/authStore";
-import { Timestamp } from "firebase/firestore";
-import { kDefaultFileRequirements } from "@/lib/constants";
+import {
+  createTraining,
+  createTrainingMaster,
+  getAllTrainings,
+  getTrainingById,
+  updateTraining,
+} from "../trainings/services/trainingService";
 
 export const TrainingPlayground: React.FC = () => {
   const [trainings, setTrainings] = useState<Training[]>();
