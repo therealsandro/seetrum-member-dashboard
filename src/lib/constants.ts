@@ -1,8 +1,4 @@
-import {
-  FileRequirement,
-  fileRequirementDummy,
-  fileRequirementImageDummy,
-} from "@/types/models/training";
+import { FileRequirement, fileRequirementDummy } from "@/types/models/training";
 
 export const DEFAULT_TITLE = "Dashboard";
 
@@ -10,6 +6,8 @@ export const DEFAULT_TITLE = "Dashboard";
 export const COLLECTION_USERS = "users";
 export const COLLECTION_TRAINING = "training";
 export const COLLECTION_TRAINING_MEMBER = "trainingMember";
+export const COLLECTION_EVENT = "event";
+export const COLLECTION_EVENT_MEMBER = "eventMember";
 
 // Provinsi
 export const kProvinsi = [
@@ -49,6 +47,7 @@ export const kProvinsi = [
   "PAPUA BARAT",
 ];
 
+export const kFileMaxSize = 2 * 1024 ** 2;
 export const kRowsPerPageOptions = ["10", "25", "50", "100", "200"];
 
 export const kDefaultThumbnailFilename = "0000000000000-default-thumbnail.jpg";

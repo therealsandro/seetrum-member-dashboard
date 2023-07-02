@@ -53,7 +53,7 @@ export const getTrainingMemberByTrainingId = async (
 
 export const getTrainingMemberCountByTrainingId = async (
   trainingId: string
-): Promise<Number> => {
+): Promise<number> => {
   try {
     return await getCountByQuery(
       COLLECTION_TRAINING_MEMBER,

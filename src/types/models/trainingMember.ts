@@ -43,4 +43,4 @@ export type TrainingMemberStatus =
   | "applied"
   | "accepted"
   | "rejected"
-  | "issued";
+  | "completed";

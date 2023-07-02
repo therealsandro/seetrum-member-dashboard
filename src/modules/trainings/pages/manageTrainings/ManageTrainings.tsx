@@ -1,10 +1,10 @@
 import { IconPlus } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
-import { Button, Group, Skeleton, Stack } from "@mantine/core";
-import { useEffect, useState } from "react";
-import { CreateTrainingModal } from "../../components/CreateTrainingModal";
-import { TrainingCard } from "../../components/TrainingCard";
 import { useTrainings } from "../../store/useTrainings";
+import { AdminTrainingInfo, TrainingCard } from "../../components/TrainingCard";
+import { CreateTrainingModal } from "../../components/CreateTrainingModal";
+import { useEffect, useState } from "react";
+import { Button, Group, Skeleton, Stack } from "@mantine/core";
 
 export const ManageTrainingsPage = () => {
   const [open, setOpen] = useState(false);
@@ -29,11 +29,9 @@ export const ManageTrainingsPage = () => {
       {trainings ? (
         trainings.map((training) => {
           return (
-            <TrainingCard
-              key={training.id}
-              variant="horizontal"
-              {...training}
-            />
+            <TrainingCard key={training.id} variant="horizontal" {...training}>
+              <AdminTrainingInfo trainingId={training.id} />
+            </TrainingCard>
           );
         })
       ) : (

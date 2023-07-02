@@ -1,5 +1,8 @@
+import { COLLECTION_USERS } from "@/lib/constants";
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
+import { getDocumentsByQuery } from "@/services/firebase/helper";
+import { User } from "@/types";
 import { FileInfo } from "@/types/models/fileInfo";
 import {
   fileRequirementDummy,
@@ -7,9 +10,9 @@ import {
 } from "@/types/models/training";
 import {
   Badge,
+  Box,
   Button,
   Container,
-  Divider,
   Flex,
   Group,
   Stack,
@@ -17,13 +20,7 @@ import {
 } from "@mantine/core";
 import React, { useState } from "react";
 import { FileUploadButton } from "../../ui/Button/FileUploadButton";
-import {
-  TrainingMemberPlayground,
-  TrainingPlayground,
-} from "./TrainingPlayground";
-import { User } from "@/types";
-import { getDocumentsByQuery } from "@/services/firebase/helper";
-import { COLLECTION_USERS } from "@/lib/constants";
+import { EventMemberPlayground, EventPlayground } from "./EventPlayground";
 
 export const PlaygroundPage: React.FC = () => {
   const user = useAuthStore((state) => state.user);
@@ -56,22 +53,28 @@ export const PlaygroundPage: React.FC = () => {
             </Button>
           </Flex>
           <Button onClick={getUsersClick}>Get all user</Button>
-          <Divider />
+          {/* <Divider />
           <TrainingPlayground />
           <Divider />
-          <TrainingMemberPlayground />
-          <pre>{JSON.stringify(fileInfo, null, 2)}</pre>
-          <FileUploadButton
-            value={fileInfo}
-            onFileChange={setFileInfo}
-            {...fileRequirementDummy}
-          />
-          <pre>{JSON.stringify(fileInfoImg, null, 2)}</pre>
-          <FileUploadButton
-            value={fileInfoImg}
-            onFileChange={setFileInfoImg}
-            {...fileRequirementImageDummy}
-          />
+          <TrainingMemberPlayground /> */}
+          <EventPlayground />
+          <EventMemberPlayground />
+          <Box>
+            <pre>{JSON.stringify(fileInfo, null, 2)}</pre>
+            <FileUploadButton
+              value={fileInfo}
+              onFileChange={setFileInfo}
+              {...fileRequirementDummy}
+            />
+          </Box>
+          <Box>
+            <pre>{JSON.stringify(fileInfoImg, null, 2)}</pre>
+            <FileUploadButton
+              value={fileInfoImg}
+              onFileChange={setFileInfoImg}
+              {...fileRequirementImageDummy}
+            />
+          </Box>
         </Stack>
       </Container>
     </ProtectedPage>
