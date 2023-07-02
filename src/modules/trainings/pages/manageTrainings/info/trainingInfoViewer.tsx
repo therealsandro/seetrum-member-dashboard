@@ -12,6 +12,8 @@ import {
   Flex,
   useMantineTheme,
   Button,
+  SimpleGrid,
+  Divider,
 } from "@mantine/core";
 import { useState, ReactElement, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -83,17 +85,24 @@ export const TrainingInfoViewer = ({
           <Typography textVariant="label-lg">Edit</Typography>
         </Button>
       </Flex>
-      <Stack>
-        <Sections label="Trainer">
-          {training && training.trainerName ? (
-            <Typography>{training.trainerName}</Typography>
-          ) : undefined}
+      <Stack spacing={16}>
+        <Sections label="Training Title">
+          {training && <Typography>{training.title}</Typography>}
         </Sections>
-        <Sections label="Application Deadline">
-          {training && training.dueDate && (
-            <Typography>{pretyDate(training?.dueDate.toDate())}</Typography>
-          )}
-        </Sections>
+        <Divider />
+        <SimpleGrid cols={2}>
+          <Sections label="Trainer">
+            {training && training.trainerName ? (
+              <Typography>{training.trainerName}</Typography>
+            ) : undefined}
+          </Sections>
+          <Sections label="Application Deadline">
+            {training && training.dueDate && (
+              <Typography>{pretyDate(training?.dueDate.toDate())}</Typography>
+            )}
+          </Sections>
+        </SimpleGrid>
+        <Divider />
         <Sections
           label="Description"
           loading={

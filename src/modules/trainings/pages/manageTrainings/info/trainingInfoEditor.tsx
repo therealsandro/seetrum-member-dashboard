@@ -1,15 +1,23 @@
 import { useTrainings } from "@/modules/trainings/store/useTrainings";
-import { Training } from "@/types/models/training";
+import { Training, TrainingModel } from "@/types/models/training";
 import { IconCalendar } from "@/ui/Icons";
 import { Typography } from "@/ui/Typography";
 import { Button, Flex, Stack, TextInput, useMantineTheme } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
+import { isNotEmpty, useForm } from "@mantine/form";
 import { Link, RichTextEditor } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Timestamp } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+const editorInitialValues: Partial<TrainingModel> = {
+  title: "",
+  trainerName: "",
+  dueDate: undefined,
+  description: "",
+};
 
 export const TrainingInfoEditor = ({
   onSubmit,
@@ -19,35 +27,53 @@ export const TrainingInfoEditor = ({
   const thm = useMantineTheme();
   const { getTrainingsById } = useTrainings();
   const { id } = useParams();
-  const [trainer, setTrainer] = useState<string>();
-  const [dueDate, setDueDate] = useState<Timestamp>();
-  const [desc, setDesc] = useState<string>();
+
+  const form = useForm({
+    initialValues: editorInitialValues,
+    validate: {
+      title: isNotEmpty("Title can not be empty"),
+      trainerName: isNotEmpty("Trainer name can not be empty"),
+      dueDate: isNotEmpty("Due date can not be empty"),
+    },
+  });
 
   const editor = useEditor(
     {
       extensions: [StarterKit, Link],
-      content: desc,
+      content: form.values.description,
     },
-    [desc]
+    [form.values.description]
   );
   useEffect(() => {
-    id &&
-      getTrainingsById(id).then((t) => {
-        if (t) {
-          setTrainer(t.trainerName);
-          setDueDate(t.dueDate);
-          setDesc(t.description);
-        }
-      });
-  }, [getTrainingsById, id]);
+    console.log("called");
+    const updateTraining = async (tid: string) => {
+      const t = await getTrainingsById(tid);
+      if (t) {
+        const { title, trainerName, dueDate, description } = t;
+        form.setValues({
+          title,
+          trainerName,
+          dueDate,
+          description,
+        });
+      }
+    };
+    if (id) {
+      updateTraining(id);
+    }
+  }, [id, getTrainingsById]);
 
-  const handleUpdates = () => {
+  const handleSubmit = form.onSubmit((values) => {
+    console.log(values);
+    console.log(editor?.getHTML());
     onSubmit({
-      trainerName: trainer,
-      dueDate,
-      description: editor?.getHTML() ?? desc,
+      title: values.title?.trim(),
+      trainerName: values.trainerName?.trim(),
+      dueDate: values.dueDate,
+      description: editor?.getHTML() ?? values.description,
     });
-  };
+  });
+
   return (
     <Stack
       mt={8}
@@ -71,7 +97,7 @@ export const TrainingInfoEditor = ({
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
-            handleUpdates();
+            handleSubmit();
           }}
         >
           <Typography textVariant="label-lg">Save changes</Typography>
@@ -81,14 +107,24 @@ export const TrainingInfoEditor = ({
         <TextInput
           label={
             <Typography textVariant="title-md" mb={4}>
+              Training Title
+            </Typography>
+          }
+          placeholder="Training Title"
+          maw="min(430px, 100%)"
+          radius={8}
+          {...form.getInputProps("title")}
+        />
+        <TextInput
+          label={
+            <Typography textVariant="title-md" mb={4}>
               Trainer
             </Typography>
           }
           placeholder="Input trainer"
           maw="min(430px, 100%)"
           radius={8}
-          value={trainer ?? ""}
-          onChange={(e) => setTrainer(e.target.value.trim())}
+          {...form.getInputProps("trainerName")}
         />
 
         <DatePickerInput
@@ -99,10 +135,14 @@ export const TrainingInfoEditor = ({
             </Typography>
           }
           placeholder="Input application deadline"
-          value={dueDate?.toDate()}
+          value={form.values.dueDate?.toDate()}
           onChange={(e) =>
-            setDueDate(e !== null ? Timestamp.fromDate(e) : undefined)
+            form.setFieldValue(
+              "dueDate",
+              e !== null ? Timestamp.fromDate(e) : undefined
+            )
           }
+          error={form.errors.dueDate}
           maw="min(430px, 100%)"
           radius={8}
         />
