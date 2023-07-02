@@ -14,6 +14,7 @@ interface TrainingState {
   setTrainings: (trainings: Training[]) => void;
   addTraining: (training: Training) => void;
   updateTraining: (training: Training) => void;
+  updatePartialTraining: (id: string, partial: Partial<Training>) => void;
   setSortings: (sortBy: number, orderBy: number) => void;
 }
 
@@ -69,6 +70,12 @@ export const useTrainings = create<TrainingState>((set, get) => ({
       trainings: state.trainings
         ? state.trainings.map((t) => (t.id === training.id ? training : t))
         : [training],
+    })),
+  updatePartialTraining: (id, partial) =>
+    set((state) => ({
+      trainings: state.trainings
+        ? state.trainings.map((t) => (t.id === id ? { ...t, ...partial } : t))
+        : null,
     })),
   sortBy: 0,
   orderBy: 1,

@@ -29,6 +29,7 @@ import {
   BsDownload,
   BsPlus,
   BsCardHeading,
+  BsPencilFill,
 } from "react-icons/bs";
 
 export const IconArrowLeft = BsArrowLeft;
@@ -53,6 +54,7 @@ export const IconCalendarEvent = BsCalendarEvent;
 export const IconClockHistory = BsClockHistory;
 
 export const IconSearch = BsSearch;
+export const IconEdit = BsPencilFill;
 
 export const IconWhatsapp = BsWhatsapp;
 

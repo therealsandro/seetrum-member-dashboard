@@ -5,15 +5,27 @@ import {
 } from "@/types/models/trainingMember";
 import { Typography } from "@/ui/Typography";
 import { Box, Button, Flex, FlexProps, useMantineTheme } from "@mantine/core";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useTrainings } from "../store/useTrainings";
+import { Training } from "@/types/models/training";
+import { Timestamp } from "firebase/firestore";
 
 export const ApplicationTrackingCard: React.FC<
   Partial<TrainingMember> & { flexProps?: FlexProps }
 > = ({ flexProps, ...applicantData }) => {
   const theme = useMantineTheme();
   const navigate = useNavigate();
+  const { id: trainingId } = useParams();
+
+  const { getTrainingsById, getTrainings } = useTrainings();
+  const [training, setTraining] = useState<Training>();
   const [openState, setOpen] = useState(false);
+
+  useEffect(() => {
+    getTrainings();
+    trainingId && getTrainingsById(trainingId).then((t) => t && setTraining(t));
+  });
 
   return (
     <Flex
@@ -60,6 +72,9 @@ export const ApplicationTrackingCard: React.FC<
         <ApplicationHistory {...applicantData} isOpen={openState} />
       ) : (
         <Button
+          disabled={
+            training && training.dueDate.seconds < Timestamp.now().seconds
+          }
           radius={"md"}
           onClick={(e) => {
             e.preventDefault();
@@ -75,7 +90,7 @@ export const ApplicationTrackingCard: React.FC<
 };
 
 const ApplicationLogState: Record<TrainingMemberStatus, string> = {
-  issued: "Certificate issued",
+  completed: "Certificate issued",
   rejected: "Application rejected",
   accepted: "Application accepted",
   applied: "Application received",
@@ -95,12 +110,7 @@ const ApplicationHistory: React.FC<
             sx={{ borderRadius: "16px", overflow: "hidden" }}
           />
           <Typography>
-            {applicantData.issuedCertificate &&
-            applicantData.issuedCertificate.length > 0
-              ? "Certificate issued"
-              : ApplicationLogState[
-                  applicantData.status as TrainingMemberStatus
-                ]}
+            {ApplicationLogState[applicantData.status as TrainingMemberStatus]}
           </Typography>
         </Flex>
         <Typography textVariant="body-sm">
