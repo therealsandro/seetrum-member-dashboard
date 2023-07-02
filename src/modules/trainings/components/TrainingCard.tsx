@@ -196,7 +196,7 @@ export const AdminTrainingInfo = ({ trainingId }: { trainingId: string }) => {
       setTraining(training ?? undefined)
     );
   }, [getTrainingsById, trainingId]);
-  const isOpen = training && training.dueDate.seconds < Timestamp.now().seconds;
+  const isOpen = training && training.dueDate.seconds > Timestamp.now().seconds;
   return (
     <Stack spacing={8}>
       <Flex gap={8} align="center">
