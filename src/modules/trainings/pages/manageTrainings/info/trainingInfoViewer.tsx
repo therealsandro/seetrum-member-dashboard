@@ -62,7 +62,6 @@ export const TrainingInfoViewer = ({
   return (
     <Stack
       mt={8}
-      mb={24}
       spacing={16}
       p={16}
       pb={20}
