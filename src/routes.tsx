@@ -1,23 +1,24 @@
+import { useEffect } from "react";
 import { RouteObject, useLocation, useNavigate } from "react-router-dom";
 import { LoginPage } from "./modules/auth/pages/LoginPage";
 import { RegisterOptionAltPage } from "./modules/auth/pages/RegisterOptionAltPage";
 import { RegisterOptionPage } from "./modules/auth/pages/RegisterOptionPage";
 import { RegisterPage } from "./modules/auth/pages/RegisterPage";
 import { DashboardPage } from "./modules/dashboard/pages/DashboardPage";
+import { EventListPages } from "./modules/event/pages/eventListPages";
 import { PlaygroundPage } from "./modules/playground/PlaygroundPage";
 import { TrainingApplicationPage } from "./modules/trainings/pages/TrainingApplicationPage";
 import { TrainingDetailPage } from "./modules/trainings/pages/TrainingDetailPage";
 import { TrainingsPage } from "./modules/trainings/pages/TrainingPage";
+import { ManageTrainingDetail } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetail";
+import { ManageDetailTrainingLayout } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetailLayout";
+import { ManageTrainingsPage } from "./modules/trainings/pages/manageTrainings/ManageTrainings";
+import { ApplicantDetails } from "./modules/trainings/pages/manageTrainings/applicantDetailDrawer";
 import { MainLayout } from "./ui/Layout";
 import {
   FormFillingLayout,
   applicationTrainingSupportDataLoader,
 } from "./ui/Layout/FormFillingLayout";
-import { ManageTrainingsPage } from "./modules/trainings/pages/manageTrainings/ManageTrainings";
-import { ManageDetailTrainingLayout } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetailLayout";
-import { ManageTrainingDetail } from "./modules/trainings/pages/manageTrainings/ManageTrainingDetail";
-import { ApplicantDetails } from "./modules/trainings/pages/manageTrainings/applicantDetailDrawer";
-import { useEffect } from "react";
 
 const Redirector = ({ path }: { path: string }) => {
   const navigate = useNavigate();
@@ -53,6 +54,15 @@ const ROUTES = {
       {
         index: true,
         element: <DashboardPage />,
+      },
+      {
+        path: "events",
+        children: [
+          {
+            index: true,
+            element: <EventListPages />,
+          },
+        ],
       },
       {
         path: "trainings",
