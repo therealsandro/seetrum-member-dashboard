@@ -4,9 +4,9 @@ import { Typography } from "@/ui/Typography";
 import { Flex, SimpleGrid, Stack } from "@mantine/core";
 import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
-import { EventCard } from "./components/eventCard";
-import { SearchBar } from "./components/searchbar";
-import { SortMenu } from "./components/sortMenu";
+import { EventCard } from "../components/eventCard";
+import { SearchBar } from "../components/searchbar";
+import { SortMenu } from "../components/sortMenu";
 
 export const EventListPages: React.FC = () => {
   const [search, setSearch] = useState<string>();
