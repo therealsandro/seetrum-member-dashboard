@@ -1,8 +1,11 @@
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
+import { ScheduledEvent } from "@/types/models/scheduledEvent";
 import { Typography } from "@/ui/Typography";
-import { Flex, Stack } from "@mantine/core";
-import { SearchBar } from "./components/searchbar";
+import { Flex, SimpleGrid, Stack } from "@mantine/core";
+import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
+import { EventCard } from "./components/eventCard";
+import { SearchBar } from "./components/searchbar";
 import { SortMenu } from "./components/sortMenu";
 
 export const EventListPages: React.FC = () => {
@@ -19,7 +22,18 @@ export const EventListPages: React.FC = () => {
           />
           <SortMenu onSortChanged={() => {}} />
         </Flex>
-        <h1>List Events</h1>
+        <SimpleGrid cols={4}>
+          <EventCard
+            eventData={
+              {
+                title: "Test Event title",
+                scheduleDateTime: Timestamp.now(),
+                thumbnailFileName: "",
+                venue: "Zoom meetings",
+              } as ScheduledEvent
+            }
+          />
+        </SimpleGrid>
       </Stack>
     </ProtectedPage>
   );
