@@ -1,15 +1,19 @@
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
-import { ScheduledEvent } from "@/types/models/scheduledEvent";
 import { Typography } from "@/ui/Typography";
 import { Flex, SimpleGrid, Stack } from "@mantine/core";
-import { Timestamp } from "firebase/firestore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EventCard } from "../components/eventCard";
 import { SearchBar } from "../components/searchbar";
 import { SortMenu } from "../components/sortMenu";
+import { useEventsList } from "../store/useEventList";
 
 export const EventListPages: React.FC = () => {
   const [search, setSearch] = useState<string>();
+  const { events, getEvents, loading } = useEventsList();
+
+  useEffect(() => {
+    getEvents();
+  }, [getEvents]);
 
   return (
     <ProtectedPage>
@@ -23,16 +27,16 @@ export const EventListPages: React.FC = () => {
           <SortMenu onSortChanged={() => {}} />
         </Flex>
         <SimpleGrid cols={4}>
-          <EventCard
-            eventData={
-              {
-                title: "Test Event title",
-                scheduleDateTime: Timestamp.now(),
-                thumbnailFileName: "",
-                venue: "Zoom meetings",
-              } as ScheduledEvent
-            }
-          />
+          {loading
+            ? Array(8)
+                .fill("-")
+                .map((i) => {
+                  return <EventCard loading />;
+                })
+            : events &&
+              events.map((ev) => {
+                return <EventCard eventData={ev} />;
+              })}
         </SimpleGrid>
       </Stack>
     </ProtectedPage>
