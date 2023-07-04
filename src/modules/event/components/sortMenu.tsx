@@ -1,23 +1,31 @@
+import { ScheduledEvent } from "@/types/models/scheduledEvent";
 import { Typography } from "@/ui/Typography";
-import { Group, MediaQuery, Menu, Button } from "@mantine/core";
+import { Button, Group, MediaQuery, Menu } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { useState } from "react";
 
 const sortOptions = {
-  "createdAt desc": { label: "Newest", sort: [0, 1] },
-  "createdAt asc": { label: "Oldest", sort: [0, 0] },
-  "title asc": { label: "Event title (A-Z)", sort: [1, 0] },
-  "title desc": { label: "Event title (Z-A)", sort: [1, 1] },
+  "createdAt desc": { label: "Newest", orderBy: "createdAt", sortBy: "desc" },
+  "createdAt asc": { label: "Oldest", orderBy: "createdAt", sortBy: "asc" },
+  "title asc": { label: "Event title (A-Z)", orderBy: "title", sortBy: "asc" },
+  "title desc": {
+    label: "Event title (Z-A)",
+    orderBy: "title",
+    sortBy: "desc",
+  },
 } as const;
 
 type sortOption = keyof typeof sortOptions;
 
 export const SortMenu: React.FC<{
-  onSortChanged: (value: [number, number]) => void;
+  onSortChanged: (value: [keyof ScheduledEvent, string]) => void;
 }> = ({ onSortChanged }) => {
   const [sortBy, setSortBy] = useState<sortOption>("createdAt desc");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [sortByOps, setSortByOps] = useState<[number, number]>([0, 1]);
+  const [sortByOps, setSortByOps] = useState<[keyof ScheduledEvent, string]>([
+    "createdAt",
+    "desc",
+  ]);
   return (
     <Group>
       <MediaQuery styles={{ display: "none" }} smallerThan={"xs"}>
@@ -60,8 +68,8 @@ export const SortMenu: React.FC<{
                 })}
                 onClick={() => {
                   setSortBy(sortOption.value as sortOption);
-                  setSortByOps(sortOption.sort as [number, number]);
-                  onSortChanged(sortOption.sort as [number, number]);
+                  setSortByOps([sortOption.orderBy, sortOption.sortBy]);
+                  onSortChanged([sortOption.orderBy, sortOption.sortBy]);
                 }}
               >
                 {sortOption.label}

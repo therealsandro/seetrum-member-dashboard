@@ -9,7 +9,7 @@ import { useEventsList } from "../store/useEventList";
 
 export const EventListPages: React.FC = () => {
   const [search, setSearch] = useState<string>();
-  const { events, getEvents, loading } = useEventsList();
+  const { events, getEvents, loading, sortEvents } = useEventsList();
 
   useEffect(() => {
     getEvents();
@@ -24,18 +24,22 @@ export const EventListPages: React.FC = () => {
             value={search || ""}
             onChange={(value) => setSearch(value)}
           />
-          <SortMenu onSortChanged={() => {}} />
+          <SortMenu
+            onSortChanged={(val) => {
+              sortEvents(val[0], val[1] as "asc" | "desc");
+            }}
+          />
         </Flex>
         <SimpleGrid cols={4}>
           {loading
             ? Array(8)
                 .fill("-")
-                .map((i) => {
-                  return <EventCard loading />;
+                .map((i, id) => {
+                  return <EventCard key={id} loading />;
                 })
             : events &&
               events.map((ev) => {
-                return <EventCard eventData={ev} />;
+                return <EventCard key={ev.id} eventData={ev} />;
               })}
         </SimpleGrid>
       </Stack>
