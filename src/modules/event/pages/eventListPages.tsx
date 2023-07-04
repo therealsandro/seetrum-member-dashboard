@@ -38,9 +38,15 @@ export const EventListPages: React.FC = () => {
                   return <EventCard key={id} loading />;
                 })
             : events &&
-              events.map((ev) => {
-                return <EventCard key={ev.id} eventData={ev} />;
-              })}
+              events
+                .filter((evnt) =>
+                  search
+                    ? evnt.title.toLowerCase().includes(search.toLowerCase())
+                    : true
+                )
+                .map((ev) => {
+                  return <EventCard key={ev.id} eventData={ev} />;
+                })}
         </SimpleGrid>
       </Stack>
     </ProtectedPage>
