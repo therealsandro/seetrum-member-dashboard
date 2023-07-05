@@ -16,15 +16,26 @@ import {
 import { ReactNode, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useEventDetail } from "../store/useEventDetail";
+import { useEventMemberList } from "../store/useEventMemberList";
+import { useAuthStore } from "@/modules/auth/stores/authStore";
 
 export const EventDetailPage: React.FC = () => {
-  const { id } = useParams();
+  const { id: eventId } = useParams();
+  const { user } = useAuthStore();
   const { event, loading, getEvent } = useEventDetail();
+  const { getEventMembers, getByEventId, memberId } = useEventMemberList();
+  const eventMember = eventId ? getByEventId(eventId) : undefined;
+  const isOnlineEvent = () => Boolean(event?.venue.includes("://"));
 
   useEffect(() => {
-    if (id && getEvent) getEvent(id);
+    if (user && (!memberId || memberId !== user.id))
+      getEventMembers && user && getEventMembers(user.id);
+  }, [memberId, user, getEventMembers]);
+
+  useEffect(() => {
+    if (eventId && getEvent) getEvent(eventId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [eventId]);
 
   const getFileURL = useFileURLStore((s) => s.getFileURL);
   const [imageUrl, setImage] = useState<string | undefined>(undefined);
@@ -92,7 +103,7 @@ export const EventDetailPage: React.FC = () => {
                   <MamberOnlyData
                     data={event && event.venue}
                     protectedLabel="Venue location will be displayed upon your registration"
-                    isProtected={event?.venue.includes("https://")}
+                    isProtected={isOnlineEvent() && !Boolean(eventMember)}
                   />
                 }
               />
@@ -122,7 +133,7 @@ export const EventDetailPage: React.FC = () => {
               </TypographyStylesProvider>
             </Stack>
             {/* Add to calendar section */}
-            <AddToCalendar />
+            <AddToCalendar isRegistered={Boolean(eventMember)} />
           </Stack>
         </Flex>
       </Stack>
