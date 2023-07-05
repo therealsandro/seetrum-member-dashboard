@@ -19,6 +19,7 @@ import {
   FormFillingLayout,
   applicationTrainingSupportDataLoader,
 } from "./ui/Layout/FormFillingLayout";
+import { EventDetailPage } from "./modules/event/pages/eventDetailPage";
 
 const Redirector = ({ path }: { path: string }) => {
   const navigate = useNavigate();
@@ -61,6 +62,10 @@ const ROUTES = {
           {
             index: true,
             element: <EventListPages />,
+          },
+          {
+            path: ":id",
+            element: <EventDetailPage />,
           },
         ],
       },
