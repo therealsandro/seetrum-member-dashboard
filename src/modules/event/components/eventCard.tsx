@@ -1,4 +1,4 @@
-import { pretyDateTime } from "@/lib/utils";
+import { pretyDate } from "@/lib/utils";
 import { useFileURLStore } from "@/services/firebase/storage";
 import { ScheduledEvent } from "@/types/models/scheduledEvent";
 import { Typography } from "@/ui/Typography";
@@ -56,9 +56,7 @@ export const EventCard: React.FC<{
       <Stack spacing={8} py={16} px={4}>
         <Skeleton visible={!eventData}>
           <Typography textVariant="body-md" color="dimmed">
-            {eventData
-              ? pretyDateTime(eventData!.scheduleDateTime.toDate())
-              : "-"}
+            {eventData ? pretyDate(eventData!.scheduleDateTime.toDate()) : "-"}
           </Typography>
         </Skeleton>
         <Skeleton visible={!eventData}>

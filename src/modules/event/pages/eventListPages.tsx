@@ -17,7 +17,7 @@ export const EventListPages: React.FC = () => {
 
   return (
     <ProtectedPage>
-      <Stack>
+      <Stack spacing={24}>
         <Typography textVariant="headline-lg">All Events</Typography>
         <Flex justify="space-between">
           <SearchBar

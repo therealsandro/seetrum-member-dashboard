@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import { ReactNode, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useEventDetail } from "../store/useEventDetails";
+import { useEventDetail } from "../store/useEventDetail";
 
 export const EventDetailPage: React.FC = () => {
   const { id } = useParams();
@@ -58,13 +58,17 @@ export const EventDetailPage: React.FC = () => {
     />
   );
 
-  console.log(1349, event);
-
   return (
     <ProtectedPage>
       <Stack spacing={24}>
         <BackButton to={".."} label={"Back to all events"} />
-        <Flex gap={24}>
+        <Flex
+          gap={24}
+          sx={(t) => ({
+            flexDirection: "column",
+            [t.fn.largerThan("sm")]: { flexDirection: "row" },
+          })}
+        >
           {/* Thumnail */}
           <Thumbnail />
 

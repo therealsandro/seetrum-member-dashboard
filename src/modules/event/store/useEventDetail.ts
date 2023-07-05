@@ -4,6 +4,7 @@ import { devtools } from "zustand/middleware";
 import { getScheduledEventById } from "../services/eventService";
 
 interface EventDetailStore {
+  eventId?: string;
   event?: ScheduledEvent;
   getEvent: (id: string) => Promise<ScheduledEvent | undefined>;
   isValid: boolean;
@@ -16,8 +17,9 @@ export const useEventDetail = create(
     isValid: false,
     async getEvent(id) {
       set({ loading: true });
+      const eventId = get().eventId;
       const event = get().event;
-      if (event && get().isValid) {
+      if (event && eventId && eventId === id && get().isValid) {
         set({ loading: false });
         return event;
       }
