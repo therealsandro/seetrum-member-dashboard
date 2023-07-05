@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import { useEventDetail } from "../store/useEventDetail";
 import { useEventMemberList } from "../store/useEventMemberList";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
+import { showErrorNotif } from "@/ui/notifications";
 
 export const EventDetailPage: React.FC = () => {
   const { id: eventId } = useParams();
@@ -166,9 +167,21 @@ const EventDataField: React.FC<{
 const AddToCalendar: React.FC<{ isRegistered?: boolean }> = ({
   isRegistered,
 }) => {
+  const { id: eventId } = useParams();
+  const { user } = useAuthStore();
+  const { joinEvent } = useEventMemberList();
+
   // TODO: Implement this handler
   const handleAddToCalendar = () => {};
-  const handleRegister = () => {};
+  const handleRegister = async () => {
+    if (eventId && user)
+      try {
+        await joinEvent(eventId, user);
+      } catch (error) {
+        console.error(error);
+        showErrorNotif({ title: "Could not join event" });
+      }
+  };
   return (
     <Flex
       justify="space-between"
