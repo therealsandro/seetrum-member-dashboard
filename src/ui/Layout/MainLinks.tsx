@@ -112,7 +112,7 @@ const data: MainLinkProps[] = [
     icon: <IconCalendar size="20px" />,
     label: "Events",
     links: [
-      { label: "All Events" /* link: "/events" */ },
+      { label: "All Events", link: "/events" },
       { label: "My Events" /* link: "/myevents" */ },
     ],
   },
