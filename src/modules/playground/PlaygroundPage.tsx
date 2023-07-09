@@ -21,6 +21,7 @@ import {
 import React, { useState } from "react";
 import { FileUploadButton } from "../../ui/Button/FileUploadButton";
 import { EventMemberPlayground, EventPlayground } from "./EventPlayground";
+import { FormPlayground } from "./FormPlayground";
 
 export const PlaygroundPage: React.FC = () => {
   const user = useAuthStore((state) => state.user);
@@ -57,8 +58,9 @@ export const PlaygroundPage: React.FC = () => {
           <TrainingPlayground />
           <Divider />
           <TrainingMemberPlayground /> */}
-          <EventPlayground />
-          <EventMemberPlayground />
+          {/* <EventPlayground /> */}
+          {/* <EventMemberPlayground /> */}
+          <FormPlayground />
           <Box>
             <pre>{JSON.stringify(fileInfo, null, 2)}</pre>
             <FileUploadButton

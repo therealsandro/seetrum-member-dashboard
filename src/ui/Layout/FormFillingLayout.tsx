@@ -10,27 +10,27 @@ import {
   Stepper,
   useMantineTheme,
 } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoaderFunctionArgs, Outlet, useLoaderData } from "react-router-dom";
 import { Header } from "../Header";
 import { Typography } from "../Typography";
 import { Training } from "@/types/models/training";
 import { getTrainingById } from "@/modules/trainings/services/trainingService";
 
-const steps = [
+const ALL_STEPS = [
   {
     title: "Personal information",
-    desctiption:
+    description:
       "Please provide your accurate personal information, including your full name, email address, phone number, age, gender, and current employment status.",
   },
   {
-    title: "Home address",
-    desctiption:
-      "Kindly enter your complete home address, including the full address, province, city/region, district, and postal code.",
+    title: "Additional information",
+    description:
+      "Please complete any additional forms or questionnaires that are required for the application process.",
   },
   {
     title: "Required documents",
-    desctiption:
+    description:
       "Upload the required documents for your application, including your comprehensive CV, professional photo, valid diploma/degree certificate, government-issued ID card, and supporting documents (evidence of previous energy audit experience).",
   },
 ];
@@ -49,8 +49,15 @@ export const applicationTrainingSupportDataLoader = async ({
 
 export const FormFillingLayout = () => {
   const [step, setStep] = useState<number>(0);
+  const [steps, setSteps] = useState(ALL_STEPS);
   const theme = useMantineTheme();
   const training = useLoaderData() as Training;
+
+  useEffect(() => {
+    if (!training.formMetas) {
+      setSteps([ALL_STEPS[0], ALL_STEPS[2]]);
+    }
+  }, [training]);
 
   return (
     <AppShell
@@ -85,14 +92,14 @@ export const FormFillingLayout = () => {
                     onStepClick={setStep}
                     allowNextStepsSelect={false}
                   >
-                    <Stepper.Step />
-                    <Stepper.Step />
-                    <Stepper.Step />
+                    {steps.map((step) => (
+                      <Stepper.Step key={step.title} />
+                    ))}
                   </Stepper>
                   <Typography textVariant="title-lg">
                     {steps[step].title}
                   </Typography>
-                  <Typography>{steps[step].desctiption}</Typography>
+                  <Typography>{steps[step].description}</Typography>
                 </Flex>
                 <Outlet context={[step, setStep, training]} />
               </Flex>
