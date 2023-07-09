@@ -3,7 +3,10 @@ import { Typography } from "@/ui/Typography";
 import { Stack } from "@mantine/core";
 import { ReactNode } from "react";
 
-export const EmptyData: React.FC<{ children?: ReactNode }> = ({ children }) => {
+export const EmptyData: React.FC<{ desc?: string; children?: ReactNode }> = ({
+  desc,
+  children,
+}) => {
   return (
     <Stack spacing={32} w="100%" justify="center" align="center" py={40}>
       <img height={220} src={comingSoonUrl} alt={"coming soon"} />
@@ -12,9 +15,8 @@ export const EmptyData: React.FC<{ children?: ReactNode }> = ({ children }) => {
           No Joined Events Yet
         </Typography>
         <Typography textVariant="body-md" color="dimmed" align="center">
-          Track and access your joined events in one place. Start your energy
-          efficiency journey by browsing available events in the All Events
-          page.
+          {desc ||
+            "Stay tuned for upcoming events on energy efficiency. Our team is working diligently to conduct insightful events. Check back soon for updates."}
         </Typography>
       </Stack>
       {children}

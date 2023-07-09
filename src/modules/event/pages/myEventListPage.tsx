@@ -68,7 +68,7 @@ export const MyEventListPage = () => {
               return <EventCard key={ev.id} eventData={ev} />;
             })
           ) : (
-            <EmptyData>
+            <EmptyData desc="Track and access your joined events in one place. Start your energy efficiency journey by browsing available events in the All Events page.">
               <Button
                 onClick={() => {
                   navigate("../events");

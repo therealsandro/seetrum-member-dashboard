@@ -6,6 +6,7 @@ import { EventCard } from "../components/eventCard";
 import { SearchBar } from "../components/searchbar";
 import { SortMenu } from "../components/sortMenu";
 import { useEventsList } from "../store/useEventList";
+import { EmptyData } from "../components/emptyData";
 
 export const EventListPages: React.FC = () => {
   const [search, setSearch] = useState<string>();
@@ -14,6 +15,10 @@ export const EventListPages: React.FC = () => {
   useEffect(() => {
     getEvents();
   }, [getEvents]);
+
+  const filteredEvents = events?.filter((evnt) =>
+    search ? evnt.title.toLowerCase().includes(search.toLowerCase()) : true
+  );
 
   return (
     <ProtectedPage>
@@ -30,23 +35,24 @@ export const EventListPages: React.FC = () => {
             }}
           />
         </Flex>
-        <SimpleGrid cols={4}>
-          {loading
-            ? Array(8)
-                .fill("-")
-                .map((i, id) => {
-                  return <EventCard key={id} loading />;
-                })
-            : events &&
-              events
-                .filter((evnt) =>
-                  search
-                    ? evnt.title.toLowerCase().includes(search.toLowerCase())
-                    : true
-                )
-                .map((ev) => {
-                  return <EventCard key={ev.id} eventData={ev} />;
-                })}
+        <SimpleGrid
+          cols={
+            (filteredEvents && filteredEvents.length > 0) || loading ? 4 : 1
+          }
+        >
+          {loading ? (
+            Array(8)
+              .fill("-")
+              .map((i, id) => {
+                return <EventCard key={id} loading />;
+              })
+          ) : filteredEvents && filteredEvents.length > 0 ? (
+            filteredEvents.map((ev) => {
+              return <EventCard key={ev.id} eventData={ev} />;
+            })
+          ) : (
+            <EmptyData />
+          )}
         </SimpleGrid>
       </Stack>
     </ProtectedPage>
