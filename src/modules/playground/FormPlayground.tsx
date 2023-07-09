@@ -6,25 +6,25 @@ import { useEffect } from "react";
 
 const formMetas: FormMeta[] = [
   {
-    name: "Full name",
+    label: "Full name",
     inputType: "input",
     data: [],
     required: false,
   },
   {
-    name: "Social Media",
+    label: "Social Media",
     inputType: "input",
     data: [],
     required: true,
   },
   {
-    name: "Gender",
+    label: "Gender",
     inputType: "select",
     data: ["Male", "Female", "Shemale"],
     required: true,
   },
   {
-    name: "Desired role",
+    label: "Desired role",
     inputType: "select",
     data: ["Developer", "Designer", "Product Manager"],
     required: true,
@@ -59,7 +59,7 @@ export const FormPlayground: React.FC = () => {
   useEffect(() => {
     form.setFieldValue(
       "additionalData",
-      formMetas.map((m) => ({ label: m.name, value: "" }))
+      formMetas.map((m) => ({ label: m.label, value: "" }))
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formMetas]);
@@ -78,7 +78,7 @@ export const FormPlayground: React.FC = () => {
         <Stack>
           {formMetas.map((m, idx) => (
             <InputFromMeta
-              key={m.name}
+              key={m.label}
               meta={m}
               value={form.values.additionalData[idx]?.value}
               onChange={handleChange(idx)}

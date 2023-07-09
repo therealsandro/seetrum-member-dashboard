@@ -14,6 +14,7 @@ export type TrainingMemberModel = {
   issuedCertificate: FileInfo[];
   gender: "female" | "male" | "";
   employmentStatus: "unemployed" | "employed" | "";
+  additionalData?: AdditionalData[];
   institutionName: string;
   address: string;
   province: string;
@@ -36,6 +37,7 @@ export const trainingMemberDummy: TrainingMemberModel = {
   address: "Jawa Tengah",
   province: "Jawa Tengah",
   postalCode: "12345",
+  additionalData: [],
   requiredFiles: [fileInfoDummy],
 };
 
@@ -44,3 +46,8 @@ export type TrainingMemberStatus =
   | "accepted"
   | "rejected"
   | "completed";
+
+export type AdditionalData = {
+  label: string;
+  value: string;
+};

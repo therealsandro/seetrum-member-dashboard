@@ -16,24 +16,28 @@ export const InputFromMeta: React.FC<FormMetaProps> = ({
 }) => {
   const errorNode =
     error && meta.required && !value ? "This field is required" : undefined;
+
+  const placeholder = `Enter your ${meta.label}`;
   if (meta.inputType === "input") {
     return (
       <TextInput
-        label={meta.name}
+        label={meta.label}
         error={errorNode}
         onChange={(e) => onChange(e.currentTarget.value)}
         withAsterisk={meta.required}
+        placeholder={placeholder}
       />
     );
   } else if (meta.inputType === "select") {
     return (
       <Select
-        label={meta.name}
+        label={meta.label}
         data={meta.data}
         value={value}
         error={errorNode}
         onChange={onChange}
         withAsterisk={meta.required}
+        placeholder={placeholder}
       />
     );
   } else {

@@ -51,57 +51,57 @@ export const TrainingApplicationPage: React.FC = () => {
       requiredFiles: [],
     },
     validate: (applicant) => {
-      switch (step) {
-        case 0:
-          return {
-            name: isNotEmpty("Please provide your full name")(applicant.name),
-            email: isEmail("Please provide your email")(applicant.email),
-            phoneNumber: isIDNPhoneNumber(
-              "Please providre your mobile phone number"
-            )(applicant.phoneNumber),
-            age:
-              applicant.age && applicant.age.valueOf() > 0
-                ? null
-                : "Please provide your age",
-            gender: isNotEmpty("Please pick one gender")(applicant.gender),
-            employmentStatus: isNotEmpty("Please pick one employment status")(
-              applicant.employmentStatus
+      if (step === 0) {
+        return {
+          name: isNotEmpty("Please provide your full name")(applicant.name),
+          email: isEmail("Please provide your email")(applicant.email),
+          phoneNumber: isIDNPhoneNumber(
+            "Please providre your mobile phone number"
+          )(applicant.phoneNumber),
+          age:
+            applicant.age && applicant.age.valueOf() > 0
+              ? null
+              : "Please provide your age",
+          gender: isNotEmpty("Please pick one gender")(applicant.gender),
+          employmentStatus: isNotEmpty("Please pick one employment status")(
+            applicant.employmentStatus
+          ),
+          institutionName:
+            applicant.employmentStatus === "employed" &&
+            isNotEmpty("Please provide your current institution")(
+              applicant.institutionName
             ),
-            institutionName:
-              applicant.employmentStatus === "employed" &&
-              isNotEmpty("Please provide your current institution")(
-                applicant.institutionName
-              ),
-          };
-        case 1:
-          return {
-            address: isNotEmpty("Please provide your current address")(
-              applicant.address
-            ),
-            province: isNotEmpty("Please provide your current province")(
-              applicant.province
-            ),
-            postalCode: isNotEmpty("Please provide your current postal code")(
-              applicant.postalCode
-            ),
-          };
-        default:
-          return {
-            requiredFiles:
-              training.fileRequirements.some(
-                (f, index) =>
-                  f.required &&
-                  applicant.requiredFiles![index].tag === fIDummy.tag
-              ) && "Please provide required files",
-          };
+          address: isNotEmpty("Please provide your current address")(
+            applicant.address
+          ),
+          province: isNotEmpty("Please provide your current province")(
+            applicant.province
+          ),
+          postalCode: isNotEmpty("Please provide your current postal code")(
+            applicant.postalCode
+          ),
+        };
       }
+      if (step === 1 && training.formMetas && training.formMetas.length > 0) {
+        return {
+          additionalData: applicant.additionalData!.some(
+            (d, idx) => training.formMetas![idx].required && !d.value
+          ),
+        };
+      }
+      return {
+        requiredFiles:
+          training.fileRequirements.some(
+            (f, index) =>
+              f.required && applicant.requiredFiles![index].tag === fIDummy.tag
+          ) && "Please provide required files",
+      };
     },
   });
 
   const handleSubmit = form.onSubmit(async (applicant) => {
     setLoading(true);
     try {
-      applicant.trainingId = training.id;
       if (applicant.requiredFiles)
         applicant.requiredFiles = applicant.requiredFiles.filter(
           (f) => f.tag !== fIDummy.tag
@@ -137,10 +137,14 @@ export const TrainingApplicationPage: React.FC = () => {
   // initialize required files with dummies
   useEffect(() => {
     if (training) {
-      form.setFieldValue(
-        "requiredFiles",
-        Array(training.fileRequirements.length).fill(fIDummy)
-      );
+      form.setValues({
+        trainingId: training.id,
+        requiredFiles: Array(training.fileRequirements.length).fill(fIDummy),
+        additionalData: training.formMetas?.map((f) => ({
+          label: f.label,
+          value: "",
+        })),
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [training]);
@@ -155,12 +159,7 @@ export const TrainingApplicationPage: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <ApplicationForm
-        form={form}
-        step={step}
-        setStep={setStep}
-        training={training}
-      />
+      <ApplicationForm form={form} step={step} training={training} />
       <Footer height={64} p={"sm"}>
         <Container>
           <Flex w="100%" justify="space-between">
@@ -170,7 +169,7 @@ export const TrainingApplicationPage: React.FC = () => {
                 variant="outline"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setStep((lastStep) => (lastStep > 0 ? step - 1 : 0));
+                  setStep((_step) => (_step > 0 ? _step - 1 : 0));
                 }}
               >
                 Back
@@ -186,7 +185,9 @@ export const TrainingApplicationPage: React.FC = () => {
               onClick={(e) => {
                 if (!form.validate().hasErrors) {
                   if (step < 2) {
-                    setStep((lastStep) => (lastStep < 2 ? step + 1 : 2));
+                    setStep((_step) =>
+                      _step < 1 + Number(!!training.formMetas) ? _step + 1 : 2
+                    );
                     e.preventDefault();
                     e.stopPropagation();
                   }
