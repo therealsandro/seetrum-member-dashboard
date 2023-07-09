@@ -19,6 +19,7 @@ import { useEventDetail } from "../store/useEventDetail";
 import { useEventMemberList } from "../store/useEventMemberList";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import { showErrorNotif } from "@/ui/notifications";
+import { Timestamp } from "firebase/firestore";
 
 export const EventDetailPage: React.FC = () => {
   const { id: eventId } = useParams();
@@ -170,9 +171,33 @@ const AddToCalendar: React.FC<{ isRegistered?: boolean }> = ({
   const { id: eventId } = useParams();
   const { user } = useAuthStore();
   const { joinEvent } = useEventMemberList();
+  const { event, getEvent } = useEventDetail();
 
-  // TODO: Implement this handler
-  const handleAddToCalendar = () => {};
+  useEffect(() => {
+    eventId && getEvent(eventId);
+  }, [getEvent, eventId]);
+
+  const handleAddToCalendar = () => {
+    if (!event) return;
+    const timeStampFormater = (time: Timestamp): string =>
+      time
+        .toDate()
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .replace(/\.\d{3}/g, "");
+
+    const uri = new URL(
+      `https://calendar.google.com/calendar/r/eventedit?&text=${
+        event.title
+      }&dates=${timeStampFormater(event.scheduleDateTime)}/${timeStampFormater(
+        event.scheduleDateTime // TODO: change to end of event schedule date
+      )}&details=${event.description}&ctz=${"Asia/Jakarta"}&location=${
+        event.venue
+      }&sf=true&output=xml`
+    );
+
+    window.open(uri.toString(), "_blank");
+  };
   const handleRegister = async () => {
     if (eventId && user)
       try {
