@@ -1,6 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 import { BaseModel } from ".";
 import { FileInfo, fileInfoDummy } from "./fileInfo";
+import { FormMeta } from "./inputMeta";
 
 export type Training = BaseModel & TrainingModel;
 
@@ -16,6 +17,7 @@ export type TrainingModel = CreateTrainingModel & {
   thumbnailFileName: string;
   attachments: FileInfo[];
   fileRequirements: FileRequirement[];
+  formMetas?: FormMeta[];
 };
 
 export type FileRequirement = {
@@ -25,6 +27,7 @@ export type FileRequirement = {
   required: boolean;
   maxSize: number;
 };
+
 export const fileRequirementDummy: FileRequirement = {
   title: "Curriculum vitae",
   description:

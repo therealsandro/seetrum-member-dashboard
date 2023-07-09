@@ -1,28 +1,17 @@
-import { kProvinsi } from "@/lib/constants";
 import { isIDNPhoneNumber } from "@/lib/utils";
 import { useAuthStore } from "@/modules/auth/stores/authStore";
 import { FileInfo } from "@/types/models/fileInfo";
 import { Training } from "@/types/models/training";
-import { TrainingMember } from "@/types/models/trainingMember";
-import { FileUploadButton } from "@/ui/Button";
+import { TrainingMemberModel } from "@/types/models/trainingMember";
 import { IconArrowLeft, IconArrowRight } from "@/ui/Icons";
 import { showErrorNotif } from "@/ui/notifications";
-import {
-  Button,
-  Center,
-  Container,
-  Flex,
-  Footer,
-  Loader,
-  Select,
-  TextInput,
-  Textarea,
-} from "@mantine/core";
+import { Button, Center, Container, Flex, Footer, Loader } from "@mantine/core";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { createTrainingMember } from "../services/trainingMemberService";
 import { useTrainingMember } from "../store/useTrainingMember";
+import { ApplicationForm } from "../components/ApplicationForm";
 
 const fIDummy: FileInfo = {
   tag: "dummy",
@@ -43,8 +32,22 @@ export const TrainingApplicationPage: React.FC = () => {
     useTrainingMember();
   const [loading, setLoading] = useState(false);
 
-  const form = useForm<Partial<TrainingMember>>({
+  const form = useForm<TrainingMemberModel>({
     initialValues: {
+      memberId: "",
+      name: "",
+      email: "",
+      phoneNumber: "",
+      age: 0,
+      institutionName: "",
+      status: "applied",
+      address: "",
+      employmentStatus: "",
+      gender: "",
+      province: "",
+      postalCode: "",
+      trainingId: "",
+      issuedCertificate: [],
       requiredFiles: [],
     },
     validate: (applicant) => {
@@ -98,16 +101,13 @@ export const TrainingApplicationPage: React.FC = () => {
   const handleSubmit = form.onSubmit(async (applicant) => {
     setLoading(true);
     try {
-      applicant.status = "applied";
       applicant.trainingId = training.id;
       if (applicant.requiredFiles)
         applicant.requiredFiles = applicant.requiredFiles.filter(
           (f) => f.tag !== fIDummy.tag
         );
       if (form.isValid()) {
-        const newTrainingMember = await createTrainingMember(
-          applicant as TrainingMember
-        );
+        const newTrainingMember = await createTrainingMember(applicant);
         addTrainingMember(newTrainingMember);
         user && (await getTrainingMemberByMemberId(user.id));
         navigate("/mytrainings");
@@ -153,147 +153,14 @@ export const TrainingApplicationPage: React.FC = () => {
     );
   }
 
-  const applicationForm = () => {
-    switch (step) {
-      case 0:
-        return (
-          <Flex direction={"column"} gap={24}>
-            <TextInput
-              placeholder="Enter your full name"
-              label="Full name"
-              withAsterisk
-              {...form.getInputProps("name")}
-              value={form.values.name ?? ""}
-            />
-            <TextInput
-              placeholder="Enter your email"
-              label="Email"
-              type="email"
-              withAsterisk
-              {...form.getInputProps("email")}
-              value={form.values.email ?? ""}
-            />
-            <TextInput
-              placeholder="Enter your mobile phone number"
-              label="Mobile phone number"
-              withAsterisk
-              {...form.getInputProps("phoneNumber")}
-              value={form.values.phoneNumber ?? ""}
-            />
-            <TextInput
-              placeholder="Enter your age"
-              label="Age"
-              type="number"
-              withAsterisk
-              {...form.getInputProps("age")}
-              value={form.values.age?.toString() ?? ""}
-            />
-            <Select
-              placeholder="Enter your gender"
-              label="Gender"
-              withAsterisk
-              data={[
-                { value: "male", label: "Male" },
-                { value: "female", label: "Female" },
-              ]}
-              {...form.getInputProps("gender")}
-              value={form.values.gender ?? ""}
-            />
-            <Select
-              placeholder="Enter your employment status"
-              label="Employment status"
-              withAsterisk
-              data={[
-                { value: "unemployed", label: "Unemployed" },
-                { value: "employed", label: "Employed" },
-              ]}
-              {...form.getInputProps("employmentStatus")}
-              value={form.values.employmentStatus ?? ""}
-              onChange={(val) => {
-                form.setFieldValue(
-                  "institutionName",
-                  val === "unemployed" ? "-" : ""
-                );
-                form.setFieldValue(
-                  "employmentStatus",
-                  val as typeof form.values.employmentStatus
-                );
-              }}
-            />
-            <TextInput
-              placeholder="Enter your current institution"
-              label="Current institution"
-              disabled={form.values.employmentStatus !== "employed"}
-              withAsterisk={form.values.employmentStatus === "employed"}
-              {...form.getInputProps("institutionName")}
-              value={form.values.institutionName ?? ""}
-            />
-          </Flex>
-        );
-
-      case 1:
-        return (
-          <Flex direction="column" gap={24}>
-            <Textarea
-              placeholder="Enter your address"
-              label="Address"
-              withAsterisk
-              {...form.getInputProps("address")}
-              value={form.values.address ?? ""}
-            />
-            <Select
-              data={kProvinsi}
-              placeholder="Pick your province"
-              label="Province"
-              withAsterisk
-              searchable
-              nothingFound="Not found"
-              {...form.getInputProps("province")}
-              value={form.values.province ?? ""}
-            />
-            <TextInput
-              placeholder="Enter your postal code"
-              label="Postal code"
-              withAsterisk
-              {...form.getInputProps("postalCode")}
-              value={form.values.postalCode ?? ""}
-            />
-          </Flex>
-        );
-
-      default:
-        return (
-          <Flex direction="column" gap={24}>
-            {training.fileRequirements.map((fR, indexFile) => {
-              const uploadedFile =
-                form.values.requiredFiles &&
-                form.values.requiredFiles[indexFile];
-              const isDummy: boolean = Boolean(
-                uploadedFile && uploadedFile.tag === fIDummy.tag
-              );
-              return (
-                <FileUploadButton
-                  key={indexFile}
-                  value={isDummy ? undefined : uploadedFile}
-                  error={fR.required && isDummy ? "-" : undefined}
-                  onFileChange={(fI) => {
-                    form.setFieldValue(
-                      `requiredFiles.${indexFile}`,
-                      fI ?? fIDummy
-                    );
-                  }}
-                  {...fR}
-                />
-              );
-            })}
-          </Flex>
-        );
-    }
-  };
-
   return (
     <form onSubmit={handleSubmit}>
-      {applicationForm()}
+      <ApplicationForm
+        form={form}
+        step={step}
+        setStep={setStep}
+        training={training}
+      />
       <Footer height={64} p={"sm"}>
         <Container>
           <Flex w="100%" justify="space-between">

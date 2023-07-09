@@ -12,8 +12,8 @@ export type TrainingMemberModel = {
   memberId: string;
   status: TrainingMemberStatus;
   issuedCertificate: FileInfo[];
-  gender: "female" | "male";
-  employmentStatus: "unemployed" | "employed";
+  gender: "female" | "male" | "";
+  employmentStatus: "unemployed" | "employed" | "";
   institutionName: string;
   address: string;
   province: string;
