@@ -37,6 +37,7 @@ import {
   getTrainingById,
   updateTraining,
 } from "../trainings/services/trainingService";
+import { FormMeta } from "@/types/models/inputMeta";
 
 export const TrainingPlayground: React.FC = () => {
   const [trainings, setTrainings] = useState<Training[]>();
@@ -140,6 +141,55 @@ export const TrainingPlayground: React.FC = () => {
     setLoading(false);
   };
 
+  const updateCustomForm = async () => {
+    setLoading(true);
+    try {
+      const newFormMetas: FormMeta[] = [
+        {
+          inputType: "input",
+          label: "Social Media  (Linkedin/Instagram/Twitter/etc)",
+          required: true,
+          data: [],
+        },
+        {
+          inputType: "select",
+          label: "Choose the position you want",
+          required: true,
+          data: [
+            "Marketing and Communication: Social Media",
+            "Marketing and Communication: Website",
+            "Graphic Design",
+            "Media Partnership",
+            "Event",
+            "Community Development",
+            "Knowledge Hub",
+            "Training",
+            "Legal",
+          ],
+        },
+
+        {
+          inputType: "input",
+          label: "Reason for choosing the position",
+          required: true,
+          data: [],
+        },
+        {
+          inputType: "input",
+          label:
+            "General EE Question: What do you know about Energy Efficiency?",
+
+          required: true,
+          data: [],
+        },
+      ];
+      await updateTraining(value, { formMetas: newFormMetas });
+    } catch (e) {
+      alert("erro");
+    }
+    setLoading(false);
+  };
+
   const updateTrainingTitle = (title: string) => async () => {
     setLoading(true);
     try {
@@ -182,8 +232,8 @@ export const TrainingPlayground: React.FC = () => {
         </Button>
       </Group>
       <Group>
-        <Button loading={loading} onClick={updateTrainingTitle("Rosetta")}>
-          update title to "Rosetta"
+        <Button loading={loading} onClick={updateCustomForm}>
+          update add custom form
         </Button>
         <Button loading={loading} onClick={updateTrainingTitle("Ruby Hoshino")}>
           update title to "Ruby Hoshino"
