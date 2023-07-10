@@ -1,4 +1,5 @@
 import { pretyDate } from "@/lib/utils";
+import { isMeetingLink, pretyDate } from "@/lib/utils";
 import { useFileURLStore } from "@/services/firebase/storage";
 import { ScheduledEvent } from "@/types/models/scheduledEvent";
 import { Typography } from "@/ui/Typography";
@@ -66,7 +67,11 @@ export const EventCard: React.FC<{
         </Skeleton>
         <Skeleton visible={!eventData}>
           <Typography textVariant="body-md">
-            {eventData?.venue || "-"}
+            {eventData
+              ? isMeetingLink(eventData.venue)
+                ? "Online events"
+                : eventData.venue
+              : "-"}
           </Typography>
         </Skeleton>
       </Stack>

@@ -1,4 +1,4 @@
-import { pretyDateTime } from "@/lib/utils";
+import { isMeetingLink, pretyDateTime } from "@/lib/utils";
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { useFileURLStore } from "@/services/firebase/storage";
 import { BackButton } from "@/ui/Button";
@@ -27,7 +27,8 @@ export const EventDetailPage: React.FC = () => {
   const { event, loading, getEvent } = useEventDetail();
   const { getEventMembers, getByEventId, memberId } = useEventMemberList();
   const eventMember = eventId ? getByEventId(eventId) : undefined;
-  const isOnlineEvent = () => Boolean(event?.venue.includes("://"));
+  const isOnlineEvent = () =>
+    event?.venue !== undefined ? isMeetingLink(event.venue) : undefined;
 
   useEffect(() => {
     if (user && (!memberId || memberId !== user.id))
