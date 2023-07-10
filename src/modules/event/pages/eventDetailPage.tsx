@@ -67,6 +67,7 @@ export const EventDetailPage: React.FC = () => {
         overflow: "hidden",
         borderRadius: "8px",
         borderColor: t.colors.platinum[2],
+        [t.fn.smallerThan("sm")]: { minWidth: "100%" },
         ...(sx && sx(t)),
       })}
     />
@@ -150,13 +151,20 @@ const EventDataField: React.FC<{
   loading?: boolean;
 }> = ({ label, data, loading }) => {
   return (
-    <Flex gap={16}>
+    <Flex
+      gap={16}
+      rowGap={4}
+      sx={(t) => ({ [t.fn.smallerThan("sm")]: { flexDirection: "column" } })}
+    >
       <Typography miw={120} textVariant="label-lg">
         {label}
       </Typography>
       <Skeleton
         visible={!data || loading === true}
-        width={!data || loading === true ? "30%" : "100%"}
+        sx={(t) => ({
+          width: !data || loading === true ? "30%" : "100%",
+          [t.fn.smallerThan("sm")]: { width: "100%" },
+        })}
       >
         <Typography sx={{ flex: 1 }} textVariant="body-md">
           {loading ? "-" : !data ? "-" : data}
@@ -220,6 +228,7 @@ const AddToCalendar: React.FC<{ isRegistered?: boolean }> = ({
         borderRadius: 8,
         padding: 16,
         backgroundColor: isRegistered ? t.colors.moonstone[0] : "transparent",
+        [t.fn.smallerThan("sm")]: { flexDirection: "column" },
       })}
     >
       <Typography sx={{ flex: 1 }} textVariant="body-lg">

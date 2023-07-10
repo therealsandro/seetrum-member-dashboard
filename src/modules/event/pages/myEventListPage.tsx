@@ -1,6 +1,12 @@
 import { ProtectedPage } from "@/modules/auth/components/ProtectedPage";
 import { Typography } from "@/ui/Typography";
-import { Button, Flex, SimpleGrid, Stack } from "@mantine/core";
+import {
+  Button,
+  Flex,
+  SimpleGrid,
+  Stack,
+  useMantineTheme,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import { EventCard } from "../components/eventCard";
 import { SearchBar } from "../components/searchbar";
@@ -11,9 +17,13 @@ import { useAuthStore } from "@/modules/auth/stores/authStore";
 import { ScheduledEvent } from "@/types/models/scheduledEvent";
 import { EmptyData } from "../components/emptyData";
 import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "@mantine/hooks";
 
 export const MyEventListPage = () => {
   const navigate = useNavigate();
+  const t = useMantineTheme();
+  const largerThanXS = useMediaQuery(`(min-width: ${t.breakpoints.xs}`);
+
   const [search, setSearch] = useState<string>();
   const { user } = useAuthStore();
   const { events, getEvents, loading, sortEvents } = useEventsList();
@@ -52,8 +62,10 @@ export const MyEventListPage = () => {
         </Flex>
         <SimpleGrid
           cols={
-            (myEvents && myEvents.length > 0) || loading || loadingEventMember
-              ? 4
+            (myEvents && myEvents.length > 0) || loading
+              ? largerThanXS
+                ? 4
+                : 1
               : 1
           }
         >
