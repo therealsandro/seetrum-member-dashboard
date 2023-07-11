@@ -195,11 +195,14 @@ const AddToCalendar: React.FC<{ isRegistered?: boolean }> = ({
         .replace(/[-:]/g, "")
         .replace(/\.\d{3}/g, "");
 
+    const endTime = event.scheduleDateTime.toDate();
+    endTime.setSeconds(3600);
+
     const uri = new URL(
       `https://calendar.google.com/calendar/r/eventedit?&text=${
         event.title
       }&dates=${timeStampFormater(event.scheduleDateTime)}/${timeStampFormater(
-        event.scheduleDateTime // TODO: change to end of event schedule date
+        Timestamp.fromDate(endTime) // TODO: change to end of event schedule date
       )}&details=${event.description}&ctz=${"Asia/Jakarta"}&location=${
         event.venue
       }&sf=true&output=xml`
