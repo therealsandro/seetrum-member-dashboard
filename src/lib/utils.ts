@@ -70,3 +70,27 @@ export const kLineClamp = (n: number): React.CSSProperties & any => ({
   WebkitLineClamp: n.toString(),
   WebkitBoxOrient: "vertical",
 });
+
+export const isMeetingLink = (string?: string): boolean => {
+  if (!string) return false;
+  const urlRegex = /^(https?):\/\/[^\s/$.?#].[^\s]*$/i;
+  const isUrl = urlRegex.test(string);
+  if (!isUrl) return false;
+  const meetingServices = [
+    "zoom",
+    "teams",
+    "meet.google",
+    "webex",
+    "gotomeeting",
+    "bluejeans",
+    "join.me",
+  ];
+  const mapsServices = ["google.com/maps", "maps.google"];
+  const isMeetingService = meetingServices.some((service) =>
+    string.includes(service)
+  );
+  const isMapsService = mapsServices.some((service) =>
+    string.includes(service)
+  );
+  return isMeetingService && !isMapsService;
+};
