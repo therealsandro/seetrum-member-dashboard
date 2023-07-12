@@ -132,7 +132,8 @@ export const TrainingApplicationPage: React.FC = () => {
         name: user.name,
         email: user.email,
         phoneNumber: user.phoneNumber,
-        address: user.address,
+        address: user.userType === "organization" ? user.address : "",
+        province: user.userType === "individual" ? user.address : "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
